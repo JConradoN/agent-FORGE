@@ -1,0 +1,214 @@
+from __future__ import annotations
+
+import json
+import logging
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, model_validator
+
+from agentforge.core.agent_models import AgentSpec, ToolSpec
+from agentforge.core.validation import load_yaml_file, validate_agent_spec
+from agentforge.providers.base import BaseProvider, ProviderRequest
+from agentforge.providers.registry import get_default_registry
+from agentforge.runtime.memory import apply_window, load_history, save_history
+from agentforge.tools.registry import execute_tool
+
+
+_TOOL_PREVIEW_PREFIX = """
+<tool_results>
+"""
+
+
+class RuntimeConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    runtime_version: str
+    agent_id: str
+    provider: str
+    model_default: str
+    model_fallback: str | None = None
+    workflow_mode: str
+    channel_type: str
+    memory_enabled: bool
+    memory_type: str | None = None
+    memory_max_turns: int = 0
+    memory_policy: str = "truncate"
+    output_mode: str
+    output_format: str | None = None
+    conversation_multi_turn: bool = False
+
+    @model_validator(mode="before")
+    @classmethod
+    def _flatten_nested(cls, values: Any) -> Any:
+        if not isinstance(values, dict):
+            return values
+        model = values.get("model") or {}
+        workflow = values.get("workflow") or {}
+        channel = values.get("channel") or {}
+        memory = values.get("memory") or {}
+        output = values.get("output") or {}
+        conversation = values.get("conversation") or {}
+        return {
+            "runtime_version": values.get("runtime_version", ""),
+            "agent_id": values.get("agent_id", ""),
+            "provider": values.get("provider", ""),
+            "model_default": model.get("default", ""),
+            "model_fallback": model.get("fallback"),
+            "workflow_mode": workflow.get("mode", ""),
+            "channel_type": channel.get("type", ""),
+            "memory_enabled": memory.get("enabled", False),
+            "memory_type": memory.get("type"),
+            "memory_max_turns": memory.get("max_turns", 0),
+            "memory_policy": memory.get("policy", "truncate"),
+            "output_mode": output.get("mode", ""),
+            "output_format": output.get("format"),
+            "conversation_multi_turn": conversation.get("multi_turn", False),
+        }
+
+
+class AgentRuntime:
+    def __init__(
+        self,
+        agent_spec: AgentSpec,
+        runtime_config: RuntimeConfig,
+        tools: list[ToolSpec],
+        root_dir: Path,
+    ) -> None:
+        self.agent_spec = agent_spec
+        self.runtime_config = runtime_config
+        self.tools = tools
+        self.root_dir = root_dir
+        self.logger = logging.getLogger(__name__)
+
+        # Load persisted history if memory is enabled; always start fresh for single-turn.
+        if runtime_config.conversation_multi_turn:
+            self._history: list[dict[str, str]] = load_history(
+                root_dir,
+                memory_type=runtime_config.memory_type or "none",
+                enabled=runtime_config.memory_enabled,
+                max_turns=runtime_config.memory_max_turns,
+                policy=runtime_config.memory_policy,
+            )
+        else:
+            self._history = []
+
+    @classmethod
+    def from_agent_dir(cls, path: str | Path) -> "AgentRuntime":
+        root_dir = Path(path)
+        agent_spec = validate_agent_spec(root_dir / "agent.yaml")
+
+        runtime_data = load_yaml_file(root_dir / "runtime.yaml")
+        runtime_config = RuntimeConfig.model_validate(runtime_data)
+
+        tools: list[ToolSpec] = []
+        tools_yaml = root_dir / "tools.yaml"
+        if tools_yaml.exists():
+            tools_data = load_yaml_file(tools_yaml)
+            tools = [ToolSpec.model_validate(t) for t in (tools_data.get("tools") or [])]
+
+        logging.getLogger(__name__).info(
+            "Loaded agent '%s' from %s", agent_spec.agent.id, root_dir
+        )
+        return cls(
+            agent_spec=agent_spec,
+            runtime_config=runtime_config,
+            tools=tools,
+            root_dir=root_dir,
+        )
+
+    def _get_provider(self) -> BaseProvider:
+        return get_default_registry().create(self.runtime_config.provider)
+
+    def _read_system_prompt(self) -> str | None:
+        path = self.root_dir / "system_prompt.md"
+        return path.read_text(encoding="utf-8") if path.exists() else None
+
+    def _execute_tool(self, tool_name: str) -> dict | None:
+        return execute_tool(tool_name)
+
+    def _build_input_with_tool_results(self, input_text: str, tool_data: dict) -> str:
+        tool_json = json.dumps(tool_data, indent=2, default=str)
+        return f"{_TOOL_PREVIEW_PREFIX}{tool_json}\n</tool_results>\n\nUser: {input_text}"
+
+    @property
+    def history(self) -> list[dict[str, str]]:
+        return list(self._history)
+
+    def clear_history(self) -> None:
+        self._history = []
+        from agentforge.runtime.memory import clear_history
+        clear_history(self.root_dir)
+
+    def run(self, input_text: str, *, metadata: dict | None = None) -> dict:
+        provider = self._get_provider()
+
+        tool_data = None
+        final_input = input_text
+
+        required_tool = next((t for t in self.tools if t.required), None)
+        if required_tool:
+            tool_data = self._execute_tool(required_tool.name)
+            if tool_data:
+                final_input = self._build_input_with_tool_results(input_text, tool_data)
+
+        history = list(self._history) if self.runtime_config.conversation_multi_turn else []
+
+        request = ProviderRequest(
+            agent_id=self.runtime_config.agent_id,
+            input_text=final_input,
+            system_prompt=self._read_system_prompt(),
+            model=self.runtime_config.model_default,
+            history=history,
+        )
+
+        self.logger.info(
+            "run: agent=%s provider=%s model=%s turn=%d input=%r",
+            self.runtime_config.agent_id,
+            self.runtime_config.provider,
+            self.runtime_config.model_default,
+            len(history) // 2 + 1,
+            input_text,
+        )
+
+        response = provider.generate(request)
+
+        # Update in-memory history for multi-turn sessions.
+        if self.runtime_config.conversation_multi_turn:
+            self._history.append({"role": "user", "content": input_text})
+            self._history.append({"role": "assistant", "content": response.output_text})
+            self._history = apply_window(
+                self._history,
+                self.runtime_config.memory_max_turns,
+                self.runtime_config.memory_policy,
+            )
+            if self.runtime_config.memory_enabled and self.runtime_config.memory_type != "none":
+                save_history(self.root_dir, self._history)
+
+        raw_response = response.raw_response
+        if not self.runtime_config.conversation_multi_turn and raw_response and "context" in raw_response:
+            raw_response = {k: v for k, v in raw_response.items() if k != "context"}
+
+        return {
+            "agent_id": self.runtime_config.agent_id,
+            "provider": response.provider,
+            "input": input_text,
+            "output": response.output_text,
+            "metadata": {
+                "provider": self.runtime_config.provider,
+                "workflow_mode": self.runtime_config.workflow_mode,
+                "channel_type": self.runtime_config.channel_type,
+                "model_default": self.runtime_config.model_default,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "tool_executed": required_tool.name if required_tool else None,
+                "tool_data": tool_data,
+                "conversation_turn": len(self._history) // 2,
+                **(metadata or {}),
+            },
+            "provider_response": {
+                "provider": response.provider,
+                "model": response.model,
+                "raw_response": raw_response,
+            },
+        }

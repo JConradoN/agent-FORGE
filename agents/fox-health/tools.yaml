@@ -1,0 +1,6 @@
+tools_version: '0.1'
+agent_id: fox-health
+tools:
+- name: collect_system_health
+  required: true
+  description: Coleta métricas de saúde do sistema (CPU, memória, disco, GPU, processos)

@@ -1,0 +1,33 @@
+spec_version: '0.1'
+agent:
+  id: mock_agent
+  name: Mock Agent
+  purpose: Agente de teste com provider mock
+persona:
+  tone: direto
+  style: técnico
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools: []
+memory:
+  type: none
+  enabled: false
+output:
+  mode: text
+  format: text
+guardrails:
+  must: []
+  must_not: []
+  optional: []
+eval:
+  user_score_enabled: false
+  notes: null
+deployment:
+  provider: mock
+model_policy:
+  default_model: gemma4:e4b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool

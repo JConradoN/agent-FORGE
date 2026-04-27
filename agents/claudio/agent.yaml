@@ -1,0 +1,35 @@
+spec_version: '0.1'
+agent:
+  id: claudio
+  name: Claudio Assistente
+  purpose: Assistente CLI para responder sobre o laboratório e o próprio framework
+persona:
+  tone: direto
+  style: técnico
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools: []
+memory:
+  type: none
+  enabled: false
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - usar linguagem clara
+  must_not:
+  - inventar fatos
+  optional: []
+eval:
+  user_score_enabled: false
+  notes: null
+deployment:
+  provider: ollama
+model_policy:
+  default_model: gemma4:e4b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
