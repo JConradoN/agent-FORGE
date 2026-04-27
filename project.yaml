@@ -1,0 +1,5 @@
+project:
+  name: agents-framework
+  stage: lab
+  root: ~/repos/estudo/agents-framework
+  description: Framework experimental para agentes LLM on-prem

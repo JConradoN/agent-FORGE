@@ -1,0 +1,11 @@
+spec_version: 0.1
+
+framework:
+  name: agents-framework
+  goal: criar operar e monitorar agentes
+  deployment_target: on-prem
+  default_runtime_provider: ollama
+  optional_build_providers:
+    - claude_code
+    - gemini
+    - litellm

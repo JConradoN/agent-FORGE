@@ -1,0 +1,17 @@
+type: object
+required:
+  - task_id
+  - assigned_to
+  - goal
+  - review_focus
+properties:
+  task_id:
+    type: string
+  assigned_to:
+    type: string
+  goal:
+    type: string
+  review_focus:
+    type: array
+    items:
+      type: string

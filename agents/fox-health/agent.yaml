@@ -1,0 +1,41 @@
+spec_version: '0.1'
+agent:
+  id: fox-health
+  name: Fox Health Monitor
+  purpose: Agente de diagnóstico de saúde do sistema fox-server - analisa CPU, memória, disco, GPU e processos
+persona:
+  tone: técnico
+  style: objetivo
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: collect_system_health
+    required: true
+    description: Coleta métricas de saúde do sistema (CPU, memória, disco, GPU, processos)
+memory:
+  type: none
+  enabled: false
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - sempre executar a tool collect_system_health antes de responder
+  - usar dados reais do sistema
+  - fornecer recomendações objetivas
+  must_not:
+  - inventar métricas
+  - ignorar alertas
+  optional: []
+eval:
+  user_score_enabled: false
+  notes: null
+deployment:
+  provider: ollama
+model_policy:
+  default_model: gemma4:e4b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool

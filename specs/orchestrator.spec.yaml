@@ -1,0 +1,14 @@
+spec_version: 0.1
+
+orchestration:
+  planner: perplexity
+  coding_agent: claude_code
+  analysis_agent: gemini
+
+  delegation_policy:
+    code_generation: claude_code
+    refactor: claude_code
+    test_creation: claude_code
+    documentation: gemini
+    critique: gemini
+    final_synthesis: perplexity

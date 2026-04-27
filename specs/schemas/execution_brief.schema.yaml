@@ -1,0 +1,17 @@
+type: object
+required:
+  - task_id
+  - assigned_to
+  - goal
+  - acceptance_criteria
+properties:
+  task_id:
+    type: string
+  assigned_to:
+    type: string
+  goal:
+    type: string
+  acceptance_criteria:
+    type: array
+    items:
+      type: string

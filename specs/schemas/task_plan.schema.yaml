@@ -1,0 +1,14 @@
+type: object
+required:
+  - task_id
+  - goal
+  - steps
+properties:
+  task_id:
+    type: string
+  goal:
+    type: string
+  steps:
+    type: array
+    items:
+      type: string

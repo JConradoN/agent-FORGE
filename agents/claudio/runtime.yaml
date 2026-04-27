@@ -1,0 +1,18 @@
+runtime_version: '0.1'
+agent_id: claudio
+provider: ollama
+model:
+  default: gemma4:e4b
+  fallback: null
+workflow:
+  mode: respond_or_tool
+channel:
+  type: cli
+memory:
+  enabled: false
+  type: none
+output:
+  mode: text
+  format: text
+conversation:
+  multi_turn: false
