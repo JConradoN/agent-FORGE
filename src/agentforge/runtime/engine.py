@@ -91,6 +91,87 @@ def _summarize_scan_output(tool_data: dict, mode: str = "full", max_items: int =
     return tool_data
 
 
+_TOKEN_THRESHOLD = 800  # heurístico baseado no V1
+
+
+def _maybe_compress_tool_output(tool_data: dict, tool_name: str) -> dict:
+    """
+    Comprime tool outputs grandes automaticamente antes de injetar no prompt.
+    Usado inicialmente no vault-pilot como PoC.
+    """
+    try:
+        estimated_tokens = len(json.dumps(tool_data)) // 4
+    except TypeError:
+        return tool_data
+
+    if estimated_tokens <= _TOKEN_THRESHOLD:
+        return tool_data
+
+    if tool_name == "scan_directory":
+        return _summarize_scan_output(tool_data, mode="summary")
+
+    if any(k in tool_data for k in ("files", "items", "results")):
+        return _summarize_scan_output(tool_data, mode="top_n", max_items=20)
+
+    return tool_data
+
+
+def _build_input_with_file_content(
+    input_text: str,
+    file_text: str,
+    mode: str = "current_tag",
+    tool_prefix: str = "",
+) -> str:
+    """
+    Monta o prompt injetando conteúdo de documento em diferentes formatos.
+    mode: "current_tag" | "tool_response_tag" | "plain_block" |
+          "instruction_strong" | "instruction_role" | "content_last" |
+          "no_tag"
+
+    Esta função NÃO altera o comportamento padrão do engine.
+    Uso destinado exclusivamente a benchmarks e testes internos.
+    """
+    if mode == "current_tag":
+        return f"{tool_prefix}<file_content>\n{file_text}\n</file_content>\n\nUser: {input_text}"
+
+    if mode == "tool_response_tag":
+        return f"{tool_prefix}<tool_response>\n{file_text}\n</tool_response>\n\nUser: {input_text}"
+
+    if mode == "plain_block":
+        return (
+            f"{tool_prefix}CONTEÚDO DO ARQUIVO:\n"
+            f"---\n{file_text}\n---\n\n"
+            f"User: {input_text}"
+        )
+
+    if mode == "instruction_strong":
+        return (
+            f"{tool_prefix}NÃO chame nenhuma ferramenta. "
+            f"Use APENAS o texto abaixo para responder.\n\n"
+            f"{file_text}\n\n"
+            f"User: {input_text}"
+        )
+
+    if mode == "instruction_role":
+        return (
+            f"{tool_prefix}Você recebeu o seguinte documento. "
+            f"Analise-o sem chamar nenhuma ferramenta:\n\n"
+            f"{file_text}\n\n"
+            f"User: {input_text}"
+        )
+
+    if mode == "content_last":
+        return (
+            f"{tool_prefix}User: {input_text}\n\n"
+            f"Conteúdo do documento:\n{file_text}"
+        )
+
+    if mode == "no_tag":
+        return f"{tool_prefix}{file_text}\n\nUser: {input_text}"
+
+    return f"{tool_prefix}{file_text}\n\nUser: {input_text}"
+
+
 class RuntimeConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -202,6 +283,19 @@ class AgentRuntime:
         tool_json = json.dumps(tool_data, indent=2, default=str)
         return f"{_TOOL_PREVIEW_PREFIX}{tool_json}\n</tool_results>\n\nUser: {input_text}"
 
+    def _build_input_with_tool_results_with_name(
+        self, input_text: str, tool_data: dict, tool_name: str = ""
+    ) -> str:
+        tool_data = _maybe_compress_tool_output(tool_data, tool_name)
+
+        if "_text" in tool_data:
+            tool_content = tool_data["_text"]
+        else:
+            tool_json = json.dumps(tool_data, indent=2, default=str)
+            tool_content = tool_json
+
+        return f"{_TOOL_PREVIEW_PREFIX}{tool_content}\n</tool_results>\n\nUser: {input_text}"
+
     @property
     def history(self) -> list[dict[str, str]]:
         return list(self._history)
@@ -282,7 +376,12 @@ class AgentRuntime:
         if required_tool:
             tool_data = self._execute_tool(required_tool.name)
             if tool_data:
-                final_input = self._build_input_with_tool_results(input_text, tool_data)
+                if self.runtime_config.agent_id == "vault-pilot":
+                    final_input = self._build_input_with_tool_results_with_name(
+                        input_text, tool_data, tool_name=required_tool.name
+                    )
+                else:
+                    final_input = self._build_input_with_tool_results(input_text, tool_data)
 
         if self._detect_log_intent(input_text):
             log_tool = next((t for t in self.tools if t.name == "read_log_tail"), None)
@@ -386,6 +485,43 @@ class AgentRuntime:
             system_prompt=self._read_system_prompt(),
             model=self.runtime_config.model_default,
             history=[],
+        )
+        provider = self._get_provider()
+        response = provider.generate(request)
+        return response.output_text
+
+    def _run_with_file_content(
+        self,
+        input_text: str,
+        file_text: str,
+        mode: str = "current_tag",
+        history: list | None = None,
+    ) -> str:
+        """
+        Executa uma chamada ao modelo injetando conteúdo de documento
+        em diferentes formatos, sem passar pela detecção automática de intent.
+
+        history:
+          - None → history vazio (mesmo comportamento do V2).
+          - lista fornecida → usada diretamente; permite injetar histórico
+            sintético para benchmarks de corrupção de contexto.
+
+        Uso destinado exclusivamente a benchmarks e testes internos.
+        NÃO use no pipeline de produção.
+        """
+        prompt = _build_input_with_file_content(
+            input_text=input_text,
+            file_text=file_text,
+            mode=mode,
+            tool_prefix="",
+        )
+
+        request = ProviderRequest(
+            agent_id=self.runtime_config.agent_id,
+            input_text=prompt,
+            system_prompt=self._read_system_prompt(),
+            model=self.runtime_config.model_default,
+            history=history if history is not None else [],
         )
         provider = self._get_provider()
         response = provider.generate(request)
