@@ -36,9 +36,13 @@ def list_tools() -> list[str]:
 def _register_builtin_tools() -> None:
     from agentforge.tools.system_health import collect_system_health
     from agentforge.tools.read_log_tail import read_log_tail
+    from agentforge.tools.vault_scan import scan_directory
+    from agentforge.tools.vault_extract import extract_file_content
 
     register_tool("collect_system_health", collect_system_health)
     register_tool("read_log_tail", read_log_tail, log_path="/var/log/syslog")
+    register_tool("scan_directory", scan_directory)
+    register_tool("extract_file_content", extract_file_content)
 
 
 _register_builtin_tools()

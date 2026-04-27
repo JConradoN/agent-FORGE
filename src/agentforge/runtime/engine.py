@@ -21,6 +21,76 @@ _TOOL_PREVIEW_PREFIX = """
 """
 
 
+def _summarize_scan_output(tool_data: dict, mode: str = "full", max_items: int = 20) -> dict:
+    """
+    Transforma o tool_data de scan_directory em diferentes formatos para benchmark.
+    mode: "full" | "top_n" | "summary" | "by_folder" | "plain_text"
+
+    Esta função NÃO altera o comportamento padrão do engine.
+    Uso destinado exclusivamente a scripts de benchmark e testes internos.
+    """
+    files = tool_data.get("files", [])
+    total = tool_data.get("file_count", len(files))
+    base = tool_data.get("directory", "")
+
+    if mode == "full":
+        return tool_data
+
+    if mode == "top_n":
+        return {
+            "directory": base,
+            "file_count": total,
+            "showing": min(max_items, total),
+            "files": [
+                {"path": f.get("path"), "extension": f.get("extension")}
+                for f in files[:max_items]
+            ],
+        }
+
+    if mode == "summary":
+        from collections import Counter
+        from pathlib import Path as _Path
+        ext_count = Counter(f.get("extension") for f in files)
+        folder_count = Counter(
+            str(_Path(f.get("path") or "raiz").parent)
+            for f in files
+        )
+        return {
+            "directory": base,
+            "total_files": total,
+            "by_extension": dict(ext_count.most_common(10)),
+            "by_folder": dict(folder_count.most_common(10)),
+            "sample_files": [f.get("path") for f in files[:5]],
+        }
+
+    if mode == "by_folder":
+        from collections import defaultdict
+        folders: dict[str, list[str]] = defaultdict(list)
+        for f in files:
+            path = f.get("path") or ""
+            parts = path.split("/")
+            folder = "/".join(parts[:-1]) if len(parts) > 1 else "raiz"
+            folders[folder].append(f.get("name") or path)
+        return {
+            "directory": base,
+            "total_files": total,
+            "folders": {
+                k: {"count": len(v), "examples": v[:3]}
+                for k, v in list(folders.items())[:15]
+            },
+        }
+
+    if mode == "plain_text":
+        lines = [f"Diretório: {base}", f"Total: {total} arquivos", ""]
+        for f in files[:max_items]:
+            lines.append(f"- {f.get('path')}")
+        if total > max_items:
+            lines.append(f"... e mais {total - max_items} arquivos")
+        return {"_text": "\n".join(lines)}
+
+    return tool_data
+
+
 class RuntimeConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -156,6 +226,42 @@ class AgentRuntime:
         lower_input = input_text.lower()
         return any(kw in lower_input for kw in log_keywords)
 
+    def _detect_file_intent(self, input_text: str) -> bool:
+        keywords = [
+            "analise",
+            "analisar",
+            "conteúdo",
+            "extraia",
+            "extrair",
+            "qual o conteúdo",
+            "me explique",
+            "descreva",
+            "describe",
+            "what is",
+            "explain",
+        ]
+        lower = input_text.lower()
+        return any(kw in lower for kw in keywords)
+
+    def _extract_filename_intent(self, input_text: str) -> str | None:
+        import re
+        text = input_text
+        
+        m = re.search(r"([A-Z][a-zA-Z]+/[A-Za-z]+/[^\s]+\.(?:pdf|docx?|odt|pptx?))", text)
+        if m:
+            return m.group(1)
+        
+        m = re.search(r"([A-Z][a-zA-Z]+/[^\s]+\.(?:pdf|docx?|odt|pptx?))", text)
+        if m:
+            return m.group(1)
+        
+        m = re.search(r"([^\s]+\.(?:pdf|docx?|odt|pptx?))", text)
+        if m:
+            candidate = m.group(1)
+            if len(candidate) > 10:
+                return candidate
+        return None
+
     def _detect_log_path(self, input_text: str) -> str:
         lower = input_text.lower()
         if "syslog" in lower:
@@ -186,6 +292,18 @@ class AgentRuntime:
                 if log_data:
                     log_json = json.dumps(log_data, indent=2, default=str)
                     final_input = f"{final_input}\n\n<log_results>\n{log_json}\n</log_results>"
+
+        if self._detect_file_intent(input_text):
+            extract_tool = next((t for t in self.tools if t.name == "extract_file_content"), None)
+            if extract_tool:
+                filename = self._extract_filename_intent(input_text)
+                if filename:
+                    if not filename.startswith("/"):
+                        filename = f"/home/conrado/testes/vault/input/{filename}"
+                    file_data = execute_tool(extract_tool.name, file_path=filename)
+                    if file_data and not file_data.get("error"):
+                        file_json = json.dumps(file_data, indent=2, default=str)
+                        final_input = f"{final_input}\n\n<file_content>\n{file_json}\n</file_content>"
 
         history = list(self._history) if self.runtime_config.conversation_multi_turn else []
 
@@ -246,3 +364,29 @@ class AgentRuntime:
                 "raw_response": raw_response,
             },
         }
+
+    def _run_with_tool_data(self, input_text: str, tool_data: dict) -> str:
+        """
+        Executa uma chamada ao modelo injetando tool_data pré-formatado,
+        sem passar pela detecção automática de intent.
+
+        Uso destinado exclusivamente a benchmarks e testes internos.
+        NÃO use este método no pipeline de produção (CLI normal).
+        NÃO altera o comportamento de run() nem do fluxo normal.
+        """
+        if "_text" in tool_data:
+            tool_content = tool_data["_text"]
+            prompt = f"{_TOOL_PREVIEW_PREFIX}{tool_content}\n</tool_results>\n\nUser: {input_text}"
+        else:
+            prompt = self._build_input_with_tool_results(input_text, tool_data)
+
+        request = ProviderRequest(
+            agent_id=self.runtime_config.agent_id,
+            input_text=prompt,
+            system_prompt=self._read_system_prompt(),
+            model=self.runtime_config.model_default,
+            history=[],
+        )
+        provider = self._get_provider()
+        response = provider.generate(request)
+        return response.output_text
