@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 5,
+    "mode": "full",
+    "label": "n5_full"
+  },
+  "tokens_estimated": 328,
+  "mentioned": 5,
+  "correct": 5,
+  "invented": 0,
+  "faithfulness_score": 1.0,
+  "timestamp": "20260427-0923",
+  "model": "gemma4:e4b",
+  "response_preview": "## 📂 Análise de Diretório de Staging\n\nConforme solicitado, realizei a listagem dos arquivos presentes no diretório de staging.\n\nTodos os arquivos estão contidos na subestrutura `CONRADO/ACADEMICO/` e parecem pertencer ao acervo acadêmico do usuário Conrado.\n\n**Localização:** `/home/conrado/testes/va"
+}

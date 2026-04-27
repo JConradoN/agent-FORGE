@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 50,
+    "mode": "full",
+    "label": "n50_full"
+  },
+  "tokens_estimated": 3067,
+  "mentioned": 9,
+  "correct": 0,
+  "invented": 9,
+  "faithfulness_score": 0.0,
+  "timestamp": "20260427-0923",
+  "model": "gemma4:e4b",
+  "response_preview": "Os arquivos encontrados são:\n\n* 2015 - Teste.pdf\n* 2015 - Outros.pdf\n* 2015 - Imposto de Renda.pdf\n* 2016 - Declaração Completa.pdf\n* 2016 - Declaração Outros.pdf\n* 2016 - Imposto de Renda.pdf\n* 2016 - Recibos.pdf\n* 2017 - Declaração Completa.pdf\n* 2017 - Declaração Outros.pdf\n* 2017 - Imposto de Re"
+}

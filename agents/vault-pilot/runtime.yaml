@@ -1,0 +1,20 @@
+runtime_version: '0.1'
+agent_id: vault-pilot
+provider: ollama
+model:
+  default: gemma4:e4b
+  fallback: null
+workflow:
+  mode: respond_or_tool
+channel:
+  type: cli
+memory:
+  enabled: true
+  type: session_summary
+  max_turns: 10
+  policy: summarize
+output:
+  mode: text
+  format: text
+conversation:
+  multi_turn: true

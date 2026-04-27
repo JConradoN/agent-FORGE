@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 342,
+    "mode": "plain_text",
+    "label": "n342_plain"
+  },
+  "tokens_estimated": 270,
+  "mentioned": 6,
+  "correct": 6,
+  "invented": 0,
+  "faithfulness_score": 1.0,
+  "timestamp": "20260427-0923",
+  "model": "gemma4:e4b",
+  "response_preview": "Entendido. Conforme solicitado, realizei uma varredura do diretório de *staging* (`/home/conrado/testes/vault/input`) para mapear o conteúdo disponível.\n\n**Diretório Analisado:** `/home/conrado/testes/vault/input`\n**Total de Arquivos Encontrados:** 342 arquivos\n\nO acervo de testes está bem organizad"
+}

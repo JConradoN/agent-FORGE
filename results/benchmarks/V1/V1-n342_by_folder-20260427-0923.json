@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 342,
+    "mode": "by_folder",
+    "label": "n342_by_folder"
+  },
+  "tokens_estimated": 337,
+  "mentioned": 23,
+  "correct": 23,
+  "invented": 0,
+  "faithfulness_score": 1.0,
+  "timestamp": "20260427-0923",
+  "model": "gemma4:e4b",
+  "response_preview": "**🤖 Vault Pilot Agent Iniciado 🤖**\n\n**Análise do Ambiente de Staging (`/home/conrado/testes/vault/input`)**\n\nCom base no scan do diretório, foram encontrados um total de **342 arquivos** distribuídos em diversas subpastas. O acervo de testes está bem segmentado, o que facilita a proposta de uma taxo"
+}

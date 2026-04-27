@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 342,
+    "mode": "summary",
+    "label": "n342_summary"
+  },
+  "tokens_estimated": 165,
+  "mentioned": 1,
+  "correct": 1,
+  "invented": 0,
+  "faithfulness_score": 1.0,
+  "timestamp": "20260427-0923",
+  "model": "gemma4:e4b",
+  "response_preview": "Compreendido. Executei a varredura do diretório de staging (`/home/conrado/testes/vault/input`) e compilei o relatório de inventário.\n\nO acervo na área de testes está sendo analisado. Temos um total de **342 arquivos** prontos para processamento e análise.\n\nA estrutura do diretório está organizada p"
+}

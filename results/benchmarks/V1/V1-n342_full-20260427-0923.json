@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 342,
+    "mode": "full",
+    "label": "n342_full"
+  },
+  "tokens_estimated": 21774,
+  "mentioned": 3,
+  "correct": 0,
+  "invented": 3,
+  "faithfulness_score": 0.0,
+  "timestamp": "20260427-0923",
+  "model": "gemma4:e4b",
+  "response_preview": "Os arquivos encontrados são:\n\n**Arquivos de Imagens/Documentos:**\n* `EMILIA/IMG_0001.jpg`\n\n**Arquivos de Texto/Documentos:**\n* `EMILIA/Documentos/EMILIA_-_BirthCertificate.pdf`\n* `EMILIA/Documentos/EMILIA_-_BirthCertificate.pdf` (Este arquivo está duplicado na lista, mas o nome é o mesmo)\n* `EMILIA/"
+}

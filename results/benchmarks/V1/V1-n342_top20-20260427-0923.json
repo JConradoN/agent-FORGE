@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 342,
+    "mode": "top_n",
+    "label": "n342_top20"
+  },
+  "tokens_estimated": 433,
+  "mentioned": 15,
+  "correct": 15,
+  "invented": 0,
+  "faithfulness_score": 1.0,
+  "timestamp": "20260427-0923",
+  "model": "gemma4:e4b",
+  "response_preview": "**[VAULT PILOT AGENT – INICIANDO ANÁLISE DE ACERVO]**\n\n**Confirmação:** O diretório `/home/conrado/testes/vault/input` foi escaneado com sucesso.\n\n**Resumo do Acervo:**\n*   **Total de Arquivos Encontrados:** 342 documentos.\n*   **Escopo da Visualização (Amostra):** Foram listados os primeiros 20 arq"
+}

@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 20,
+    "mode": "full",
+    "label": "n20_full"
+  },
+  "tokens_estimated": 1242,
+  "mentioned": 12,
+  "correct": 0,
+  "invented": 12,
+  "faithfulness_score": 0.0,
+  "timestamp": "20260427-0923",
+  "model": "gemma4:e4b",
+  "response_preview": "Olá! Com base na lista de arquivos que você forneceu, farei um resumo das categorias e dos arquivos encontrados, como se fosse um inventário inicial.\n\nOs arquivos estão majoritariamente concentrados em pastas relacionadas a `CONTEÚDO DE CONTEÚDO` e documentos pessoais, com foco em arquivos acadêmico"
+}
