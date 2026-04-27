@@ -141,6 +141,31 @@ class AgentRuntime:
         from agentforge.runtime.memory import clear_history
         clear_history(self.root_dir)
 
+    def _detect_log_intent(self, input_text: str) -> bool:
+        log_keywords = [
+            "log",
+            "syslog",
+            "últimas linhas",
+            "últimas linhas do",
+            "erros recentes",
+            "eventos recentes",
+            "events",
+            "ver log",
+            "verificar log",
+        ]
+        lower_input = input_text.lower()
+        return any(kw in lower_input for kw in log_keywords)
+
+    def _detect_log_path(self, input_text: str) -> str:
+        lower = input_text.lower()
+        if "syslog" in lower:
+            return "/var/log/syslog"
+        if "kern" in lower:
+            return "/var/log/kern.log"
+        if "messages" in lower:
+            return "/var/log/messages"
+        return "/var/log/syslog"
+
     def run(self, input_text: str, *, metadata: dict | None = None) -> dict:
         provider = self._get_provider()
 
@@ -152,6 +177,15 @@ class AgentRuntime:
             tool_data = self._execute_tool(required_tool.name)
             if tool_data:
                 final_input = self._build_input_with_tool_results(input_text, tool_data)
+
+        if self._detect_log_intent(input_text):
+            log_tool = next((t for t in self.tools if t.name == "read_log_tail"), None)
+            if log_tool:
+                log_path = self._detect_log_path(input_text)
+                log_data = execute_tool(log_tool.name, log_path=log_path)
+                if log_data:
+                    log_json = json.dumps(log_data, indent=2, default=str)
+                    final_input = f"{final_input}\n\n<log_results>\n{log_json}\n</log_results>"
 
         history = list(self._history) if self.runtime_config.conversation_multi_turn else []
 
