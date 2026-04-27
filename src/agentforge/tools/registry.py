@@ -26,7 +26,10 @@ def list_tools() -> list[str]:
 
 def _register_builtin_tools() -> None:
     from agentforge.tools.system_health import collect_system_health
+    from agentforge.tools.read_log_tail import read_log_tail
+
     register_tool("collect_system_health", collect_system_health)
+    register_tool("read_log_tail", read_log_tail)
 
 
 _register_builtin_tools()

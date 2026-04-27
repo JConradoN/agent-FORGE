@@ -1,0 +1,46 @@
+spec_version: '0.1'
+agent:
+  id: lab-ops
+  name: Lab Ops Agent
+  purpose: Agente operacional para monitoramento de saúde do servidor e inspeção de logs em ambiente de laboratório
+persona:
+  tone: técnico
+  style: preciso
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: collect_system_health
+    required: true
+    description: Coleta métricas de saúde do sistema (CPU, memória, disco, GPU, processos)
+  - name: read_log_tail
+    required: false
+    description: Lê as últimas linhas de um arquivo de log
+memory:
+  type: session_summary
+  enabled: true
+  max_turns: 6
+  policy: summarize
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - sempre executar collect_system_health antes de responder sobre saúde do sistema
+  - fornecer recomendações objetivas baseadas nos dados
+  - usar caminhos absolutos ou relativos ao servidor para logs
+  must_not:
+  - inventar métricas
+  - acessar arquivos fora do diretório de logs do servidor
+  - alterar qualquer arquivo do sistema
+eval:
+  user_score_enabled: false
+  notes: null
+deployment:
+  provider: ollama
+model_policy:
+  default_model: gemma4:e4b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
