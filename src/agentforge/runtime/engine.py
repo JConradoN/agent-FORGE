@@ -172,6 +172,156 @@ def _build_input_with_file_content(
     return f"{tool_prefix}{file_text}\n\nUser: {input_text}"
 
 
+# ---------------------------------------------------------------------------
+# Fuzzy path resolver — experimental, V5 only
+# ---------------------------------------------------------------------------
+
+import os as _os
+import re as _re
+import unicodedata as _unicodedata
+from difflib import SequenceMatcher as _SequenceMatcher
+
+
+def _normalize_path_name(text: str) -> str:
+    text = _unicodedata.normalize("NFKD", text)
+    text = "".join(ch for ch in text if not _unicodedata.combining(ch))
+    text = text.lower()
+    text = _re.sub(r"[^a-z0-9_/.\- ]+", " ", text)
+    text = _re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def _extract_query_name(utterance: str) -> str:
+    """
+    Extrai o termo de arquivo mais provável do utterance.
+
+    Prioridade:
+    1. Substring entre aspas (duplas ou simples) — usa a mais longa.
+    2. Padrão com extensão de arquivo reconhecida.
+    3. Palavras após tokens contextuais ("arquivo", "contrato", "documento").
+    """
+    # 1. Texto entre aspas
+    quoted = _re.findall(r'["\']([^"\']+)["\']', utterance)
+    if quoted:
+        return max(quoted, key=len)
+
+    # 2. Padrão com extensão
+    m = _re.search(
+        r"([^\s]+\.(?:pdf|docx?|odt|pptx?|xlsx?|txt|csv))",
+        utterance,
+        flags=_re.IGNORECASE,
+    )
+    if m:
+        return m.group(1)
+
+    # 3. Palavras após tokens contextuais
+    context_tokens = ("arquivo", "contrato", "documento", "analise", "extraia")
+    lower = utterance.lower()
+    for token in context_tokens:
+        idx = lower.find(token)
+        if idx != -1:
+            tail = utterance[idx + len(token):].strip()
+            words = tail.split()[:5]
+            if words:
+                return " ".join(words)
+
+    return utterance
+
+
+def _extract_filename_intent_fuzzy(
+    user_utterance: str,
+    file_paths: list[str],
+) -> dict:
+    """
+    Versão experimental/fuzzy de resolução de path de arquivo.
+
+    Parâmetros:
+      user_utterance : texto completo da pergunta do usuário
+      file_paths     : lista de paths disponíveis (relativos ao staging,
+                       ex.: ["CONRADO/GERAL/Contrato Conrado Nogueira.pdf", ...])
+
+    Retorna:
+      {
+        "match_type":    "exact" | "fuzzy" | "ambiguous" | "none",
+        "resolved_path": str | None,
+        "candidates":    [{"path": str, "score": float, "reason": str}, ...]
+                         (sempre presente, ordenada por score desc)
+      }
+
+    Regras de seleção:
+      - score_top1 < 0.50                               → "none"
+      - score_top1 >= 0.70 e delta >= 0.10              → "fuzzy" (ou "exact")
+      - score_top1 >= 0.50 e (delta < 0.10 ou score_top2 >= 0.50) → "ambiguous"
+
+    Esta função NÃO deve ser usada no runtime.
+    Uso exclusivo para benchmarks/experiments V5.
+    """
+    query_name = _extract_query_name(user_utterance)
+    query_norm = _normalize_path_name(query_name)
+    query_tokens = set(query_norm.split()) - {""}
+
+    candidates = []
+    for path in file_paths:
+        basename = _os.path.basename(path)
+        basename_norm = _normalize_path_name(basename)
+        path_norm = _normalize_path_name(path)
+
+        # SequenceMatcher score against basename
+        base_score = _SequenceMatcher(None, query_norm, basename_norm).ratio()
+
+        # Substring hit
+        substr_hit = query_norm in basename_norm or basename_norm in query_norm
+
+        # Token overlap (query tokens present in basename)
+        basename_tokens = set(basename_norm.split()) - {""}
+        if query_tokens:
+            overlap = len(query_tokens & basename_tokens) / len(query_tokens)
+        else:
+            overlap = 0.0
+
+        # Full path also checked for exact match
+        exact_path_hit = query_norm in path_norm
+
+        score = base_score + (0.2 if substr_hit else 0.0) + 0.3 * overlap
+        score = min(1.0, score)
+
+        reasons = []
+        if substr_hit:
+            reasons.append("substr")
+        if overlap > 0:
+            reasons.append(f"overlap={overlap:.2f}")
+        if exact_path_hit and not substr_hit:
+            reasons.append("path_match")
+            score = min(1.0, score + 0.1)
+
+        candidates.append({
+            "path": path,
+            "score": round(score, 4),
+            "reason": ", ".join(reasons) if reasons else "seq_only",
+        })
+
+    candidates.sort(key=lambda c: c["score"], reverse=True)
+
+    score_top1 = candidates[0]["score"] if candidates else 0.0
+    score_top2 = candidates[1]["score"] if len(candidates) > 1 else 0.0
+    delta = score_top1 - score_top2
+
+    if score_top1 < 0.50:
+        return {"match_type": "none", "resolved_path": None, "candidates": candidates[:3]}
+
+    if score_top1 >= 0.70 and delta >= 0.10:
+        # "exact" if query_norm is a near-complete substring of the winning basename
+        winning_basename = _normalize_path_name(_os.path.basename(candidates[0]["path"]))
+        match_type = "exact" if query_norm in winning_basename else "fuzzy"
+        return {
+            "match_type": match_type,
+            "resolved_path": candidates[0]["path"],
+            "candidates": candidates[:3],
+        }
+
+    return {"match_type": "ambiguous", "resolved_path": None, "candidates": candidates[:3]}
+
+
 class RuntimeConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
