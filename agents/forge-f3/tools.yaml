@@ -1,0 +1,35 @@
+tools_version: '0.1'
+agent_id: forge-f3
+tools:
+- name: http_get
+  required: false
+  description: Faz GET em URL e retorna texto. Use para buscar cotações de câmbio
+    e cripto.
+  category: null
+  status: stable
+  when_to_use: Usar para cada URL de cotação (USD-BRL, EUR-BRL, BTC-BRL, ETH-BRL)
+    e histórico.
+  when_not_to_use: Não usar para escrever arquivos.
+  input_schema: '{"type":"object","properties":{"url":{"type":"string","description":"URL
+    completa da API"},"headers":{"type":"object","description":"Headers opcionais","default":{}}},"required":["url"]}'
+  output_schema: null
+- name: write_file
+  required: false
+  description: Escreve conteúdo em arquivo no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Usar para salvar o relatório de análise em Markdown.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho
+    relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  output_schema: null
+- name: send_claudio
+  required: false
+  description: Envia mensagem pelo bot Telegram do Claudio para notificar o usuário.
+  category: null
+  status: stable
+  when_to_use: Usar ao final para enviar resumo das cotações e tendência.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"message":{"type":"string","description":"Mensagem
+    a enviar (suporta Markdown)"}},"required":["message"]}'
+  output_schema: null
