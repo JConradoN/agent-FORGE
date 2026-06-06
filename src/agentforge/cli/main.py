@@ -266,5 +266,40 @@ def mcp_server(
         raise typer.Exit(code=1)
 
 
+@app.command()
+def telegram(
+    agent_dir: Path = typer.Option(..., "--agent-dir", help="Diretório do agente"),
+    token: str = typer.Option(
+        "",
+        "--token",
+        envvar="TELEGRAM_BOT_TOKEN",
+        help="Token do bot Telegram (ou env TELEGRAM_BOT_TOKEN)",
+    ),
+) -> None:
+    """Sobe o agente como bot Telegram (polling)."""
+    from pydantic import ValidationError
+
+    from agentforge.channels.telegram import run_polling
+    from agentforge.runtime.engine import AgentRuntime
+
+    if not token:
+        console.print("[red]ERRO[/red] — Token não fornecido. Use --token ou TELEGRAM_BOT_TOKEN.")
+        raise typer.Exit(code=1)
+
+    try:
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+    except (FileNotFoundError, ValueError, ValidationError) as exc:
+        console.print(f"[red]ERRO ao carregar agente[/red] — {exc}")
+        raise typer.Exit(code=1)
+
+    console.print(f"[bold]AgentForge Telegram[/bold] — {runtime.agent_spec.agent.name}")
+    console.print(f"  Modelo:   {runtime.runtime_config.model_default}")
+    console.print(f"  Provider: {runtime.runtime_config.provider}")
+    console.print(f"  Modo:     polling (Ctrl+C para parar)")
+    console.print("")
+
+    run_polling(runtime, token)
+
+
 if __name__ == "__main__":
     app()
