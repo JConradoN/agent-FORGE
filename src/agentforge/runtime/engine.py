@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -223,8 +224,24 @@ class AgentRuntime:
             return "/var/log/messages"
         return "/var/log/syslog"
 
+    def _log_run(self, result: dict, latency_ms: float) -> None:
+        runs_dir = self.root_dir / "runs"
+        runs_dir.mkdir(exist_ok=True)
+        entry = {
+            "agent_id": result["agent_id"],
+            "provider": result["provider"],
+            "model": result["provider_response"]["model"],
+            "input": result["input"][:500],
+            "output": result["output"][:500],
+            "timestamp": result["metadata"]["timestamp"],
+            "latency_ms": round(latency_ms),
+        }
+        with open(runs_dir / "runs.jsonl", "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
     def run(self, input_text: str, *, metadata: dict | None = None) -> dict:
         provider = self._get_provider()
+        _t0 = time.perf_counter()
 
         tool_data = None
         final_input = input_text
@@ -298,7 +315,8 @@ class AgentRuntime:
         if not self.runtime_config.conversation_multi_turn and raw_response and "context" in raw_response:
             raw_response = {k: v for k, v in raw_response.items() if k != "context"}
 
-        return {
+        latency_ms = (time.perf_counter() - _t0) * 1000
+        result = {
             "agent_id": self.runtime_config.agent_id,
             "provider": response.provider,
             "input": input_text,
@@ -309,6 +327,7 @@ class AgentRuntime:
                 "channel_type": self.runtime_config.channel_type,
                 "model_default": self.runtime_config.model_default,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
+                "latency_ms": round(latency_ms),
                 "tool_executed": required_tool.name if required_tool else None,
                 "tool_data": tool_data,
                 "conversation_turn": len(self._history) // 2,
@@ -320,6 +339,8 @@ class AgentRuntime:
                 "raw_response": raw_response,
             },
         }
+        self._log_run(result, latency_ms)
+        return result
 
     def _run_with_tool_data(self, input_text: str, tool_data: dict) -> str:
         """

@@ -1,0 +1,24 @@
+cases:
+  - input: "qual é o estado geral do servidor?"
+    notes: "diagnóstico básico — espera resumo de CPU/memória/disco"
+
+  - input: "tem algum processo consumindo muita CPU?"
+    notes: "análise de processos — espera identificar top consumers"
+
+  - input: "quanto de memória RAM está livre?"
+    notes: "consulta de memória — espera valor em MB/GB"
+
+  - input: "verifique os erros recentes no syslog"
+    notes: "análise de log — espera leitura e resumo de erros"
+
+  - input: "o disco está cheio?"
+    notes: "verificação de disco — espera uso percentual por partição"
+
+  - input: "quais serviços estão rodando?"
+    notes: "inventário de serviços — espera lista de processos ativos"
+
+  - input: "há alguma anomalia no sistema agora?"
+    notes: "diagnóstico holístico — espera análise combinada"
+
+  - input: "qual o uptime do servidor?"
+    notes: "consulta simples — espera tempo desde último boot"
