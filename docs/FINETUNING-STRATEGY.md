@@ -1,27 +1,27 @@
-# Fine-Tuning qwen3.5 para AgentForge
+# Fine-Tuning qwen3.5 for AgentForge
 
-## Motivação
+## Motivation
 
-O AgentForge foi otimizado para a família qwen3.5. O próximo nível é o inverso: especializar o próprio modelo para o framework, eliminando as falhas residuais que nenhum prompt consegue corrigir de forma confiável.
+AgentForge has been optimized for the qwen3.5 family. The next level is the inverse: specializing the model itself for the framework, eliminating the residual failures that no prompt can reliably fix.
 
-Falhas residuais identificadas nos benchmarks (junho/2026):
-1. **Incoerência entre tool calls** — gera `search_memory` na impl e `_search_shared_memory` no teste
-2. **Casing inconsistente em mensagens de erro** — `"Query cannot be empty"` vs match `"query"`
-3. **Frase de confirmação omitida** — ignora instrução de formato do output final
-4. **XML leakage** — 27b vaza `<tool_use>` tags no output textual
+Residual failures identified in the benchmarks (June 2026):
+1. **Incoherence between tool calls** — generates `search_memory` in the impl and `_search_shared_memory` in the test
+2. **Inconsistent casing in error messages** — `"Query cannot be empty"` vs match on `"query"`
+3. **Missing confirmation phrase** — ignores the final output format instruction
+4. **XML leakage** — 27b leaks `<tool_use>` tags into textual output
 
-Essas falhas são estruturais: acontecem mesmo com guardrails, even com prompts muito explícitos. Fine-tuning é a solução correta porque o problema é de distribuição aprendida, não de falta de instrução.
+These failures are structural: they occur even with guardrails, even with very explicit prompts. Fine-tuning is the correct solution because the problem is one of learned distribution, not missing instruction.
 
 ---
 
-## Estratégia
+## Strategy
 
-### Fase 1 — Coleta de Dados (Golden Runs)
+### Phase 1 — Data Collection (Golden Runs)
 
-Gerar exemplos de "runs perfeitos" usando um modelo teacher forte (Claude claude-sonnet-4-6 via API). O teacher executa cada cenário e produz a sequência correta de tool calls + output final.
+Generate examples of "perfect runs" using a strong teacher model (Claude claude-sonnet-4-6 via API). The teacher executes each scenario and produces the correct sequence of tool calls + final output.
 
 ```bash
-# Rodar cenários com o teacher (Claude API)
+# Run scenarios with the teacher (Claude API)
 python3 scripts/generate_training_data.py \
     --scenarios P3 P4 F3 \
     --teacher claude-sonnet-4-6 \
@@ -29,7 +29,7 @@ python3 scripts/generate_training_data.py \
     --output training_data/golden_runs.jsonl
 ```
 
-Cada exemplo tem o formato de conversa multi-turn com tool calls:
+Each example uses the multi-turn conversation format with tool calls:
 
 ```json
 {
@@ -53,26 +53,26 @@ Cada exemplo tem o formato de conversa multi-turn com tool calls:
 }
 ```
 
-**Volume alvo:** 50-100 exemplos por cenário = 150-300 total. Pequeno o suficiente para treinar em 2-4h com LoRA no fox-server.
+**Target volume:** 50-100 examples per scenario = 150-300 total. Small enough to train in 2-4h with LoRA on the test hardware.
 
-### Fase 2 — Augmentation (Variações Sintéticas)
+### Phase 2 — Augmentation (Synthetic Variations)
 
-A partir dos golden runs, gerar variações:
-- Diferentes nomes de função (mas sempre consistentes entre impl e teste)
-- Diferentes mensagens de erro (mas sempre lowercase para match)
-- Diferentes conteúdos de relatório (mas sempre com as frases de confirmação)
+From the golden runs, generate variations:
+- Different function names (but always consistent between impl and test)
+- Different error messages (but always lowercase for matching)
+- Different report contents (but always including the confirmation phrases)
 
-Isso aumenta o dataset 5-10x sem custo de API.
+This multiplies the dataset 5-10x at no API cost.
 
-### Fase 3 — Fine-Tuning com LoRA
+### Phase 3 — Fine-Tuning with LoRA
 
-**Ferramentas recomendadas:**
-- `unsloth` — LoRA otimizado para Qwen3, roda no fox-server com 24 GB VRAM
-- `axolotl` — alternativa mais configurável
+**Recommended tools:**
+- `unsloth` — LoRA optimized for Qwen3, runs on the test hardware with 24 GB VRAM
+- `axolotl` — more configurable alternative
 
-**Configuração LoRA para qwen3.5:9b:**
+**LoRA configuration for qwen3.5:9b:**
 ```yaml
-base_model: Qwen/Qwen3.5-7B-Instruct  # equivalente ao 9b do Ollama
+base_model: Qwen/Qwen3.5-7B-Instruct  # equivalent to Ollama's 9b
 model_type: AutoModelForCausalLM
 tokenizer_type: AutoTokenizer
 
@@ -99,13 +99,13 @@ num_epochs: 3
 learning_rate: 2e-4
 ```
 
-**VRAM necessária:**
-- qwen3.5:9b + LoRA 4-bit: ~14 GB → cabe em 1 RTX 3060 12 GB com gradient checkpointing
-- qwen3.5:27b + LoRA 4-bit: ~20 GB → cabe nos 24 GB combinados (2× RTX 3060)
+**Required VRAM:**
+- qwen3.5:9b + LoRA 4-bit: ~14 GB → fits in 1 RTX 3060 12 GB with gradient checkpointing
+- qwen3.5:27b + LoRA 4-bit: ~20 GB → fits in the combined 24 GB (2× RTX 3060)
 
-### Fase 4 — Exportar para Ollama
+### Phase 4 — Export to Ollama
 
-Após treinar, exportar o adaptador LoRA como Modelfile Ollama:
+After training, export the LoRA adapter as an Ollama Modelfile:
 
 ```bash
 # Merge LoRA weights
@@ -114,7 +114,7 @@ python3 scripts/merge_lora.py \
     --adapter training_data/lora_output \
     --output training_data/qwen35-agentforge-9b
 
-# Criar Modelfile
+# Create Modelfile
 cat > Modelfile << 'EOF'
 FROM training_data/qwen35-agentforge-9b
 PARAMETER temperature 0
@@ -127,63 +127,63 @@ ollama create qwen35-agentforge:9b -f Modelfile
 
 ---
 
-## Dados de Treinamento — O que Capturar
+## Training Data — What to Capture
 
-### O que queremos ensinar
+### What we want to teach
 
-| Comportamento | Exemplo de treino |
+| Behavior | Training example |
 |---|---|
-| **Coerência entre tool calls** | Write impl → read_file → Write tests (names match) |
-| **Frase de confirmação** | Output sempre termina com 'TOOL CRIADO' / 'SKILL CRIADA' |
-| **Fetch antes de analisar** | http_get × 3 → write_file (nunca o inverso) |
-| **Sem XML leakage** | Output final nunca contém `<tool_use>` |
-| **Recovery de erro** | pytest falha → lê output → corrige código (não repete mesmo pytest) |
+| **Coherence between tool calls** | Write impl → read_file → Write tests (names match) |
+| **Confirmation phrase** | Output always ends with 'TOOL CRIADO' / 'SKILL CRIADA' |
+| **Fetch before analyzing** | http_get × 3 → write_file (never the reverse) |
+| **No XML leakage** | Final output never contains `<tool_use>` |
+| **Error recovery** | pytest fails → reads output → fixes code (does not repeat the same pytest) |
 
-### Formato de captura dos runs atuais
+### Capture format for current runs
 
-Os runs já salvos em `agents/*/runs.jsonl` têm apenas input/output, sem o histórico completo de tool calls. Precisamos de um formato estendido:
+The runs already saved in `agents/*/runs.jsonl` only have input/output, without the full tool call history. We need an extended format:
 
 ```python
-# Adicionar ao engine: captura de conversação completa
+# Add to engine: full conversation capture
 def _log_run_extended(self, messages: list[dict], tool_results_log: list[dict]):
-    """Salva o histórico completo para uso como dado de fine-tuning."""
+    """Saves the complete history for use as fine-tuning data."""
     ...
 ```
 
 ---
 
-## Métricas de Avaliação do Modelo Treinado
+## Evaluation Metrics for the Trained Model
 
-Usar o próprio benchmark como test set:
+Use the benchmark itself as the test set:
 
-| Cenário | Baseline (qwen3.5:27b) | Meta pós-FT |
+| Scenario | Baseline (qwen3.5:27b) | Post-FT target |
 |---|---|---|
 | FORGE F3 | 94.4% | ≥ 97% |
 | REAL P3 | 66.7% | ≥ 85% |
 | REAL P4 | 91.7% | ≥ 97% |
 
-O P3 é o mais importante: sair de 66.7% para 85%+ exige coerência entre tool calls — exatamente o que o fine-tuning ensina.
+P3 is the most important: moving from 66.7% to 85%+ requires coherence between tool calls — exactly what fine-tuning teaches.
 
 ---
 
-## Cronograma Estimado
+## Estimated Timeline
 
-| Etapa | Esforço | Dependência |
+| Step | Effort | Dependency |
 |---|---|---|
-| Script de coleta (teacher runs) | 1 dia | Claude API key |
-| Coleta dos dados (50 runs × 3 cenários) | ~3h de API | |
-| Augmentation sintética | 0.5 dia | |
-| Setup Unsloth no fox-server | 0.5 dia | |
-| Fine-tuning qwen3.5:9b (3 epochs) | ~4h de GPU | |
-| Exportação e teste no Ollama | 1 dia | |
-| Benchmark final | ~2h | |
-| **Total** | **~3-4 dias** | |
+| Collection script (teacher runs) | 1 day | Claude API key |
+| Data collection (50 runs × 3 scenarios) | ~3h of API | |
+| Synthetic augmentation | 0.5 day | |
+| Unsloth setup on test hardware | 0.5 day | |
+| Fine-tuning qwen3.5:9b (3 epochs) | ~4h of GPU | |
+| Export and testing in Ollama | 1 day | |
+| Final benchmark | ~2h | |
+| **Total** | **~3-4 days** | |
 
 ---
 
-## Referências
+## References
 
 - [Unsloth — Qwen3 LoRA](https://github.com/unslothai/unsloth)
 - [Axolotl — tool call fine-tuning](https://github.com/OpenAccess-AI-Collective/axolotl)
 - [Qwen3 fine-tuning guide](https://qwen.readthedocs.io/en/latest/training/SFT/)
-- Benchmarks base: `~/repos/estudo/agent-benchmark-suite/` (ABS), `~/repos/estudo/real/` (REAL)
+- Base benchmarks: `~/repos/estudo/agent-benchmark-suite/` (ABS), `~/repos/estudo/real/` (REAL)

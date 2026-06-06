@@ -1,10 +1,10 @@
-# AgentForge — Arquitetura Técnica
+# AgentForge — Technical Architecture
 
-Referência técnica completa do framework. Cobre todos os módulos, fluxos de execução, contratos de API interna e decisões de design.
+Complete technical reference for the framework. Covers all modules, execution flows, internal API contracts, and design decisions.
 
 ---
 
-## Visão Geral
+## Overview
 
 ```
 Spec (agent.yaml)
@@ -18,32 +18,32 @@ AgentRuntime.from_agent_dir()
     ▼
 run(input_text)
     │
-    ├── [required_tool] → _execute_tool() → injeta resultado
+    ├── [required_tool] → _execute_tool() → injects result
     │
     ├── [respond_or_tool] → _run_tool_calling_cycle()
     │       └── loop: infer → tool_call? → execute → repeat
-    │              loop_guard: para em (tool, args) repetido
-    │              final_inference: gera output após ciclos
+    │              loop_guard: stops on repeated (tool, args)
+    │              final_inference: generates output after cycles
     │
-    ├── [direto] → provider.generate()
+    ├── [direct] → provider.generate()
     │
     ├── _reflect() × N rounds
     │
     ├── _apply_guardrails()
-    │       └── _check_guardrail_violations() × até 2 retries
+    │       └── _check_guardrail_violations() × up to 2 retries
     │
     └── _log_run() → runs.jsonl
 ```
 
 ---
 
-## Módulos
+## Modules
 
 ### `core/agent_models.py`
 
-Todos os tipos do `AgentSpec` via Pydantic v2. `extra="forbid"` em todos — erro explícito em campos desconhecidos no YAML.
+All `AgentSpec` types via Pydantic v2. `extra="forbid"` on all — explicit error on unknown fields in YAML.
 
-**Hierarquia:**
+**Hierarchy:**
 
 ```
 AgentSpec
@@ -62,14 +62,14 @@ AgentSpec
 ```
 
 **WorkflowSpec.mode:**
-- `respond_or_tool` — tool calling model-driven (padrão para agentes com ferramentas)
-- qualquer outro valor — resposta direta sem tool calling
+- `respond_or_tool` — model-driven tool calling (default for agents with tools)
+- any other value — direct response without tool calling
 
 ---
 
 ### `runtime/engine.py`
 
-**`RuntimeConfig`** — view plana da spec para o engine (evita acesso aninhado em hot paths):
+**`RuntimeConfig`** — flat view of the spec for the engine (avoids nested access in hot paths):
 
 ```python
 RuntimeConfig(
@@ -83,7 +83,7 @@ RuntimeConfig(
 
 **`AgentRuntime.run(input_text, *, metadata=None) → dict`**
 
-Retorna:
+Returns:
 
 ```python
 {
@@ -97,9 +97,9 @@ Retorna:
         "model_default": str,
         "timestamp": ISO8601,
         "latency_ms": int,
-        "tool_executed": str | None,        # required_tool se usado
+        "tool_executed": str | None,        # required_tool if used
         "tool_data": dict | None,
-        "tool_calls_log": list[dict] | None, # ciclos respond_or_tool
+        "tool_calls_log": list[dict] | None, # respond_or_tool cycles
         "conversation_turn": int,
         "guardrail_violations": list[str] | None,
     },
@@ -113,43 +113,43 @@ Retorna:
 
 **`_run_tool_calling_cycle(input_text, system_prompt, history)`**
 
-Loop de até `max_tool_cycles` iterações:
-- Ciclo 0: `ProviderRequest(history=messages[:-1], tools_schema=schema)`
-- Ciclos 1+: `ProviderRequest(history=messages, tools_schema=schema)`
-- `tools_schema=None` quando lista vazia (falsy → rota para `_generate_simple`)
-- Loop guard: `seen_calls: set[str]` com chave `f"{tool_name}:{json(args)}"`
-- Final: `response.tool_calls is None` → retorna; ou ciclos esgotados → inferência final sem tools
+Loop of up to `max_tool_cycles` iterations:
+- Cycle 0: `ProviderRequest(history=messages[:-1], tools_schema=schema)`
+- Cycles 1+: `ProviderRequest(history=messages, tools_schema=schema)`
+- `tools_schema=None` when list is empty (falsy → routes to `_generate_simple`)
+- Loop guard: `seen_calls: set[str]` with key `f"{tool_name}:{json(args)}"`
+- Final: `response.tool_calls is None` → returns; or cycles exhausted → final inference without tools
 
 **`_reflect(original_input, output_text, system_prompt, rounds)`**
 
-Auto-crítica estacionária (sem histórico, sem tools). Cada round aplica prompt estruturado:
-1. Completa e precisa?
-2. Respeita restrições do papel?
-3. Pode ser mais objetiva?
+Stationary self-critique (no history, no tools). Each round applies a structured prompt:
+1. Complete and accurate?
+2. Respects role constraints?
+3. Can it be more concise?
 
 **`_check_guardrail_violations(output_text) → list[str]`**
 
-Usa o próprio modelo (`_generate_simple`, sem histórico) para identificar violações:
-- Input: lista de `must_not` + texto do output
-- Output esperado: "NENHUMA" ou lista de regras violadas, uma por linha
-- Retorna `[]` se "NENHUMA" ou resposta vazia
+Uses the model itself (`_generate_simple`, no history) to identify violations:
+- Input: list of `must_not` + output text
+- Expected output: "NONE" or list of violated rules, one per line
+- Returns `[]` if "NONE" or empty response
 
 **`_apply_guardrails(input_text, output_text, system_prompt, history, max_retries=2)`**
 
-1. Chama `_check_guardrail_violations`
-2. Se sem violações: retorna imediatamente
-3. Para cada retry: gera prompt de correção → re-inferência → re-verifica
-4. Retorna `(output_text_final, violations_restantes)`
+1. Calls `_check_guardrail_violations`
+2. If no violations: returns immediately
+3. For each retry: generates correction prompt → re-inference → re-checks
+4. Returns `(output_text_final, remaining_violations)`
 
 **`_log_run(result, latency_ms)`**
 
-Append-only em `agents/<id>/runs/runs.jsonl`. Formato: uma linha JSON por run com campos resumidos.
+Append-only to `agents/<id>/runs/runs.jsonl`. Format: one JSON line per run with summarized fields.
 
 ---
 
 ### `providers/ollama.py`
 
-**Roteamento por tipo de request:**
+**Routing by request type:**
 
 ```python
 def generate(request: ProviderRequest) -> ProviderResponse:
@@ -161,12 +161,12 @@ def generate(request: ProviderRequest) -> ProviderResponse:
 - `_generate_simple`: payload `{"model", "prompt", "stream": false}`
 - `_generate_chat`: payload `{"model", "messages", "stream": false, "tools"?}`
 
-**Parsing de tool_calls** (`_generate_chat`):
+**Parsing tool_calls** (`_generate_chat`):
 
 ```python
-# Resposta Ollama/OpenAI format
+# Ollama/OpenAI format response
 message.tool_calls → [{"function": {"name": ..., "arguments": ...}}]
-# Normalizado para:
+# Normalized to:
 [{"name": str, "arguments": dict}]
 ```
 
@@ -194,7 +194,7 @@ class ProviderResponse(BaseModel):
 
 ### `providers/mock.py`
 
-Retorna respostas determinísticas sem chamar Ollama. Usado em todos os testes. Configurado via `deployment.provider: mock` no `agent.yaml`.
+Returns deterministic responses without calling Ollama. Used in all tests. Configured via `deployment.provider: mock` in `agent.yaml`.
 
 ---
 
@@ -202,16 +202,16 @@ Retorna respostas determinísticas sem chamar Ollama. Usado em todos os testes. 
 
 **`load_history(root_dir, memory_type, enabled, max_turns, policy) → list`**
 
-Carrega `history.json` se existir e se `enabled=True`.
+Loads `history.json` if it exists and if `enabled=True`.
 
 **`save_history(root_dir, history)`**
 
-Persiste em `history.json`.
+Persists to `history.json`.
 
 **`apply_window(history, max_turns, policy) → list`**
 
-- `policy="truncate"`: mantém as últimas `max_turns` mensagens
-- `policy="summarize"`: condensa mensagens antigas em bullet-points determinísticos
+- `policy="truncate"`: keeps the last `max_turns` messages
+- `policy="summarize"`: condenses old messages into deterministic bullet points
 
 ---
 
@@ -219,14 +219,14 @@ Persiste em `history.json`.
 
 **`execute_tool(name, **kwargs) → dict | None`**
 
-Dispatcher por nome. Ferramentas registradas:
+Dispatcher by name. Registered tools:
 
-| Nome | Módulo | Descrição |
+| Name | Module | Description |
 |---|---|---|
-| `collect_system_health` | `tools/system_health.py` | CPU, RAM, disco, GPU, processos |
-| `read_log_tail` | `tools/read_log_tail.py` | Últimas N linhas de um arquivo de log |
-| `scan_directory` | `tools/vault_scan.py` | Lista arquivos de um diretório |
-| `vault_extract` | `tools/vault_extract.py` | Extrai conteúdo de arquivo do vault |
+| `collect_system_health` | `tools/system_health.py` | CPU, RAM, disk, GPU, processes |
+| `read_log_tail` | `tools/read_log_tail.py` | Last N lines of a log file |
+| `scan_directory` | `tools/vault_scan.py` | Lists files in a directory |
+| `vault_extract` | `tools/vault_extract.py` | Extracts content from a vault file |
 
 ---
 
@@ -234,26 +234,26 @@ Dispatcher por nome. Ferramentas registradas:
 
 **`score(input_text, output_text, criteria, judge_model) → dict`**
 
-Pontua o output contra critérios de 0–100 cada:
+Scores output against criteria from 0–100 each:
 
 ```python
 {
-    "scores": {"critério 1": 85, "critério 2": 70},
+    "scores": {"criterion 1": 85, "criterion 2": 70},
     "total": 155,
     "pct": 77,
-    "justificativas": {"critério 1": "...", "critério 2": "..."},
+    "justifications": {"criterion 1": "...", "criterion 2": "..."},
 }
 ```
 
-Suporte a:
-- `judge_model` começando com `"gemini-"` → chama API Gemini
-- qualquer outro → chama Ollama local
+Supports:
+- `judge_model` starting with `"gemini-"` → calls Gemini API
+- any other → calls local Ollama
 
 ---
 
 ### `channels/http.py`
 
-FastAPI app criado por `create_app(runtime) → FastAPI`.
+FastAPI app created by `create_app(runtime) → FastAPI`.
 
 **Endpoints:**
 - `GET /health` → `HealthResponse(status, agent_id, agent_name, model, provider)`
@@ -263,59 +263,59 @@ FastAPI app criado por `create_app(runtime) → FastAPI`.
 
 ### `channels/mcp_server.py`
 
-Servidor FastMCP com 4 ferramentas:
+FastMCP server with 4 tools:
 
-| Ferramenta MCP | O que faz |
+| MCP Tool | What it does |
 |---|---|
-| `collect_system_health` | Executa a tool diretamente e retorna JSON |
-| `read_log_tail` | Lê as últimas N linhas do log informado |
-| `scan_directory` | Lista arquivos de um diretório (max 100) |
-| `run_agent` | Executa um agente completo por `agent_dir` + `input` |
+| `collect_system_health` | Executes the tool directly and returns JSON |
+| `read_log_tail` | Reads the last N lines of the given log |
+| `scan_directory` | Lists files in a directory (max 100) |
+| `run_agent` | Runs a full agent by `agent_dir` + `input` |
 
-Transporte: `stdio` (Claude Code) ou HTTP/SSE.
+Transport: `stdio` (Claude Code) or HTTP/SSE.
 
 ---
 
 ### `channels/telegram.py`
 
-Bot assíncrono via `python-telegram-bot>=20.7`.
+Async bot via `python-telegram-bot>=20.7`.
 
 **`make_message_handler(runtime) → async handler`**
 
-Handler assíncrono:
-1. Filtra mensagens sem texto ou com texto vazio
-2. Envia `send_chat_action("typing")`
-3. Chama `runtime.run(text)` (síncrono, thread do event loop)
-4. Se `guardrail_violations` → appenda aviso no reply
-5. Em erro → reply com mensagem genérica (sem stack trace)
+Async handler:
+1. Filters messages without text or with empty text
+2. Sends `send_chat_action("typing")`
+3. Calls `runtime.run(text)` (synchronous, event loop thread)
+4. If `guardrail_violations` → appends warning to reply
+5. On error → reply with generic message (no stack trace)
 
 **`create_application(runtime, token) → Application`**
 
-Registra o handler em `filters.TEXT & ~filters.COMMAND`.
+Registers the handler on `filters.TEXT & ~filters.COMMAND`.
 
 **`run_polling(runtime, token)`**
 
-Inicia polling blocking.
+Starts blocking polling.
 
 ---
 
-## Contratos de Tool Calling
+## Tool Calling Contracts
 
-O protocolo seguido é o formato OpenAI/Ollama nativo:
+The protocol followed is the native OpenAI/Ollama format:
 
-**Schema de ferramenta (enviado para o modelo):**
+**Tool schema (sent to the model):**
 ```json
 {
   "type": "function",
   "function": {
     "name": "collect_system_health",
-    "description": "Coleta métricas... Use quando: ... Não use quando: ...",
+    "description": "Collects metrics... Use when: ... Do not use when: ...",
     "parameters": {"type": "object", "properties": {}}
   }
 }
 ```
 
-**Resposta do modelo com tool call:**
+**Model response with tool call:**
 ```json
 {
   "message": {
@@ -327,20 +327,20 @@ O protocolo seguido é o formato OpenAI/Ollama nativo:
 }
 ```
 
-**Resultado injetado de volta:**
+**Result injected back:**
 ```
 <tool_results>
 {"tool": "collect_system_health", "result": {...}}
 </tool_results>
 
-User: <input original>
+User: <original input>
 ```
 
 ---
 
 ## Loop Guard
 
-Implementado em `_run_tool_calling_cycle`. Chave de detecção:
+Implemented in `_run_tool_calling_cycle`. Detection key:
 
 ```python
 call_key = f"{tool_name}:{json.dumps(tool_args, sort_keys=True)}"
@@ -350,17 +350,17 @@ if call_key in seen_calls:
 seen_calls.add(call_key)
 ```
 
-Quando loop detectado: executa todos os tool calls do ciclo atual, depois faz inferência final com histórico acumulado e `tools_schema=None` (sem tools disponíveis para evitar novo loop).
+When a loop is detected: executes all tool calls from the current cycle, then performs final inference with accumulated history and `tools_schema=None` (no tools available to prevent a new loop).
 
 ---
 
-## Pipeline Completo de run()
+## Complete run() Pipeline
 
 ```
 run(input_text)
   │
-  ├── [required_tool resolvido da spec]
-  │     execute_tool() → injeta em final_input
+  ├── [required_tool resolved from spec]
+  │     execute_tool() → injects into final_input
   │
   ├── mode == "respond_or_tool"
   │     _run_tool_calling_cycle()
@@ -369,15 +369,15 @@ run(input_text)
   │             if no tool_calls: return output
   │             execute tools, inject results
   │             if loop_guard: final_inference without tools
-  │           final_inference without tools (exaustão)
+  │           final_inference without tools (exhaustion)
   │
   ├── mode != "respond_or_tool"
-  │     provider.generate() direto
+  │     provider.generate() direct
   │
   ├── reflection_rounds > 0
   │     _reflect() × N
   │
-  ├── must_not não vazio
+  ├── must_not not empty
   │     _apply_guardrails()
   │       _check_guardrail_violations()
   │       if violations: correction + re-inference × max_retries
@@ -391,24 +391,24 @@ run(input_text)
 
 ---
 
-## Testes
+## Tests
 
-**291 testes em 7 arquivos:**
+**291 tests across 7 files:**
 
-| Arquivo | Cobertura |
+| File | Coverage |
 |---|---|
-| `test_runtime_engine.py` | RuntimeConfig, AgentRuntime, tool calling, loop guard, reflexão, guardrails, eval |
-| `test_http_channel.py` | FastAPI `/health` e `/run`, erros, tool_calls_log |
-| `test_mcp_server.py` | Registro de ferramentas, collect_system_health, read_log_tail, run_agent |
-| `test_telegram_channel.py` | Handler assíncrono, typing action, erros, guardrail warning, create_application |
-| `test_agent_models.py` | AgentSpec, todos os sub-specs, validação |
+| `test_runtime_engine.py` | RuntimeConfig, AgentRuntime, tool calling, loop guard, reflection, guardrails, eval |
+| `test_http_channel.py` | FastAPI `/health` and `/run`, errors, tool_calls_log |
+| `test_mcp_server.py` | Tool registration, collect_system_health, read_log_tail, run_agent |
+| `test_telegram_channel.py` | Async handler, typing action, errors, guardrail warning, create_application |
+| `test_agent_models.py` | AgentSpec, all sub-specs, validation |
 | `test_validation.py` | YAML load, validate_agent_spec |
 | `test_wizard.py` | Wizard flow |
 
-**Estratégia de mock:**
+**Mock strategy:**
 
-- Testes de runtime: `monkeypatch(requests, "post", Mock(...))` — intercepta chamadas HTTP ao Ollama
-- Formato `_mock_simple_resp(text)` → `{"response": text}` (rota `_generate_simple`)
-- Formato `_mock_chat_text_resp(text)` → `{"message": {"content": text}}` (rota `_generate_chat`)
-- Formato `_mock_chat_tool_call_resp(name)` → `{"message": {"tool_calls": [...]}}` (tool call)
-- Testes de canal Telegram: `MagicMock()` + `AsyncMock()` para `Update` e `Context`
+- Runtime tests: `monkeypatch(requests, "post", Mock(...))` — intercepts HTTP calls to Ollama
+- Format `_mock_simple_resp(text)` → `{"response": text}` (`_generate_simple` route)
+- Format `_mock_chat_text_resp(text)` → `{"message": {"content": text}}` (`_generate_chat` route)
+- Format `_mock_chat_tool_call_resp(name)` → `{"message": {"tool_calls": [...]}}` (tool call)
+- Telegram channel tests: `MagicMock()` + `AsyncMock()` for `Update` and `Context`

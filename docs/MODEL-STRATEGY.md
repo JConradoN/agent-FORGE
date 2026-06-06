@@ -1,56 +1,56 @@
-# Estratégia de Modelos — AgentForge
+# Model Strategy — AgentForge
 
-## Decisão
+## Decision
 
-O AgentForge foi **otimizado empiricamente para a família qwen3.5** (Qwen 3.5 da Alibaba), com base em 4 meses de benchmarks sistemáticos cobrindo 19 modelos locais distintos.
+AgentForge was **empirically optimized for the qwen3.5 family** (Alibaba's Qwen 3.5), based on 4 months of systematic benchmarks covering 19 distinct local models.
 
-O framework **funciona com qualquer modelo disponível via Ollama**, mas os defaults, os parâmetros de runtime e os cenários de avaliação foram calibrados para qwen3.5:9b e qwen3.5:27b.
+The framework **works with any model available via Ollama**, but the defaults, runtime parameters, and evaluation scenarios were calibrated for qwen3.5:9b and qwen3.5:27b.
 
 ---
 
-## Evidência
+## Evidence
 
-Os benchmarks que embasam essa decisão, em ordem cronológica:
+The benchmarks underpinning this decision, in chronological order:
 
-| Framework | Escopo | Resultado qwen3.5 |
+| Framework | Scope | qwen3.5 result |
 |---|---|---|
-| **ABS** (Agent Benchmark Suite) | 23 cenários, escala 0-4, 19 modelos | qwen3.5:27b campeão geral |
-| **LOP** (Local Ops) | Tool use operacional com fixtures reais | qwen3.5:27b e 9b no top-4 |
-| **FORGE** | Tarefas reais encadeadas (web, câmbio, análise) | F3: 94.4% com 27b |
-| **REAL** | Browser, coding, skill gen | P4: 91.7%, F3: 94.4% com 27b |
+| **ABS** (Agent Benchmark Suite) | 23 scenarios, 0-4 scale, 19 models | qwen3.5:27b overall champion |
+| **LOP** (Local Ops) | Operational tool use with real fixtures | qwen3.5:27b and 9b in top-4 |
+| **FORGE** | Real chained tasks (web, exchange rates, analysis) | F3: 94.4% with 27b |
+| **REAL** | Browser, coding, skill gen | P4: 91.7%, F3: 94.4% with 27b |
 
-**Tese validada:** dentro de famílias bem treinadas, escala entrega qualidade. A família qwen3.5 demonstrou consistência superior em instruction-following, coerência entre múltiplos tool calls e fidelidade a guardrails explícitos.
-
----
-
-## Política de Seleção por Complexidade
-
-```
-qwen3.5:9b  (~7 GB VRAM, ~45 tok/s no fox-server)
-└── Tarefas simples e intermediárias:
-    - Monitoramento e diagnóstico (fox-health, lab-ops)
-    - Orquestração de subtarefas com contexto curto
-    - Consultas diretas sem multi-step tool use
-    - Classificação e triagem
-
-qwen3.5:27b  (~17 GB VRAM, ~25 tok/s no fox-server)
-└── Tarefas complexas:
-    - Coding com testes reais (REAL P3)
-    - Geração de documentação técnica completa (REAL P4)
-    - Análise multi-step com APIs externas (FORGE F3)
-    - Orquestração com múltiplos agentes subordinados
-    - Qualquer tarefa com coerência exigida entre 3+ tool calls
-```
-
-**Critério prático:** se o agente precisa manter coerência de nomes, tipos ou contratos entre múltiplas chamadas `write_file` ou `run_bash` separadas, use 27b. O 9b tende a introduzir inconsistências sutis (diferença de casing em mensagens de erro, nomes de função com variação de prefixo).
+**Validated thesis:** within well-trained families, scale delivers quality. The qwen3.5 family demonstrated superior consistency in instruction-following, coherence across multiple tool calls, and fidelity to explicit guardrails.
 
 ---
 
-## Parâmetro `think: False`
+## Selection Policy by Complexity
 
-O Ollama suporta o parâmetro `think` para modelos da família Qwen3, que ativa raciocínio interno extendido. Por padrão, quando não especificado, modelos Qwen3 ativam o thinking mode e podem retornar `message.content` vazio durante o tool calling loop — o que causa erro no provider.
+```
+qwen3.5:9b  (~7 GB VRAM, ~45 tok/s on test hardware)
+└── Simple and intermediate tasks:
+    - Monitoring and diagnostics (fox-health, lab-ops)
+    - Subtask orchestration with short context
+    - Direct queries without multi-step tool use
+    - Classification and triage
 
-O AgentForge desativa explicitamente o thinking mode em chamadas de chat:
+qwen3.5:27b  (~17 GB VRAM, ~25 tok/s on test hardware)
+└── Complex tasks:
+    - Coding with real tests (REAL P3)
+    - Full technical documentation generation (REAL P4)
+    - Multi-step analysis with external APIs (FORGE F3)
+    - Orchestration with multiple subordinate agents
+    - Any task requiring coherence across 3+ tool calls
+```
+
+**Practical criterion:** if the agent needs to maintain coherence of names, types, or contracts across multiple separate `write_file` or `run_bash` calls, use 27b. The 9b tends to introduce subtle inconsistencies (casing differences in error messages, function names with prefix variation).
+
+---
+
+## `think: False` Parameter
+
+Ollama supports the `think` parameter for Qwen3 family models, which activates extended internal reasoning. By default, when not specified, Qwen3 models activate thinking mode and may return an empty `message.content` during the tool calling loop — which causes an error in the provider.
+
+AgentForge explicitly disables thinking mode in chat calls:
 
 ```python
 # src/agentforge/providers/ollama.py
@@ -58,43 +58,43 @@ payload = {
     "model": request.model,
     "messages": messages,
     "stream": False,
-    "think": False,  # evita message.content vazio durante tool calling
+    "think": False,  # prevents empty message.content during tool calling
 }
 ```
 
-Isso garante comportamento determinístico durante o loop de tool calling. Para outros modelos que não suportam `think`, o parâmetro é simplesmente ignorado pelo Ollama.
+This ensures deterministic behavior during the tool calling loop. For other models that do not support `think`, the parameter is simply ignored by Ollama.
 
 ---
 
-## Usando Outros Modelos
+## Using Other Models
 
-O framework roda com qualquer modelo suportado pelo Ollama. Para trocar o modelo de um agente:
+The framework runs with any model supported by Ollama. To switch the model for an agent:
 
 ```yaml
 # agents/<id>/agent.yaml
 model_policy:
-  default_model: llama3.3:70b   # ou qualquer modelo disponível
-  fallback_model: qwen3.5:9b    # usado se o principal falhar
+  default_model: llama3.3:70b   # or any available model
+  fallback_model: qwen3.5:9b    # used if the primary fails
 ```
 
-Ou via variável de ambiente no script de benchmark:
+Or via environment variable in the benchmark script:
 
 ```bash
 python3 scripts/run_benchmark_eval.py --scenarios P3 --model llama3.3:70b
 ```
 
-**Nota sobre comparabilidade:** os auto_checks e os critérios de avaliação dos cenários FORGE e REAL foram desenhados para serem model-agnostic (verificam arquivos, sintaxe Python, resultados de pytest — não dependem de vocabulário específico de nenhum modelo). Os resultados são comparáveis entre modelos.
+**Note on comparability:** the auto_checks and evaluation criteria for FORGE and REAL scenarios were designed to be model-agnostic (they verify files, Python syntax, pytest results — they do not depend on any model's specific vocabulary). Results are comparable across models.
 
 ---
 
-## Referência de Resultados (qwen3.5 — junho/2026)
+## Results Reference (qwen3.5 — June/2026)
 
-| Cenário | Dimensão | 9b | 27b |
+| Scenario | Dimension | 9b | 27b |
 |---|---|---|---|
-| FORGE F3 | Análise de mercado (câmbio + relatório + Claudio) | 94.4% | 94.4% |
-| REAL P3 | Python tool com testes reais | 66.7% | 66.7%* |
-| REAL P4 | Geração de skill Claude | 91.7% | 91.7% |
+| FORGE F3 | Market analysis (exchange rates + report + Claudio) | 94.4% | 94.4% |
+| REAL P3 | Python tool with real tests | 66.7% | 66.7%* |
+| REAL P4 | Claude skill generation | 91.7% | 91.7% |
 
-*O 27b passa 7/8 testes (vs 0/8 do 9b), mas ambos perdem os 4 pontos do `python_tests_pass` porque 1 teste falha por incoerência de casing em mensagem de ValueError gerada entre dois `write_file` separados. O 27b é superior em qualidade interna mesmo com score idêntico.
+*The 27b passes 7/8 tests (vs 0/8 for 9b), but both lose the 4 points from `python_tests_pass` because 1 test fails due to casing inconsistency in a ValueError message generated between two separate `write_file` calls. The 27b is superior in internal quality even with an identical score.
 
-**Recomendação:** use 27b como padrão para agentes de produção sempre que a VRAM permitir (≥17 GB disponíveis).
+**Recommendation:** use 27b as the default for production agents whenever VRAM allows (≥17 GB available).
