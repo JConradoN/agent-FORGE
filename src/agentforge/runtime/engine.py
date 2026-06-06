@@ -134,8 +134,98 @@ class AgentRuntime:
         path = self.root_dir / "system_prompt.md"
         return path.read_text(encoding="utf-8") if path.exists() else None
 
-    def _execute_tool(self, tool_name: str) -> dict | None:
-        return execute_tool(tool_name)
+    def _execute_tool(self, tool_name: str, **kwargs) -> dict | None:
+        return execute_tool(tool_name, **kwargs)
+
+    def _build_tools_schema(self) -> list[dict]:
+        """Converte ToolSpec list para formato OpenAI/Ollama."""
+        schema = []
+        for tool in self.tools:
+            description = tool.description or ""
+            if tool.when_to_use:
+                description += f" Use quando: {tool.when_to_use}."
+            if tool.when_not_to_use:
+                description += f" Não use quando: {tool.when_not_to_use}."
+
+            # Deriva parâmetros do input_schema se disponível, senão usa schema vazio.
+            if tool.input_schema:
+                try:
+                    params = json.loads(tool.input_schema)
+                except (json.JSONDecodeError, TypeError):
+                    params = {"type": "object", "properties": {}}
+            else:
+                params = {"type": "object", "properties": {}}
+
+            schema.append({
+                "type": "function",
+                "function": {
+                    "name": tool.name,
+                    "description": description,
+                    "parameters": params,
+                },
+            })
+        return schema
+
+    def _run_tool_calling_cycle(
+        self,
+        input_text: str,
+        system_prompt: str | None,
+        history: list[dict],
+    ) -> tuple[str, list[dict]]:
+        """
+        Ciclo de tool calling: primeira inferência → executa tools → segunda inferência.
+        Retorna (output_text, tool_results_log).
+        Limita a 1 rodada de tool calling para evitar loops.
+        """
+        provider = self._get_provider()
+        tools_schema = self._build_tools_schema()
+
+        request = ProviderRequest(
+            agent_id=self.runtime_config.agent_id,
+            input_text=input_text,
+            system_prompt=system_prompt,
+            model=self.runtime_config.model_default,
+            history=history,
+            tools_schema=tools_schema if tools_schema else None,
+        )
+        response = provider.generate(request)
+
+        tool_results_log: list[dict] = []
+
+        if not response.tool_calls:
+            return response.output_text, tool_results_log
+
+        # Modelo pediu tools — executar e fazer segunda inferência.
+        new_history = list(history)
+        new_history.append({"role": "user", "content": input_text})
+        if response.output_text:
+            new_history.append({"role": "assistant", "content": response.output_text})
+
+        for tc in response.tool_calls:
+            tool_name = tc.get("name", "")
+            tool_args = tc.get("arguments") or {}
+            self.logger.info("tool_call: %s args=%s", tool_name, tool_args)
+
+            result = self._execute_tool(tool_name, **tool_args)
+            tool_results_log.append({"tool": tool_name, "args": tool_args, "result": result})
+
+            result_text = json.dumps(result, ensure_ascii=False, default=str) if result else "null"
+            new_history.append({
+                "role": "tool",
+                "content": result_text,
+                "name": tool_name,
+            })
+
+        # Segunda inferência com resultados das tools.
+        follow_up = ProviderRequest(
+            agent_id=self.runtime_config.agent_id,
+            input_text="",
+            system_prompt=system_prompt,
+            model=self.runtime_config.model_default,
+            history=new_history,
+        )
+        final_response = provider.generate(follow_up)
+        return final_response.output_text, tool_results_log
 
     def _build_input_with_tool_results(self, input_text: str, tool_data: dict) -> str:
         tool_json = json.dumps(tool_data, indent=2, default=str)
@@ -279,30 +369,43 @@ class AgentRuntime:
                         final_input = f"{final_input}\n\n<file_content>\n{file_json}\n</file_content>"
 
         history = list(self._history) if self.runtime_config.conversation_multi_turn else []
-
-        request = ProviderRequest(
-            agent_id=self.runtime_config.agent_id,
-            input_text=final_input,
-            system_prompt=self._read_system_prompt(),
-            model=self.runtime_config.model_default,
-            history=history,
-        )
+        system_prompt = self._read_system_prompt()
 
         self.logger.info(
-            "run: agent=%s provider=%s model=%s turn=%d input=%r",
+            "run: agent=%s provider=%s model=%s mode=%s turn=%d input=%r",
             self.runtime_config.agent_id,
             self.runtime_config.provider,
             self.runtime_config.model_default,
+            self.runtime_config.workflow_mode,
             len(history) // 2 + 1,
             input_text,
         )
 
-        response = provider.generate(request)
+        tool_results_log: list[dict] = []
+
+        if self.runtime_config.workflow_mode == "respond_or_tool":
+            output_text, tool_results_log = self._run_tool_calling_cycle(
+                final_input, system_prompt, history
+            )
+            raw_response = None
+        else:
+            request = ProviderRequest(
+                agent_id=self.runtime_config.agent_id,
+                input_text=final_input,
+                system_prompt=system_prompt,
+                model=self.runtime_config.model_default,
+                history=history,
+            )
+            response = provider.generate(request)
+            output_text = response.output_text
+            raw_response = response.raw_response
+            if not self.runtime_config.conversation_multi_turn and raw_response and "context" in raw_response:
+                raw_response = {k: v for k, v in raw_response.items() if k != "context"}
 
         # Update in-memory history for multi-turn sessions.
         if self.runtime_config.conversation_multi_turn:
             self._history.append({"role": "user", "content": input_text})
-            self._history.append({"role": "assistant", "content": response.output_text})
+            self._history.append({"role": "assistant", "content": output_text})
             self._history = apply_window(
                 self._history,
                 self.runtime_config.memory_max_turns,
@@ -311,16 +414,12 @@ class AgentRuntime:
             if self.runtime_config.memory_enabled and self.runtime_config.memory_type != "none":
                 save_history(self.root_dir, self._history)
 
-        raw_response = response.raw_response
-        if not self.runtime_config.conversation_multi_turn and raw_response and "context" in raw_response:
-            raw_response = {k: v for k, v in raw_response.items() if k != "context"}
-
         latency_ms = (time.perf_counter() - _t0) * 1000
         result = {
             "agent_id": self.runtime_config.agent_id,
-            "provider": response.provider,
+            "provider": self.runtime_config.provider,
             "input": input_text,
-            "output": response.output_text,
+            "output": output_text,
             "metadata": {
                 "provider": self.runtime_config.provider,
                 "workflow_mode": self.runtime_config.workflow_mode,
@@ -330,12 +429,13 @@ class AgentRuntime:
                 "latency_ms": round(latency_ms),
                 "tool_executed": required_tool.name if required_tool else None,
                 "tool_data": tool_data,
+                "tool_calls_log": tool_results_log if tool_results_log else None,
                 "conversation_turn": len(self._history) // 2,
                 **(metadata or {}),
             },
             "provider_response": {
-                "provider": response.provider,
-                "model": response.model,
+                "provider": self.runtime_config.provider,
+                "model": self.runtime_config.model_default,
                 "raw_response": raw_response,
             },
         }
