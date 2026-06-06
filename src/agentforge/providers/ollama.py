@@ -86,11 +86,13 @@ class OllamaProvider(BaseProvider):
         messages.extend(request.history)
         messages.append({"role": "user", "content": request.input_text})
 
-        payload = {
+        payload: dict = {
             "model": request.model,
             "messages": messages,
             "stream": False,
         }
+        if request.tools_schema:
+            payload["tools"] = request.tools_schema
 
         try:
             response = requests.post(
@@ -119,18 +121,33 @@ class OllamaProvider(BaseProvider):
             raise OllamaResponseError("Resposta do Ollama não é JSON válido.") from exc
 
         message = data.get("message") or {}
-        output_text = message.get("content")
-        if output_text is None:
+        output_text = message.get("content") or ""
+        tool_calls_raw = message.get("tool_calls")
+
+        # When model decides to call tools, content may be empty — that's valid.
+        if not output_text and not tool_calls_raw:
             raise OllamaResponseError(
-                f"Resposta do Ollama (chat) não contém message.content. "
+                f"Resposta do Ollama (chat) não contém message.content nem tool_calls. "
                 f"Campos recebidos: {list(data.keys())}"
             )
+
+        tool_calls: list[dict] | None = None
+        if tool_calls_raw:
+            tool_calls = [
+                {
+                    "name": tc.get("function", {}).get("name"),
+                    "arguments": tc.get("function", {}).get("arguments", {}),
+                }
+                for tc in tool_calls_raw
+                if tc.get("function", {}).get("name")
+            ] or None
 
         return ProviderResponse(
             provider="ollama",
             model=request.model,
             output_text=output_text,
             raw_response=data,
+            tool_calls=tool_calls,
             metadata={
                 "endpoint": f"{_BASE_URL}/api/chat",
                 "timeout_seconds": _TIMEOUT,

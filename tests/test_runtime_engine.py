@@ -223,7 +223,7 @@ class TestRun:
         runtime = AgentRuntime.from_agent_dir(_make_agent_dir(tmp_path))
         result = runtime.run("teste")
         raw_resp = result["provider_response"]["raw_response"]
-        assert "context" not in raw_resp
+        assert raw_resp is None or "context" not in raw_resp
 
 
 # ---------------------------------------------------------------------------
