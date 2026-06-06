@@ -259,8 +259,8 @@ def test_cli_generate_command(tmp_path: Path) -> None:
     result = runner.invoke(app, ["generate", "--path", str(agent_yaml)])
 
     assert result.exit_code == 0, result.output
-    assert "system_prompt.md" in result.output
-    assert "runtime.yaml" in result.output
+    assert (tmp_path / "system_prompt.md").exists()
+    assert (tmp_path / "runtime.yaml").exists()
 
 
 def test_cli_generate_missing_file(tmp_path: Path) -> None:

@@ -171,7 +171,7 @@ Um agente é considerado PTV quando:
    - Provider:
      - `ollama`
    - Model:
-     - `gemma4:e4b`
+     - `qwen3.5:9b`
    - Objetivo:
      - responder perguntas gerais com foco técnico (laboratório)
    - Artefatos:
