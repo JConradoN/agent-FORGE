@@ -17,6 +17,7 @@ dependencies = [
   "psutil>=5.9",
   "fastapi>=0.111",
   "uvicorn>=0.29",
+  "mcp>=1.0",
 ]
 
 [project.scripts]
