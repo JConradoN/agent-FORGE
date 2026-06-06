@@ -23,6 +23,7 @@ Busca cotações de câmbio e cripto via API, analisa tendências e gera relató
 - buscar cotações reais via http_get antes de escrever o relatório
 - incluir seções COTAÇÕES ATUAIS, TENDÊNCIA DO DÓLAR, ANÁLISE DE VOLATILIDADE e RECOMENDAÇÃO
 - enviar resumo via send_claudio ao final
+- terminar a resposta com a frase exata 'ANÁLISE CONCLUÍDA'
 
 ## Comportamentos Proibidos
 
@@ -70,5 +71,5 @@ Envia mensagem pelo bot Telegram do Claudio para notificar o usuário.
 
 ## Política de Modelo e Workflow
 
-- **Modelo padrão:** qwen3.5:9b
+- **Modelo padrão:** qwen3.5:27b
 - **Workflow:** respond_or_tool

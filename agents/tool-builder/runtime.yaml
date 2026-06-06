@@ -1,12 +1,12 @@
 runtime_version: '0.1'
-agent_id: real-p3
+agent_id: tool-builder
 provider: ollama
 model:
   default: qwen3.5:27b
   fallback: null
 workflow:
   mode: respond_or_tool
-  max_tool_cycles: 15
+  max_tool_cycles: 20
   reflection_rounds: 0
 channel:
   type: cli

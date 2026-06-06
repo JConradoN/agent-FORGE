@@ -138,8 +138,8 @@ class AgentRuntime:
         path = self.root_dir / "system_prompt.md"
         return path.read_text(encoding="utf-8") if path.exists() else None
 
-    def _execute_tool(self, tool_name: str, **kwargs) -> dict | None:
-        return execute_tool(tool_name, **kwargs)
+    def _execute_tool(self, _tool_name: str, **kwargs) -> dict | None:
+        return execute_tool(_tool_name, **kwargs)
 
     def _build_tools_schema(self) -> list[dict]:
         """Converte ToolSpec list para formato OpenAI/Ollama.
@@ -279,6 +279,21 @@ class AgentRuntime:
 
         # Ciclos esgotados ou loop detectado — última inferência sem tools.
         self.logger.warning("tool_cycle: max_cycles=%d atingido ou loop detectado — inferência final", max_cycles)
+
+        # Injeta lembrete de conclusão: re-ancora o modelo no formato de saída esperado.
+        must_rules = self.agent_spec.guardrails.must
+        completion_hint = "Produza sua resposta final com base nas ferramentas executadas acima."
+        if must_rules:
+            phrases = []
+            import re as _re
+            for rule in must_rules:
+                quoted = _re.findall(r"'([^']+)'", rule)
+                phrases.extend(quoted)
+            if phrases:
+                completion_hint += " Sua resposta DEVE incluir: " + ", ".join(f"'{p}'" for p in phrases[:3])
+
+        messages.append({"role": "user", "content": completion_hint})
+
         final_req = ProviderRequest(
             agent_id=self.runtime_config.agent_id,
             input_text="",
@@ -288,6 +303,60 @@ class AgentRuntime:
         )
         final_response = provider.generate(final_req)
         return final_response.output_text, tool_results_log
+
+    @staticmethod
+    def _strip_xml_tool_tags(text: str) -> str:
+        """Remove blocos <tool_use>...</tool_use> que vazam no output do qwen3.5:27b."""
+        import re
+        cleaned = re.sub(r"<tool_use>.*?</tool_use>", "", text, flags=re.DOTALL)
+        return re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+
+    def _check_must_compliance(self, output_text: str) -> list[str]:
+        """
+        Verifica quais regras 'must' NÃO foram cumpridas no output.
+        Usa checagem determinística para frases entre aspas, LLM judge para regras abertas.
+        """
+        must_rules = self.agent_spec.guardrails.must
+        if not must_rules:
+            return []
+
+        import re
+        missing = []
+        open_rules = []
+        for rule in must_rules:
+            # Regras com frases entre aspas simples → checagem determinística
+            quoted = re.findall(r"'([^']+)'", rule)
+            if quoted:
+                if not any(q.lower() in output_text.lower() for q in quoted):
+                    missing.append(rule)
+            else:
+                open_rules.append(rule)
+
+        # Regras abertas → LLM judge
+        if open_rules:
+            rules_text = "\n".join(f"- {r}" for r in open_rules)
+            prompt = (
+                "Analise o texto abaixo e identifique QUAIS das seguintes regras OBRIGATÓRIAS "
+                "NÃO foram cumpridas.\n"
+                "Responda APENAS com as regras não cumpridas, uma por linha.\n"
+                "Se todas foram cumpridas, responda exatamente: NENHUMA\n\n"
+                f"Regras obrigatórias:\n{rules_text}\n\n"
+                f"Texto a analisar:\n{output_text[:2000]}"
+            )
+            provider = self._get_provider()
+            req = ProviderRequest(
+                agent_id=self.runtime_config.agent_id,
+                input_text=prompt,
+                system_prompt=None,
+                model=self.runtime_config.model_default,
+                history=[],
+            )
+            resp = provider.generate(req)
+            result = resp.output_text.strip()
+            if result and result.upper() != "NENHUMA":
+                missing += [line.lstrip("- ").strip() for line in result.splitlines() if line.strip()]
+
+        return missing
 
     def _check_guardrail_violations(self, output_text: str) -> list[str]:
         """Usa o modelo para detectar quais regras must_not foram violadas no output."""
@@ -578,6 +647,9 @@ class AgentRuntime:
         if reflection_rounds > 0:
             output_text = self._reflect(input_text, output_text, system_prompt, reflection_rounds)
 
+        # Remove XML tool_use tags que vazam no output do qwen3.5:27b.
+        output_text = self._strip_xml_tool_tags(output_text)
+
         # Guardrails ativos — verifica must_not e retenta se necessário.
         guardrail_violations: list[str] = []
         if self.agent_spec.guardrails.must_not:
@@ -588,6 +660,27 @@ class AgentRuntime:
                 self.logger.error(
                     "guardrail: violações persistentes após retries: %s", guardrail_violations
                 )
+
+        # Must compliance — verifica regras obrigatórias e corrige se necessário.
+        if self.agent_spec.guardrails.must:
+            must_missing = self._check_must_compliance(output_text)
+            if must_missing:
+                self.logger.warning("must_compliance: regras não cumpridas: %s", must_missing)
+                provider = self._get_provider()
+                correction = (
+                    "Sua resposta está incompleta. As seguintes regras obrigatórias não foram cumpridas:\n"
+                    + "\n".join(f"- {r}" for r in must_missing)
+                    + "\n\nComplemente sua resposta incluindo os itens em falta."
+                )
+                req = ProviderRequest(
+                    agent_id=self.runtime_config.agent_id,
+                    input_text=correction,
+                    system_prompt=system_prompt,
+                    model=self.runtime_config.model_default,
+                    history=history + [{"role": "assistant", "content": output_text}],
+                )
+                resp = provider.generate(req)
+                output_text = self._strip_xml_tool_tags(resp.output_text)
 
         # Update in-memory history for multi-turn sessions.
         if self.runtime_config.conversation_multi_turn:

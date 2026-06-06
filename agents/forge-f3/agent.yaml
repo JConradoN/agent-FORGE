@@ -40,6 +40,7 @@ guardrails:
   - buscar cotações reais via http_get antes de escrever o relatório
   - incluir seções COTAÇÕES ATUAIS, TENDÊNCIA DO DÓLAR, ANÁLISE DE VOLATILIDADE e RECOMENDAÇÃO
   - enviar resumo via send_claudio ao final
+  - terminar a resposta com a frase exata 'ANÁLISE CONCLUÍDA'
   must_not:
   - inventar cotações sem consultar a API
   - usar valores desatualizados ou aproximados
@@ -49,7 +50,7 @@ eval:
 deployment:
   provider: ollama
 model_policy:
-  default_model: qwen3.5:9b
+  default_model: qwen3.5:27b
   fallback_model: null
 workflow:
   mode: respond_or_tool

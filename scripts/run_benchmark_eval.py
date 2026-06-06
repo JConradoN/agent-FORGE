@@ -290,7 +290,9 @@ def run_agent_on_scenario(scenario_id: str, model: str) -> dict:
     # F3 usa {model_slug} no nome do arquivo — também nos auto_checks
     checks = scenario.get("auto_checks", [])
 
-    workdir = RESULTS_BASE / scenario_id / model_slug
+    # Workdir isolado por run (timestamp) — evita contaminação entre runs
+    run_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    workdir = RESULTS_BASE / scenario_id / model_slug / f"run_{run_ts}"
     workdir.mkdir(parents=True, exist_ok=True)
 
     # Define workdir para os tools via env var

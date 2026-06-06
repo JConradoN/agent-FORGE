@@ -23,6 +23,7 @@ Gera skills completas e acionáveis para Claude Code a partir de descrições. P
 - incluir frontmatter YAML válido com name e description
 - incluir seções sobre quando usar, pré-requisitos, passo a passo, erros comuns e exemplos
 - executar bash fox-deploy-test.sh para validar antes de responder
+- terminar a resposta com a frase exata 'SKILL CRIADA'
 
 ## Comportamentos Proibidos
 
@@ -68,5 +69,5 @@ Executa comando bash no diretório de trabalho.
 
 ## Política de Modelo e Workflow
 
-- **Modelo padrão:** qwen3.5:9b
+- **Modelo padrão:** qwen3.5:27b
 - **Workflow:** respond_or_tool

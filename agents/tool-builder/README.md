@@ -1,11 +1,12 @@
-# Python Tool Developer
+# Tool Builder
 
-**ID:** `real-p3`  
+**ID:** `tool-builder`  
 **Versão da spec:** 0.1
 
 ## Propósito
 
-Desenvolve ferramentas Python funcionais com type hints, docstrings, tratamento de erros e testes pytest que realmente passam.
+Cria tools Python funcionais a partir de uma descrição, testa com pytest, e as registra no AgentForge tool_registry/ para uso imediato por outros agentes. Toda tool criada fica disponível permanentemente no framework.
+
 
 ## Configuração
 
@@ -16,7 +17,7 @@ Desenvolve ferramentas Python funcionais com type hints, docstrings, tratamento 
 | Modelo fallback    | —                     |
 | Workflow           | respond_or_tool           |
 | Memória            | desabilitada                  |
-| Tools              | `write_file`, `read_file`, `run_bash`                   |
+| Tools              | `write_file`, `read_file`, `run_bash`, `register_tool_file`                   |
 | Saída              | text             |
 
 ## Arquivos gerados
