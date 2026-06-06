@@ -1,0 +1,26 @@
+{
+  "label": "sum_only__strong__raw",
+  "scenario": "summary_only",
+  "mode": "instruction_strong",
+  "apply_trunc": false,
+  "history_turns_raw": 1,
+  "history_turns_sent": 1,
+  "faithfulness_score": 0.5,
+  "fact_hits": 2,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": true,
+    "cnpj": false,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_markup": false,
+  "hallucination_detected": false,
+  "waiting_pattern": false,
+  "bug_reproduced": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1222",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento descreve um contrato de prestação de serviços de marketing digital entre duas partes.\n\n**1. Partes Envolvidas:**\n\n*   **Prestadora de Serviço:** (Implícita, mas representada pelos contatos finais) Cereja Marketing (e-mails: `bruna@cerejamarketing.com.br`, site: `www.cerejamarketing.com.br`).\n*   **Contratante:** Não nomeado explicitamente por nome completo, mas o serviço é contratado para o titular associado aos dados apresentados.\n\n**2. Objeto do Contrato e Escopo dos Serviços:**\n\nO contrato visa a prestação de serviços de marketing digital. O escopo detalhado inclui:\n\n*   **Pr"
+}

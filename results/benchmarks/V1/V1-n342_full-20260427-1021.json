@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 342,
+    "mode": "full",
+    "label": "n342_full"
+  },
+  "tokens_estimated": 21774,
+  "mentioned": 9,
+  "correct": 0,
+  "invented": 9,
+  "faithfulness_score": 0.0,
+  "timestamp": "20260427-1021",
+  "model": "gemma4:e4b",
+  "response_preview": "Os arquivos encontrados nos diretórios são:\n\n**Na pasta raiz (ou no nível atual):**\n*   `EMILIA_DOCUMENTOS.zip`\n\n**Dentro de `EMILIA_DOCUMENTOS.zip`:**\n*   `EMILIA_DOCUMENTOS/`\n    *   `EMILIA_DOCUMENTOS/documentos_financeiros/`\n        *   `EMILIA_DOCUMENTOS/documentos_financeiros/extrato_banco_01."
+}

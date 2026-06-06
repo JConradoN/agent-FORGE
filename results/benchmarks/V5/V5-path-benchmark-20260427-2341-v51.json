@@ -1,0 +1,983 @@
+[
+  {
+    "id": "conrado_exact_full_path",
+    "utterance": "Use as ferramentas para analisar o arquivo CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": "Nogueira.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  },
+  {
+    "id": "conrado_basename_ext",
+    "utterance": "Analise o arquivo Contrato Conrado Nogueira.pdf",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": "Nogueira.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/PROCURACAO CONRADO NOGUEIRA.docx",
+        "score": 1.0,
+        "reason": "overlap=0.67, tok_sub=0.67"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/extrato conrado janeiro2021.pdf",
+        "score": 0.8567,
+        "reason": "overlap=0.33, tok_sub=0.33"
+      }
+    ],
+    "extraction_source": "quoted_or_extension"
+  },
+  {
+    "id": "conrado_quoted_double",
+    "utterance": "Analise o contrato \"Contrato Conrado Nogueira.pdf\"",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": "Nogueira.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/PROCURACAO CONRADO NOGUEIRA.docx",
+        "score": 1.0,
+        "reason": "overlap=0.67, tok_sub=0.67"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/extrato conrado janeiro2021.pdf",
+        "score": 0.8567,
+        "reason": "overlap=0.33, tok_sub=0.33"
+      }
+    ],
+    "extraction_source": "quoted_or_extension"
+  },
+  {
+    "id": "conrado_short_phrase",
+    "utterance": "Analise o contrato do Conrado",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Contrato de Constituicao - Conrado.doc",
+        "score": 0.9926,
+        "reason": "overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Contrato de honorarios - Conrado _1_.docx",
+        "score": 0.9614,
+        "reason": "overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "conrado_short_phrase_single_quotes",
+    "utterance": "Analise o contrato do Conrado",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Contrato de Constituicao - Conrado.doc",
+        "score": 0.9926,
+        "reason": "overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Contrato de honorarios - Conrado _1_.docx",
+        "score": 0.9614,
+        "reason": "overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "conrado_partial_no_ext",
+    "utterance": "Me fale sobre o arquivo contrato nogueira",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Minuta do Contrato de Locacao Joao Da Costa Nogueira.pdf",
+        "score": 0.8658,
+        "reason": "overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "conrado_uppercase",
+    "utterance": "ANALISE O CONTRATO CONRADO NOGUEIRA",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "emilia_rg_phrase",
+    "utterance": "Preciso ver o RG da Emilia",
+    "expected_path": "EMILIA/GERAL/RG M.EmiliaC.Cavalcante.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/GERAL/RG M.EmiliaC.Cavalcante.pdf",
+        "score": 0.745,
+        "reason": "overlap=0.50, tok_sub=1.00"
+      },
+      {
+        "path": "EMILIA/GERAL/RGMariaEmilia003.pdf",
+        "score": 0.6717,
+        "reason": "tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "emilia_rg_quoted",
+    "utterance": "Mostre o documento \"RG Emilia.pdf\"",
+    "expected_path": "EMILIA/GERAL/RG M.EmiliaC.Cavalcante.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/GERAL/CNH Emilia.pdf",
+        "score": 0.9998,
+        "reason": "overlap=0.50, tok_sub=0.50"
+      },
+      {
+        "path": "EMILIA/GERAL/_CNH Emilia.pdf",
+        "score": 0.9707,
+        "reason": "overlap=0.50, tok_sub=0.50"
+      },
+      {
+        "path": "EMILIA/GERAL/RG M.EmiliaC.Cavalcante.pdf",
+        "score": 0.895,
+        "reason": "overlap=0.50, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "quoted_or_extension"
+  },
+  {
+    "id": "emilia_composite_tokens",
+    "utterance": "emilia rg",
+    "expected_path": "EMILIA/GERAL/RG M.EmiliaC.Cavalcante.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/GERAL/RG M.EmiliaC.Cavalcante.pdf",
+        "score": 0.5783,
+        "reason": "overlap=0.50, tok_sub=1.00"
+      },
+      {
+        "path": "EMILIA/GERAL/RGMariaEmilia003.pdf",
+        "score": 0.5338,
+        "reason": "tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "neg_nonexistent_file",
+    "utterance": "Analise o arquivo RelatorioFinanceiro2024.pdf",
+    "expected_path": null,
+    "current_resolved": "RelatorioFinanceiro2024.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/FINANCEIRO/relatorio financeiro escola joao.pdf",
+        "score": 0.7302,
+        "reason": "seq_only"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/extrato conrado janeiro2021.pdf",
+        "score": 0.6552,
+        "reason": "seq_only"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/extrato conrado fevereiro2021.pdf",
+        "score": 0.6,
+        "reason": "seq_only"
+      }
+    ],
+    "extraction_source": "quoted_or_extension"
+  },
+  {
+    "id": "neg_conrado_2010",
+    "utterance": "contrato joao nogueira 2010",
+    "expected_path": null,
+    "current_resolved": null,
+    "current_correct": true,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "neg_emilia_fake",
+    "utterance": "emilia cpf contrato 2010",
+    "expected_path": null,
+    "current_resolved": null,
+    "current_correct": true,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "neg_random_string",
+    "utterance": "arquivo xyzabc123.pdf",
+    "expected_path": null,
+    "current_resolved": "xyzabc123.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/GERAL/CNH_2.pdf",
+        "score": 0.5455,
+        "reason": "seq_only"
+      },
+      {
+        "path": "CONRADO/GERAL/CNH.pdf",
+        "score": 0.5,
+        "reason": "seq_only"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/joao con.pdf",
+        "score": 0.48,
+        "reason": "seq_only"
+      }
+    ],
+    "extraction_source": "quoted_or_extension"
+  },
+  {
+    "id": "neg_fake_person",
+    "utterance": "contrato maria silva santos",
+    "expected_path": null,
+    "current_resolved": null,
+    "current_correct": true,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "neg_fake_doc_type",
+    "utterance": "titulo de eleitor da emilia",
+    "expected_path": null,
+    "current_resolved": null,
+    "current_correct": true,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "neg_old_year",
+    "utterance": "contrato conrado 2019",
+    "expected_path": null,
+    "current_resolved": null,
+    "current_correct": true,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "neg_unrelated_query",
+    "utterance": "me mostre fotos de gatos",
+    "expected_path": null,
+    "current_resolved": null,
+    "current_correct": true,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "ambig_relatorio_nogueira",
+    "utterance": "relatório nogueira",
+    "expected_path": null,
+    "current_resolved": null,
+    "current_correct": true,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/JURIDICO/Relatorio Ed Joao da Costa Nogueira.pdf",
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/JURIDICO/Relatorio Ed Joao da Costa Nogueira.pdf",
+        "score": 1.0,
+        "reason": "overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Relatorio Ed Joao da Costa Nogueira-compactado.pdf",
+        "score": 0.7744,
+        "reason": "overlap=0.50, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "ambig_contrato_general",
+    "utterance": "algum contrato",
+    "expected_path": null,
+    "current_resolved": null,
+    "current_correct": true,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "ambig_doc_pessoal",
+    "utterance": "documento pessoal da emilia",
+    "expected_path": null,
+    "current_resolved": null,
+    "current_correct": true,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "ambig_nogueira_only",
+    "utterance": "nogueira",
+    "expected_path": null,
+    "current_resolved": null,
+    "current_correct": true,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/ACADEMICO/Palestra Dr. Nogueira.ppt",
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/Palestra Dr. Nogueira.ppt",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 0.9824,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/PROCURACAO CONRADO NOGUEIRA.docx",
+        "score": 0.95,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "natural_long_conrado",
+    "utterance": "Use as ferramentas para analisar o contrato do Conrado Nogueira que está na pasta geral e me traga um resumo dos principais pontos.",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "natural_long_conrado_single_quotes",
+    "utterance": "Use as ferramentas para analisar o contrato do Conrado Nogueira que está na pasta geral e me traga um resumo dos principais pontos.",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "natural_long_emilia_rg",
+    "utterance": "Preciso que você analise o RG da Emilia e verifique se os dados estão atualizados.",
+    "expected_path": "EMILIA/GERAL/RG M.EmiliaC.Cavalcante.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "natural_long_emilia_rg_single_quotes",
+    "utterance": "Preciso que você analise o RG da Emilia e verifique se os dados estão atualizados.",
+    "expected_path": "EMILIA/GERAL/RG M.EmiliaC.Cavalcante.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "natural_prompt_conrado",
+    "utterance": "Poderia extrair e me explicar o conteúdo do contrato do Conrado?",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "natural_prompt_conrado_single_quotes",
+    "utterance": "Poderia extrair e me explicar o conteúdo do contrato do Conrado?",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "none",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "natural_context_conrado",
+    "utterance": "O Conrado assinou um contrato recentemente. Pode analisar o arquivo Contrato Conrado Nogueira.pdf?",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": "Nogueira.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/PROCURACAO CONRADO NOGUEIRA.docx",
+        "score": 1.0,
+        "reason": "overlap=0.67, tok_sub=0.67"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/extrato conrado janeiro2021.pdf",
+        "score": 0.8567,
+        "reason": "overlap=0.33, tok_sub=0.33"
+      }
+    ],
+    "extraction_source": "quoted_or_extension"
+  },
+  {
+    "id": "natural_context_conrado_single_quotes",
+    "utterance": "O Conrado assinou um contrato recentemente. Pode analisar o arquivo Contrato Conrado Nogueira.pdf?",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": "Nogueira.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/PROCURACAO CONRADO NOGUEIRA.docx",
+        "score": 1.0,
+        "reason": "overlap=0.67, tok_sub=0.67"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/extrato conrado janeiro2021.pdf",
+        "score": 0.8567,
+        "reason": "overlap=0.33, tok_sub=0.33"
+      }
+    ],
+    "extraction_source": "quoted_or_extension"
+  },
+  {
+    "id": "emilia_basename_noext_30",
+    "utterance": "Analise o arquivo 1-Projeto qualificacao Emilia 19.9.17.docx",
+    "expected_path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 19.9.17.docx",
+    "current_resolved": "19.9.17.docx",
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 19.9.17.docx",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 19.9.17.docx",
+        "score": 1.0,
+        "reason": "overlap=0.50, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "emilia_fullpath_31",
+    "utterance": "Analise o arquivo EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 19.9.17.docx",
+    "expected_path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 19.9.17.docx",
+    "current_resolved": "19.9.17.docx",
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 19.9.17.docx",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 19.9.17.docx",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  },
+  {
+    "id": "emilia_basename_noext_32",
+    "utterance": "Analise o arquivo 1-Projeto qualificacao Emilia 29.9.17.docx",
+    "expected_path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 29.9.17.docx",
+    "current_resolved": "29.9.17.docx",
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 29.9.17.docx",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 29.9.17.docx",
+        "score": 1.0,
+        "reason": "overlap=0.50, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "emilia_fullpath_33",
+    "utterance": "Analise o arquivo EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 29.9.17.docx",
+    "expected_path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 29.9.17.docx",
+    "current_resolved": "29.9.17.docx",
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 29.9.17.docx",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/ACADEMICO/1-Projeto qualificacao Emilia 29.9.17.docx",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  },
+  {
+    "id": "emilia_basename_noext_34",
+    "utterance": "Analise o arquivo 1PRE-TEXTUAIS Tese Emilia versao para o orientador - Copia.docx",
+    "expected_path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - Copia.docx",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - OK.pdf",
+        "score": 1.0,
+        "reason": "overlap=0.86, tok_sub=0.86"
+      },
+      {
+        "path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - Copia.docx",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "EMILIA/ACADEMICO/2TEXTUAIS Tese Emilia versao para o orientador.docx",
+        "score": 1.0,
+        "reason": "overlap=0.71, tok_sub=0.71"
+      }
+    ],
+    "extraction_source": "quoted_or_extension"
+  },
+  {
+    "id": "emilia_fullpath_35",
+    "utterance": "Analise o arquivo EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - Copia.docx",
+    "expected_path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - Copia.docx",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - Copia.docx",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - Copia.docx",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  },
+  {
+    "id": "emilia_basename_noext_36",
+    "utterance": "Analise o arquivo 1PRE-TEXTUAIS Tese Emilia versao para o orientador - OK",
+    "expected_path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - OK.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - OK.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - OK.pdf",
+        "score": 1.0,
+        "reason": "overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "emilia_fullpath_37",
+    "utterance": "Analise o arquivo EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - OK.pdf",
+    "expected_path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - OK.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - OK.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - OK.pdf",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  },
+  {
+    "id": "emilia_basename_noext_38",
+    "utterance": "Analise o arquivo 2TEXTUAIS Tese Emilia versao para o orientador.docx",
+    "expected_path": "EMILIA/ACADEMICO/2TEXTUAIS Tese Emilia versao para o orientador.docx",
+    "current_resolved": "orientador.docx",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - OK.pdf",
+        "score": 1.0,
+        "reason": "overlap=0.83, tok_sub=0.83"
+      },
+      {
+        "path": "EMILIA/ACADEMICO/1PRE-TEXTUAIS Tese Emilia versao para o orientador - Copia.docx",
+        "score": 1.0,
+        "reason": "overlap=0.83, tok_sub=0.83"
+      },
+      {
+        "path": "EMILIA/ACADEMICO/2TEXTUAIS Tese Emilia versao para o orientador.docx",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "quoted_or_extension"
+  },
+  {
+    "id": "emilia_fullpath_39",
+    "utterance": "Analise o arquivo EMILIA/ACADEMICO/2TEXTUAIS Tese Emilia versao para o orientador.docx",
+    "expected_path": "EMILIA/ACADEMICO/2TEXTUAIS Tese Emilia versao para o orientador.docx",
+    "current_resolved": "orientador.docx",
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "EMILIA/ACADEMICO/2TEXTUAIS Tese Emilia versao para o orientador.docx",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/ACADEMICO/2TEXTUAIS Tese Emilia versao para o orientador.docx",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  },
+  {
+    "id": "conrado_basename_noext_40",
+    "utterance": "Analise o arquivo Artigojamburger",
+    "expected_path": "CONRADO/ACADEMICO/Artigojamburger.pdf.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/ACADEMICO/Artigojamburger.pdf.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/Artigojamburger.pdf.pdf",
+        "score": 1.0,
+        "reason": "substr, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "conrado_fullpath_41",
+    "utterance": "Analise o arquivo CONRADO/ACADEMICO/Artigojamburger.pdf.pdf",
+    "expected_path": "CONRADO/ACADEMICO/Artigojamburger.pdf.pdf",
+    "current_resolved": "CONRADO/ACADEMICO/Artigojamburger.pdf.pdf",
+    "current_correct": true,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/ACADEMICO/Artigojamburger.pdf.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/Artigojamburger.pdf.pdf",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  },
+  {
+    "id": "conrado_basename_noext_42",
+    "utterance": "Analise o arquivo Boletim escolar Joao 2020",
+    "expected_path": "CONRADO/ACADEMICO/Boletim escolar Joao 2020.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/ACADEMICO/Boletim escolar Joao 2020.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/Boletim escolar Joao 2020.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "conrado_fullpath_43",
+    "utterance": "Analise o arquivo CONRADO/ACADEMICO/Boletim escolar Joao 2020.pdf",
+    "expected_path": "CONRADO/ACADEMICO/Boletim escolar Joao 2020.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/ACADEMICO/Boletim escolar Joao 2020.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/Boletim escolar Joao 2020.pdf",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  },
+  {
+    "id": "conrado_basename_noext_44",
+    "utterance": "Analise o arquivo COMUNICACAO_NOGUEIRA_CHAVES.docx",
+    "expected_path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.docx",
+    "current_resolved": "COMUNICACAO_NOGUEIRA_CHAVES.docx",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.pdf",
+        "score": 1.0,
+        "reason": "overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES_2.pdf",
+        "score": 1.0,
+        "reason": "tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.docx",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "quoted_or_extension"
+  },
+  {
+    "id": "conrado_fullpath_45",
+    "utterance": "Analise o arquivo CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.docx",
+    "expected_path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.docx",
+    "current_resolved": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.docx",
+    "current_correct": true,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.docx",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.docx",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  },
+  {
+    "id": "conrado_basename_noext_46",
+    "utterance": "Analise o arquivo COMUNICACAO_NOGUEIRA_CHAVES",
+    "expected_path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES_2.pdf",
+        "score": 1.0,
+        "reason": "substr, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.docx",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "conrado_fullpath_47",
+    "utterance": "Analise o arquivo CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.pdf",
+    "expected_path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.pdf",
+    "current_resolved": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.pdf",
+    "current_correct": true,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES.pdf",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  },
+  {
+    "id": "conrado_basename_noext_48",
+    "utterance": "Analise o arquivo COMUNICACAO_NOGUEIRA_CHAVES_2",
+    "expected_path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES_2.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES_2.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      },
+      {
+        "path": "CONRADO/GERAL/COMUNICACAO_NOGUEIRA_CHAVES_2.odt",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00, tok_sub=1.00"
+      }
+    ],
+    "extraction_source": "tokens_fallback"
+  },
+  {
+    "id": "conrado_fullpath_49",
+    "utterance": "Analise o arquivo CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES_2.pdf",
+    "expected_path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES_2.pdf",
+    "current_resolved": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES_2.pdf",
+    "current_correct": true,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES_2.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/ACADEMICO/COMUNICACAO_NOGUEIRA_CHAVES_2.pdf",
+        "score": 1.0,
+        "reason": "full_path_substring"
+      }
+    ],
+    "extraction_source": "full_path_substring"
+  }
+]

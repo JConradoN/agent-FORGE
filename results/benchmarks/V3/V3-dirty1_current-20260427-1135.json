@@ -1,0 +1,24 @@
+{
+  "label": "dirty1_current",
+  "scenario": "dirty1",
+  "mode": "current_tag",
+  "apply_clean": false,
+  "history_turns_before": 4,
+  "history_turns_sent": 4,
+  "faithfulness_score": 0.75,
+  "fact_hits": 3,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": true,
+    "cidade": true,
+    "tipo": true
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1135",
+  "model": "gemma4:e4b",
+  "response_preview": "Este é um **Contrato de Prestação de Serviços** na área de marketing digital. A análise foi realizada com base no texto integral fornecido.\n\nAbaixo está a descrição estruturada, detalhando todas as informações relevantes presentes no documento:\n\n---\n\n### 📝 ANÁLISE DE CONTEÚDO DO DOCUMENTO\n\n#### **1. Partes Contratantes**\n\n*   **CONTRATADA (Prestadora de Serviço):**\n    *   **Nome/Razão Social:** CEREJA E OLIVE! A - ME\n    *   **CNPJ:** 37.262.522/0001-71\n    *   **Representante:** Fellipe Santos de Oliveira\n    *   **Endereço:** Rua Jovino Dinoa, 4470 - Beirol, Macapá, Amapá.\n*   **CONTRATANTE"
+}

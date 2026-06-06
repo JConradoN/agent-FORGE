@@ -1,0 +1,19 @@
+{
+  "mode": "tool_response_tag",
+  "faithfulness_score": 0.5,
+  "fact_hits": 2,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": true,
+    "cnpj": true,
+    "cidade": false,
+    "tipo": false
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1118",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um **Contrato de Prestação de Serviços** de marketing digital.\n\nAqui está a descrição detalhada, conforme solicitado:\n\n### 📄 **Análise Semântica do Contrato**\n\n**Dono Provável:** JOAO CONRADO VASCONCELOS NOGUEIRA\n**Tipo de Documento:** CONTRATO\n**Nível de Confiança:** 1.0\n\n**1. Partes Envolvidas:**\n\n*   **CONTRATADA (Prestadora de Serviço):**\n    *   **Nome:** CEREJA E OLIVE! A - "
+}

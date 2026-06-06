@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 342,
+    "mode": "by_folder",
+    "label": "n342_by_folder"
+  },
+  "tokens_estimated": 337,
+  "mentioned": 0,
+  "correct": 0,
+  "invented": 0,
+  "faithfulness_score": 0.0,
+  "timestamp": "20260427-1009",
+  "model": "gemma4:e4b",
+  "response_preview": "Olá. Com base na ferramenta `scan_directory`, foi realizado um mapeamento completo do diretório de staging (`/home/conrado/testes/vault/input`).\n\nO ambiente de testes contém um total de **342 arquivos** organizados em subdiretórios, que parecem estar segmentados por nomes e áreas de interesse de doi"
+}

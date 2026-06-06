@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 50,
+    "mode": "full",
+    "label": "n50_full"
+  },
+  "tokens_estimated": 3067,
+  "mentioned": 6,
+  "correct": 0,
+  "invented": 6,
+  "faithfulness_score": 0.0,
+  "timestamp": "20260427-1009",
+  "model": "gemma4:e4b",
+  "response_preview": "Os arquivos encontrados no diretório são:\n\n**Documentos e Relatórios:**\n*   `2023-01-15_Relatorio_Financeiro.pdf`\n*   `2023-02-28_Nota_Despesa.pdf`\n*   `2023-03-30_Comprovante_Pagamento.jpg`\n\n**Projetos e Trabalhos:**\n*   `Trabalho_Final_Historia_Arte.pptx`\n*   `Artigo_Ciencia_Teoria.docx`\n*   `Proj"
+}

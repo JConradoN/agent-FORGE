@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 50,
+    "mode": "full",
+    "label": "n50_full"
+  },
+  "tokens_estimated": 3067,
+  "mentioned": 10,
+  "correct": 0,
+  "invented": 10,
+  "faithfulness_score": 0.0,
+  "timestamp": "20260427-1021",
+  "model": "gemma4:e4b",
+  "response_preview": "Os arquivos encontrados no diretório são:\n\n1.  `2015_tool.pdf`\n2.  `2016_tool.pdf`\n3.  `2017_tool.pdf`\n4.  `2018_tool.pdf`\n5.  `2019_tool.pdf`\n6.  `2020_tool.pdf`\n7.  `2021_tool.pdf`\n8.  `2022_tool.pdf`\n9.  `2023_tool.pdf`\n10. `2024_tool.pdf`\n11. `2015_tool.pdf` (Duplicado, mas listado)\n12. `2016_to"
+}

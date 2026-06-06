@@ -1,0 +1,135 @@
+[
+  {
+    "mode": "current_tag",
+    "faithfulness_score": 0.75,
+    "fact_hits": 3,
+    "total_facts": 4,
+    "hits_detail": {
+      "empresa": true,
+      "cnpj": true,
+      "cidade": true,
+      "tipo": false
+    },
+    "tool_call_attempt": false,
+    "known_hallucination": false,
+    "file_chars": 2489,
+    "extract_method": "tesseract_ocr",
+    "timestamp": "20260427-1118",
+    "model": "gemma4:e4b",
+    "response_preview": "Como Vault Pilot Agent, analisei o conteúdo do documento fornecido. Trata-se de um Contrato de Prestação de Serviços.\n\nAbaixo está a descrição detalhada do conteúdo, seguindo os pontos solicitados, estruturada de forma objetiva para fins de auditoria e organização do acervo.\n\n***\n\n### 📋 Análise de Conteúdo: Contrato de Prestação de Serviço\n\n**1. Tipo de Documento:**\nContrato Particular de Prestaçã"
+  },
+  {
+    "mode": "tool_response_tag",
+    "faithfulness_score": 0.5,
+    "fact_hits": 2,
+    "total_facts": 4,
+    "hits_detail": {
+      "empresa": true,
+      "cnpj": true,
+      "cidade": false,
+      "tipo": false
+    },
+    "tool_call_attempt": false,
+    "known_hallucination": false,
+    "file_chars": 2489,
+    "extract_method": "tesseract_ocr",
+    "timestamp": "20260427-1118",
+    "model": "gemma4:e4b",
+    "response_preview": "Este documento é um **Contrato de Prestação de Serviços** de marketing digital.\n\nAqui está a descrição detalhada, conforme solicitado:\n\n### 📄 **Análise Semântica do Contrato**\n\n**Dono Provável:** JOAO CONRADO VASCONCELOS NOGUEIRA\n**Tipo de Documento:** CONTRATO\n**Nível de Confiança:** 1.0\n\n**1. Partes Envolvidas:**\n\n*   **CONTRATADA (Prestadora de Serviço):**\n    *   **Nome:** CEREJA E OLIVE! A - "
+  },
+  {
+    "mode": "plain_block",
+    "faithfulness_score": 0.5,
+    "fact_hits": 2,
+    "total_facts": 4,
+    "hits_detail": {
+      "empresa": true,
+      "cnpj": true,
+      "cidade": false,
+      "tipo": false
+    },
+    "tool_call_attempt": false,
+    "known_hallucination": false,
+    "file_chars": 2489,
+    "extract_method": "tesseract_ocr",
+    "timestamp": "20260427-1118",
+    "model": "gemma4:e4b",
+    "response_preview": "Com base no conteúdo extraído do documento, segue a análise detalhada das informações solicitadas, classificando-o como um **Contrato de Prestação de Serviços de Marketing Digital**.\n\n---\n\n### 📋 ANÁLISE DO DOCUMENTO\n\n**Tipo de Documento:** Contrato de Prestação de Serviços.\n**Confiança da Classificação:** 1.0 (O texto é claro e a estrutura contratual é evidente).\n**Necessidade de Revisão Humana:**"
+  },
+  {
+    "mode": "instruction_strong",
+    "faithfulness_score": 0.75,
+    "fact_hits": 3,
+    "total_facts": 4,
+    "hits_detail": {
+      "empresa": true,
+      "cnpj": true,
+      "cidade": true,
+      "tipo": false
+    },
+    "tool_call_attempt": false,
+    "known_hallucination": false,
+    "file_chars": 2489,
+    "extract_method": "tesseract_ocr",
+    "timestamp": "20260427-1118",
+    "model": "gemma4:e4b",
+    "response_preview": "Este documento é um **Contrato de Prestação de Serviços** que formaliza a parceria entre uma agência de marketing e um cliente para a gestão de conteúdo digital.\n\nAbaixo está a análise detalhada do conteúdo:\n\n### 📑 **Dados do Documento**\n\n*   **Tipo de Documento:** Contrato de Prestação de Serviços de Marketing Digital.\n*   **Vigência Contratual:** Período inicial de 6 (seis) meses.\n*   **Data:** "
+  },
+  {
+    "mode": "instruction_role",
+    "faithfulness_score": 0.5,
+    "fact_hits": 2,
+    "total_facts": 4,
+    "hits_detail": {
+      "empresa": true,
+      "cnpj": true,
+      "cidade": false,
+      "tipo": false
+    },
+    "tool_call_attempt": false,
+    "known_hallucination": false,
+    "file_chars": 2489,
+    "extract_method": "tesseract_ocr",
+    "timestamp": "20260427-1118",
+    "model": "gemma4:e4b",
+    "response_preview": "Com base no conteúdo fornecido, realizo a análise documental, simulando a extração e classificação de dados, conforme meu papel no ambiente de teste.\n\n---\n\n### 📋 Análise e Classificação Documental\n\n**Tipo de Documento:** Contrato de Prestação de Serviços de Marketing Digital.\n\n**Dono Provável:** JOAO CONRADO VASCONCELOS NOGUEIRA (Contratante/Cliente).\n\n**Nível de Confiança:** 0.95/1.0\n\n**Revisão H"
+  },
+  {
+    "mode": "content_last",
+    "faithfulness_score": 0.5,
+    "fact_hits": 2,
+    "total_facts": 4,
+    "hits_detail": {
+      "empresa": true,
+      "cnpj": true,
+      "cidade": false,
+      "tipo": false
+    },
+    "tool_call_attempt": false,
+    "known_hallucination": false,
+    "file_chars": 2489,
+    "extract_method": "tesseract_ocr",
+    "timestamp": "20260427-1118",
+    "model": "gemma4:e4b",
+    "response_preview": "**(Resposta do Vault Pilot Agent)**\n\nCom base no conteúdo fornecido, realizei a análise do documento. Ele se trata de um contrato de serviços de marketing digital, e todos os dados extraídos serão processados em formato de registro de auditoria.\n\n---\n\n### **📋 Análise do Documento (Simulação de `classify_document` e `suggest_semantic_filename`)**\n\n**1. Classificação:**\n\n*   **Dono Provável (Owner):"
+  },
+  {
+    "mode": "no_tag",
+    "faithfulness_score": 0.5,
+    "fact_hits": 2,
+    "total_facts": 4,
+    "hits_detail": {
+      "empresa": true,
+      "cnpj": true,
+      "cidade": false,
+      "tipo": false
+    },
+    "tool_call_attempt": false,
+    "known_hallucination": false,
+    "file_chars": 2489,
+    "extract_method": "tesseract_ocr",
+    "timestamp": "20260427-1118",
+    "model": "gemma4:e4b",
+    "response_preview": "## 🤖 Vault Pilot Agent Analysis Report\n\n**Status:** Análise de Conteúdo Concluída.\n**Tipo de Documento:** Contrato de Prestação de Serviços (Marketing Digital).\n**Nível de Confiança:** 0.9/1.0 (Alta, pois o texto é um documento formal e completo em suas cláusulas).\n**Atenção:** Este documento é um rascunho/trecho de contrato. **Não foi possível extrair data de vigência ou valor financeiro específi"
+  }
+]

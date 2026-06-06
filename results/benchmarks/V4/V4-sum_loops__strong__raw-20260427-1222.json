@@ -1,0 +1,26 @@
+{
+  "label": "sum_loops__strong__raw",
+  "scenario": "summary_loops",
+  "mode": "instruction_strong",
+  "apply_trunc": false,
+  "history_turns_raw": 7,
+  "history_turns_sent": 7,
+  "faithfulness_score": 0.25,
+  "fact_hits": 1,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": false,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_markup": false,
+  "hallucination_detected": false,
+  "waiting_pattern": false,
+  "bug_reproduced": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1222",
+  "model": "gemma4:e4b",
+  "response_preview": "**Análise do Documento:** Contrato de Prestação de Serviços de Marketing/Mídia\n\nCom base no texto fornecido, o documento configura um contrato de prestação de serviços entre as partes envolvidas, detalhando escopo e condições de trabalho.\n\n**1. Partes Envolvidas:**\n\n*   **Prestadora de Serviços (Empresa):** Cujo nome comercial é referenciado no rodapé e possui contato/identificação no corpo do texto.\n*   **Contratante (Cliente):** João Paulo de Oliveira Gonçalves (Nome inferido pelo contexto de um contrato, se a pessoa que está assinando for o contratante).\n\n**2. Detalhamento do Serviço:**\n\n* "
+}

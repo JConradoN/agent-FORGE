@@ -1,0 +1,24 @@
+{
+  "label": "dirty2_plain_cleaned",
+  "scenario": "dirty2",
+  "mode": "plain_block",
+  "apply_clean": true,
+  "history_turns_before": 6,
+  "history_turns_sent": 3,
+  "faithfulness_score": 0.5,
+  "fact_hits": 2,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": true,
+    "cnpj": false,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1135",
+  "model": "gemma4:e4b",
+  "response_preview": "Sou o Vault Pilot Agent, e realizei a análise detalhada do conteúdo fornecido. Trata-se de um contrato de prestação de serviços de marketing e redes sociais.\n\nAbaixo está a minha análise estruturada, seguindo as diretrizes de classificação e sugestão de nomenclatura para o ambiente de teste.\n\n---\n\n### 📝 Análise do Documento (Contrato)\n\n**1. Proprietário Provável (Owner):**\n*   **JOAO CONRADO VASCONCELOS NOGUEIRA** (O Contratante, que está em meu contexto de análise).\n\n**2. Tipo de Documento (Document Type):**\n*   `CONTRATO`\n\n**3. Descrição Semântica:**\n*   Este é um Contrato de Prestação de Se"
+}

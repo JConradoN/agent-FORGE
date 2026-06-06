@@ -1,0 +1,19 @@
+{
+  "mode": "instruction_strong",
+  "faithfulness_score": 0.75,
+  "fact_hits": 3,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": true,
+    "cnpj": true,
+    "cidade": true,
+    "tipo": false
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1118",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um **Contrato de Prestação de Serviços** que formaliza a parceria entre uma agência de marketing e um cliente para a gestão de conteúdo digital.\n\nAbaixo está a análise detalhada do conteúdo:\n\n### 📑 **Dados do Documento**\n\n*   **Tipo de Documento:** Contrato de Prestação de Serviços de Marketing Digital.\n*   **Vigência Contratual:** Período inicial de 6 (seis) meses.\n*   **Data:** "
+}

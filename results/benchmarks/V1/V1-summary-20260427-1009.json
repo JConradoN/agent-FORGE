@@ -1,0 +1,122 @@
+[
+  {
+    "config": {
+      "n": 5,
+      "mode": "full",
+      "label": "n5_full"
+    },
+    "tokens_estimated": 328,
+    "mentioned": 9,
+    "correct": 9,
+    "invented": 0,
+    "faithfulness_score": 1.0,
+    "timestamp": "20260427-1009",
+    "model": "gemma4:e4b",
+    "response_preview": "**[Vault Pilot Agent - Iniciando Análise de Diretório]**\n\nOs arquivos no diretório de staging (`/home/conrado/testes/vault/input`) foram listados com sucesso. Todos os arquivos estão contidos na subpasta `CONRADO/ACADEMICO/`, sugerindo que este acervo se refere a materiais acadêmicos de propriedade "
+  },
+  {
+    "config": {
+      "n": 20,
+      "mode": "full",
+      "label": "n20_full"
+    },
+    "tokens_estimated": 1242,
+    "mentioned": 0,
+    "correct": 0,
+    "invented": 0,
+    "faithfulness_score": 0.0,
+    "timestamp": "20260427-1009",
+    "model": "gemma4:e4b",
+    "response_preview": "Com base na sua solicitação, realizei a listagem de todos os arquivos encontrados no diretório de trabalho.\n\n**Resumo:**\nForam encontrados **22 arquivos** distribuídos em diferentes categorias de documentos.\n\n---\n**Detalhes dos Arquivos Encontrados:**\n\n*   **Arquivo:** `C:/.../CONRADO/C.../`\n    *  "
+  },
+  {
+    "config": {
+      "n": 50,
+      "mode": "full",
+      "label": "n50_full"
+    },
+    "tokens_estimated": 3067,
+    "mentioned": 6,
+    "correct": 0,
+    "invented": 6,
+    "faithfulness_score": 0.0,
+    "timestamp": "20260427-1009",
+    "model": "gemma4:e4b",
+    "response_preview": "Os arquivos encontrados no diretório são:\n\n**Documentos e Relatórios:**\n*   `2023-01-15_Relatorio_Financeiro.pdf`\n*   `2023-02-28_Nota_Despesa.pdf`\n*   `2023-03-30_Comprovante_Pagamento.jpg`\n\n**Projetos e Trabalhos:**\n*   `Trabalho_Final_Historia_Arte.pptx`\n*   `Artigo_Ciencia_Teoria.docx`\n*   `Proj"
+  },
+  {
+    "config": {
+      "n": 342,
+      "mode": "full",
+      "label": "n342_full"
+    },
+    "tokens_estimated": 21774,
+    "mentioned": 8,
+    "correct": 0,
+    "invented": 8,
+    "faithfulness_score": 0.0,
+    "timestamp": "20260427-1009",
+    "model": "gemma4:e4b",
+    "response_preview": "Os arquivos encontrados estão organizados em pastas e em um nível superior.\n\n**Pasta `EMILIA`**\n*   `EMILIA.pdf`\n\n**Pasta `EMILIA_FISCAL`**\n*   `comprovante_pagamento_de_energia.pdf`\n\n**Pasta `EMILIA_FISCAL_EXTRATO`**\n*   `extrato_de_energia.pdf`\n\n**Pasta `EMILIA_TRABALHO`**\n*   `carteira_trabalho_e"
+  },
+  {
+    "config": {
+      "n": 342,
+      "mode": "top_n",
+      "label": "n342_top20"
+    },
+    "tokens_estimated": 433,
+    "mentioned": 10,
+    "correct": 10,
+    "invented": 0,
+    "faithfulness_score": 1.0,
+    "timestamp": "20260427-1009",
+    "model": "gemma4:e4b",
+    "response_preview": "Com base na ferramenta `scan_directory`, realizei a varredura do diretório de staging (`/home/conrado/testes/vault/input`).\n\nFoi encontrado um total de **342 arquivos** distribuídos em diversas subpastas, que parecem representar diferentes áreas da vida pessoal e acadêmica do proprietário (CONRADO)."
+  },
+  {
+    "config": {
+      "n": 342,
+      "mode": "summary",
+      "label": "n342_summary"
+    },
+    "tokens_estimated": 165,
+    "mentioned": 0,
+    "correct": 0,
+    "invented": 0,
+    "faithfulness_score": 0.0,
+    "timestamp": "20260427-1009",
+    "model": "gemma4:e4b",
+    "response_preview": "Com base na ferramenta `scan_directory`, realizei a varredura do diretório de staging: `/home/conrado/testes/vault/input`.\n\nO acervo de testes está organizado e contém um total significativo de documentos, distribuídos em várias categorias e formatos.\n\n### 📂 📄 Resumo do Acervo de Testes\n\n| Métrica |"
+  },
+  {
+    "config": {
+      "n": 342,
+      "mode": "by_folder",
+      "label": "n342_by_folder"
+    },
+    "tokens_estimated": 337,
+    "mentioned": 0,
+    "correct": 0,
+    "invented": 0,
+    "faithfulness_score": 0.0,
+    "timestamp": "20260427-1009",
+    "model": "gemma4:e4b",
+    "response_preview": "Olá. Com base na ferramenta `scan_directory`, foi realizado um mapeamento completo do diretório de staging (`/home/conrado/testes/vault/input`).\n\nO ambiente de testes contém um total de **342 arquivos** organizados em subdiretórios, que parecem estar segmentados por nomes e áreas de interesse de doi"
+  },
+  {
+    "config": {
+      "n": 342,
+      "mode": "plain_text",
+      "label": "n342_plain"
+    },
+    "tokens_estimated": 270,
+    "mentioned": 1,
+    "correct": 1,
+    "invented": 0,
+    "faithfulness_score": 1.0,
+    "timestamp": "20260427-1009",
+    "model": "gemma4:e4b",
+    "response_preview": "**[VAULT PILOT AGENT] - ANÁLISE DE ARQUIVOS INÍCIO**\n\nDetectado. Conforme solicitado, realizei a varredura do diretório de staging (`/home/conrado/testes/vault/input`).\n\n**RESUMO DA VARREDURA:**\n\n1.  **Escopo:** O diretório contém um total de **342 arquivos**.\n2.  **Estrutura Predominante:** O acerv"
+  }
+]

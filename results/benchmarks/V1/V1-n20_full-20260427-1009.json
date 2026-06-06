@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 20,
+    "mode": "full",
+    "label": "n20_full"
+  },
+  "tokens_estimated": 1242,
+  "mentioned": 0,
+  "correct": 0,
+  "invented": 0,
+  "faithfulness_score": 0.0,
+  "timestamp": "20260427-1009",
+  "model": "gemma4:e4b",
+  "response_preview": "Com base na sua solicitação, realizei a listagem de todos os arquivos encontrados no diretório de trabalho.\n\n**Resumo:**\nForam encontrados **22 arquivos** distribuídos em diferentes categorias de documentos.\n\n---\n**Detalhes dos Arquivos Encontrados:**\n\n*   **Arquivo:** `C:/.../CONRADO/C.../`\n    *  "
+}

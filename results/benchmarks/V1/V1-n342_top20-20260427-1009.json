@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 342,
+    "mode": "top_n",
+    "label": "n342_top20"
+  },
+  "tokens_estimated": 433,
+  "mentioned": 10,
+  "correct": 10,
+  "invented": 0,
+  "faithfulness_score": 1.0,
+  "timestamp": "20260427-1009",
+  "model": "gemma4:e4b",
+  "response_preview": "Com base na ferramenta `scan_directory`, realizei a varredura do diretório de staging (`/home/conrado/testes/vault/input`).\n\nFoi encontrado um total de **342 arquivos** distribuídos em diversas subpastas, que parecem representar diferentes áreas da vida pessoal e acadêmica do proprietário (CONRADO)."
+}

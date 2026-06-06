@@ -1,0 +1,272 @@
+[
+  {
+    "id": "exact_full_path",
+    "utterance": "Use as ferramentas disponíveis para analisar o arquivo CONRADO/GERAL/Contrato Conrado Nogueira.pdf e descrever o conteúdo.",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": "Nogueira.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Relatorio Ed Joao da Costa Nogueira.pdf",
+        "score": 0.9706,
+        "reason": "substr, overlap=1.00"
+      },
+      {
+        "path": "CONRADO/GERAL/Laudo Neuro Pediatra - Maria Luiza C. Nogueira.pdf",
+        "score": 0.8871,
+        "reason": "substr, overlap=1.00"
+      }
+    ]
+  },
+  {
+    "id": "basename_with_extension",
+    "utterance": "Analise o arquivo Contrato Conrado Nogueira.pdf e me traga um resumo.",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": "Nogueira.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Relatorio Ed Joao da Costa Nogueira.pdf",
+        "score": 0.9706,
+        "reason": "substr, overlap=1.00"
+      },
+      {
+        "path": "CONRADO/GERAL/Laudo Neuro Pediatra - Maria Luiza C. Nogueira.pdf",
+        "score": 0.8871,
+        "reason": "substr, overlap=1.00"
+      }
+    ]
+  },
+  {
+    "id": "basename_quoted_double",
+    "utterance": "Analise o contrato \"Contrato Conrado Nogueira.pdf\" que está no staging.",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": "Nogueira.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=1.00"
+      },
+      {
+        "path": "CONRADO/JURIDICO/PROCURACAO CONRADO NOGUEIRA.docx",
+        "score": 0.8541,
+        "reason": "overlap=0.33"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/extrato conrado janeiro2021.pdf",
+        "score": 0.8333,
+        "reason": "overlap=0.33"
+      }
+    ]
+  },
+  {
+    "id": "basename_quoted_single",
+    "utterance": "Analise o contrato 'Contrato Conrado Nogueira' que está na pasta do Conrado.",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "exact",
+    "fuzzy_resolved_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=0.67"
+      },
+      {
+        "path": "CONRADO/JURIDICO/PROCURACAO CONRADO NOGUEIRA.docx",
+        "score": 0.8368,
+        "reason": "overlap=0.33"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Contrato de honorarios - Conrado _1_.docx",
+        "score": 0.7455,
+        "reason": "overlap=0.67"
+      }
+    ]
+  },
+  {
+    "id": "short_name_conrado",
+    "utterance": "Analise o contrato do Conrado.",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/FINANCEIRO/Boleto atualizado conrado.pdf",
+        "score": 0.75,
+        "reason": "substr"
+      },
+      {
+        "path": "CONRADO/GERAL/proposta do sr conrado.pdf",
+        "score": 0.7446,
+        "reason": "overlap=0.50"
+      },
+      {
+        "path": "CONRADO/GERAL/conrado.pdf",
+        "score": 0.7273,
+        "reason": "seq_only"
+      }
+    ]
+  },
+  {
+    "id": "short_name_nogueira",
+    "utterance": "Extraia o documento do Nogueira.",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 0.7854,
+        "reason": "substr"
+      },
+      {
+        "path": "CONRADO/JURIDICO/PROCURACAO CONRADO NOGUEIRA.docx",
+        "score": 0.7455,
+        "reason": "substr"
+      },
+      {
+        "path": "CONRADO/ACADEMICO/Palestra Dr. Nogueira.ppt",
+        "score": 0.5946,
+        "reason": "seq_only"
+      }
+    ]
+  },
+  {
+    "id": "nonexistent_file",
+    "utterance": "Analise o arquivo RelatorioFinanceiro2024.pdf.",
+    "expected_path": null,
+    "current_resolved": "RelatorioFinanceiro2024.pdf",
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/FINANCEIRO/relatorio financeiro escola joao.pdf",
+        "score": 0.7302,
+        "reason": "seq_only"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/extrato conrado janeiro2021.pdf",
+        "score": 0.6552,
+        "reason": "seq_only"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/extrato conrado fevereiro2021.pdf",
+        "score": 0.6,
+        "reason": "seq_only"
+      }
+    ]
+  },
+  {
+    "id": "emilia_rg",
+    "utterance": "Preciso ver o RG da Emilia.",
+    "expected_path": "EMILIA/GERAL/RG M.EmiliaC.Cavalcante.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "EMILIA/JURIDICO/Procuracao CEA EMILIA.odt",
+        "score": 0.5769,
+        "reason": "seq_only"
+      },
+      {
+        "path": "EMILIA/GERAL/__ocuracao CEA EMILIA.odt",
+        "score": 0.5385,
+        "reason": "seq_only"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Relatorio Ed Joao da Costa Nogueira.pdf",
+        "score": 0.5348,
+        "reason": "overlap=0.17"
+      }
+    ]
+  },
+  {
+    "id": "uppercase_query",
+    "utterance": "ANALISE O CONTRATO CONRADO NOGUEIRA",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "ambiguous",
+    "fuzzy_resolved_path": null,
+    "fuzzy_correct": false,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 1.0,
+        "reason": "substr, overlap=0.50"
+      },
+      {
+        "path": "CONRADO/JURIDICO/PROCURACAO CONRADO NOGUEIRA.docx",
+        "score": 1.0,
+        "reason": "substr, overlap=0.50"
+      },
+      {
+        "path": "CONRADO/FINANCEIRO/extrato conrado janeiro2021.pdf",
+        "score": 0.6606,
+        "reason": "overlap=0.50"
+      }
+    ]
+  },
+  {
+    "id": "partial_name_no_ext",
+    "utterance": "Me fale sobre o arquivo contrato nogueira",
+    "expected_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "current_resolved": null,
+    "current_correct": false,
+    "fuzzy_match_type": "fuzzy",
+    "fuzzy_resolved_path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+    "fuzzy_correct": true,
+    "fuzzy_top_candidates": [
+      {
+        "path": "CONRADO/GERAL/Contrato Conrado Nogueira.pdf",
+        "score": 0.8891,
+        "reason": "overlap=0.50"
+      },
+      {
+        "path": "CONRADO/JURIDICO/CONTRATO aluguel neto-conrado.doc",
+        "score": 0.71,
+        "reason": "overlap=0.50"
+      },
+      {
+        "path": "CONRADO/JURIDICO/Contrato de Constituicao - Conrado.doc",
+        "score": 0.6227,
+        "reason": "overlap=0.50"
+      }
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "label": "sum_only__current__trunc",
+  "scenario": "summary_only",
+  "mode": "current_tag",
+  "apply_trunc": true,
+  "history_turns_raw": 1,
+  "history_turns_sent": 1,
+  "faithfulness_score": 0.25,
+  "fact_hits": 1,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": false,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_markup": false,
+  "hallucination_detected": false,
+  "waiting_pattern": false,
+  "bug_reproduced": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1222",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento se trata de uma análise de um rascunho de contrato de prestação de serviços de marketing digital.\n\nAbaixo está o detalhamento das partes envolvidas, o escopo dos serviços e as condições contratuais presentes no trecho fornecido.\n\n***\n\n### 📑 Análise Contratual\n\n**Tipo de Documento:** Rascunho de Contrato de Prestação de Serviços.\n**Assunto:** Marketing Digital e Gestão de Mídias Sociais.\n\n#### 1. Partes Envolvidas\n\n| Parte | Identificação | Papel Contratual |\n| :--- | :--- | :--- |\n| **Prestador de Serviços (Agência)** | **CRAJA E OLIVEIRA** (Referência em cabeçalho) | Responsáve"
+}

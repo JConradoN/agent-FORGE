@@ -1,0 +1,26 @@
+{
+  "label": "sum_loops__current__trunc",
+  "scenario": "summary_loops",
+  "mode": "current_tag",
+  "apply_trunc": true,
+  "history_turns_raw": 7,
+  "history_turns_sent": 7,
+  "faithfulness_score": 0.25,
+  "fact_hits": 1,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": false,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_markup": false,
+  "hallucination_detected": false,
+  "waiting_pattern": false,
+  "bug_reproduced": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1222",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um contrato de prestação de serviços de marketing digital, detalhando os termos de parceria entre as partes envolvidas.\n\nAbaixo está a análise detalhada do conteúdo:\n\n---\n\n### 📑 Análise do Contrato de Prestação de Serviços\n\n**1. Partes Envolvidas:**\n\n*   **Prestadora de Serviços (Agência):** Implícita, representada pela agência responsável pelo serviço (menções a *Cerea* e dados de contato/site).\n*   **Contratante (Cliente):** O indivíduo cujo nome é citado, **JOÃO CONTRATANTE** (Embora o nome do contratante não esteja explicitamente em um campo de cabeçalho, a análise identif"
+}

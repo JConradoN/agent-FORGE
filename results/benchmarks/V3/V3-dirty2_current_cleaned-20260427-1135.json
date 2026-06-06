@@ -1,0 +1,24 @@
+{
+  "label": "dirty2_current_cleaned",
+  "scenario": "dirty2",
+  "mode": "current_tag",
+  "apply_clean": true,
+  "history_turns_before": 6,
+  "history_turns_sent": 3,
+  "faithfulness_score": 0.5,
+  "fact_hits": 2,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": true,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1135",
+  "model": "gemma4:e4b",
+  "response_preview": "**(Aguardando o sistema chamar as ferramentas de classificação e sugestão de nome após a análise do conteúdo. Vou estruturar a análise completa como se as ferramentas tivessem sido executadas.)**\n\n---\n\n### 🔎 **Análise de Conteúdo Concluída**\n\nCom base no texto extraído, o documento é um **Contrato de Prestação de Serviços de Marketing Digital**.\n\n#### **Descrição Semântica Detalhada:**\n\nEste é um contrato formal firmado entre **CEREJA E OLIVE! A - ME** (a CONTRATADA, uma agência de marketing) e **JOAO CONRADO VASCONCELOS NOGUEIRA** (o CONTRATANTE, cliente). O objeto principal é a prestação de "
+}

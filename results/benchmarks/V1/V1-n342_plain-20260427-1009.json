@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 342,
+    "mode": "plain_text",
+    "label": "n342_plain"
+  },
+  "tokens_estimated": 270,
+  "mentioned": 1,
+  "correct": 1,
+  "invented": 0,
+  "faithfulness_score": 1.0,
+  "timestamp": "20260427-1009",
+  "model": "gemma4:e4b",
+  "response_preview": "**[VAULT PILOT AGENT] - ANÁLISE DE ARQUIVOS INÍCIO**\n\nDetectado. Conforme solicitado, realizei a varredura do diretório de staging (`/home/conrado/testes/vault/input`).\n\n**RESUMO DA VARREDURA:**\n\n1.  **Escopo:** O diretório contém um total de **342 arquivos**.\n2.  **Estrutura Predominante:** O acerv"
+}

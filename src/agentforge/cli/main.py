@@ -169,7 +169,17 @@ def eval(
     console.print(f"  Saída:   {out_path}")
     console.print("")
 
+    eval_spec = runtime.agent_spec.eval
+    judge_model = eval_spec.judge_model
+    criteria = eval_spec.criteria
+    use_judge = bool(judge_model and criteria)
+    if use_judge:
+        console.print(f"  Judge:   {judge_model} ({len(criteria)} critérios)")
+        from agentforge.eval.judge import score as judge_score
+    console.print("")
+
     passed = 0
+    scores: list[int] = []
     with open(out_path, "w", encoding="utf-8") as f:
         for i, case in enumerate(cases, 1):
             input_text = case.get("input", "")
@@ -177,7 +187,7 @@ def eval(
             console.print(f"  [{i}/{len(cases)}] {input_text[:60]}...")
             try:
                 result = runtime.run(input_text)
-                entry = {
+                entry: dict = {
                     "case": i,
                     "input": input_text,
                     "output": result["output"],
@@ -186,6 +196,12 @@ def eval(
                     "timestamp": result["metadata"]["timestamp"],
                     "ok": True,
                 }
+                if use_judge:
+                    judge_result = judge_score(input_text, result["output"], criteria, judge_model)
+                    entry["judge"] = judge_result
+                    if "pct" in judge_result:
+                        scores.append(judge_result["pct"])
+                        console.print(f"    score: {judge_result['pct']}%")
                 passed += 1
             except (ProviderError, ProviderNotImplementedError) as exc:
                 entry = {"case": i, "input": input_text, "error": str(exc), "ok": False}
@@ -193,6 +209,9 @@ def eval(
 
     console.print("")
     console.print(f"[bold]Resultado:[/bold] {passed}/{len(cases)} casos OK")
+    if scores:
+        avg = round(sum(scores) / len(scores))
+        console.print(f"[bold]Score médio:[/bold] {avg}%")
     console.print(f"[green]Salvo em:[/green] {out_path}")
 
 

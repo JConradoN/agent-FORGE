@@ -109,7 +109,11 @@ def build_runtime_config(spec: AgentSpec) -> dict:
             "default": spec.model_policy.default_model,
             "fallback": spec.model_policy.fallback_model,
         },
-        "workflow": {"mode": spec.workflow.mode},
+        "workflow": {
+            "mode": spec.workflow.mode,
+            "max_tool_cycles": spec.workflow.max_tool_cycles,
+            "reflection_rounds": spec.workflow.reflection_rounds,
+        },
         "channel": {"type": spec.channel.type},
         "memory": {
             "enabled": spec.memory.enabled,

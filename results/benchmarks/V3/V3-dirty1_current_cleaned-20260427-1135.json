@@ -1,0 +1,24 @@
+{
+  "label": "dirty1_current_cleaned",
+  "scenario": "dirty1",
+  "mode": "current_tag",
+  "apply_clean": true,
+  "history_turns_before": 4,
+  "history_turns_sent": 2,
+  "faithfulness_score": 0.5,
+  "fact_hits": 2,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": true,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1135",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um **Contrato de Prestação de Serviço** de marketing digital.\n\nAbaixo está a descrição detalhada conforme solicitado, seguida da minha análise estruturada para fins de catalogação no vault.\n\n---\n\n### 📝 Resumo Analítico do Conteúdo\n\n**1. Partes Envolvidas:**\n\n*   **CONTRATADA (Prestadora de Serviços):** CEREJA E OLIVE! A - ME.\n    *   CNPJ: 37.262.522/0001-71.\n    *   Representante Legal: Fellipe Santos de Oliveira.\n*   **CONTRATANTE (Contratante/Cliente):** JOAO CONRADO VASCONCELOS NOGUEIRA.\n    *   CPF: 601.4 072-49.\n\n**2. Objeto do Contrato:**\n\nO contrato tem como objetivo a"
+}

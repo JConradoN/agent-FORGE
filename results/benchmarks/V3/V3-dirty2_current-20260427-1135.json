@@ -1,0 +1,24 @@
+{
+  "label": "dirty2_current",
+  "scenario": "dirty2",
+  "mode": "current_tag",
+  "apply_clean": false,
+  "history_turns_before": 6,
+  "history_turns_sent": 6,
+  "faithfulness_score": 0.5,
+  "fact_hits": 2,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": false,
+    "cidade": true,
+    "tipo": true
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1135",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um **Contrato de Prestação de Serviços** detalhado, focado em marketing digital.\n\nCom base na análise do texto, a classificação, a descrição e as sugestões são as seguintes:\n\n### 📄 Análise Estruturada do Conteúdo\n\n**Partes Envolvidas:**\n1.  **CONTRATADA (Prestadora de Serviço):** CEREJA E OLIVE! A - ME.\n2.  **CONTRATANTE (Cliente):** JOAO CONRADO VASCONCELOS NOGUEIRA.\n\n**Objeto do Contrato:**\nO objeto é a prestação de serviços de marketing digital, sob o nome comercial \"Plano Cherry Personal\", com um período inicial definido de **6 meses**.\n\n**Escopo dos Serviços (Principais E"
+}

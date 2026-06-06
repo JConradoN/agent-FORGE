@@ -1,0 +1,19 @@
+{
+  "mode": "current_tag",
+  "faithfulness_score": 0.75,
+  "fact_hits": 3,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": true,
+    "cnpj": true,
+    "cidade": true,
+    "tipo": false
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1118",
+  "model": "gemma4:e4b",
+  "response_preview": "Como Vault Pilot Agent, analisei o conteúdo do documento fornecido. Trata-se de um Contrato de Prestação de Serviços.\n\nAbaixo está a descrição detalhada do conteúdo, seguindo os pontos solicitados, estruturada de forma objetiva para fins de auditoria e organização do acervo.\n\n***\n\n### 📋 Análise de Conteúdo: Contrato de Prestação de Serviço\n\n**1. Tipo de Documento:**\nContrato Particular de Prestaçã"
+}

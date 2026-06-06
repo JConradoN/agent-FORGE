@@ -1,0 +1,26 @@
+{
+  "label": "sum_loops__strong__trunc",
+  "scenario": "summary_loops",
+  "mode": "instruction_strong",
+  "apply_trunc": true,
+  "history_turns_raw": 7,
+  "history_turns_sent": 7,
+  "faithfulness_score": 0.5,
+  "fact_hits": 2,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": true,
+    "cnpj": false,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_markup": false,
+  "hallucination_detected": false,
+  "waiting_pattern": false,
+  "bug_reproduced": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1222",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um contrato de prestação de serviços de marketing, estabelecendo uma parceria entre a agência **CEREJA E OLIVEIRA** (que representa os serviços) e o cliente **JOÃO CONRADO VASCONCELOS**.\n\n**Partes Envolvidas:**\n*   **Cliente:** João Conrado Vasconcelos.\n*   **Prestadora de Serviço (Implícita):** CEREJA E OLIVEIRA (mencionada no cabeçalho).\n\n**Objeto do Contrato:**\nA prestação de serviços de marketing e conteúdo.\n\n**Duração e Valores:**\nNão há menção explícita de datas de início ou fim do contrato, nem valores financeiros específicos, exceto pela menção de que serviços adiciona"
+}

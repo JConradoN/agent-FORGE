@@ -1,0 +1,26 @@
+{
+  "label": "sum_only__strong__trunc",
+  "scenario": "summary_only",
+  "mode": "instruction_strong",
+  "apply_trunc": true,
+  "history_turns_raw": 1,
+  "history_turns_sent": 1,
+  "faithfulness_score": 0.25,
+  "fact_hits": 1,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": false,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_markup": false,
+  "hallucination_detected": false,
+  "waiting_pattern": false,
+  "bug_reproduced": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1222",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um **Contrato de Prestação de Serviços** que formaliza a relação entre duas partes para a execução de serviços de marketing digital.\n\nA seguir, apresento a descrição detalhada do conteúdo, conforme solicitado:\n\n### 📑 Resumo do Contrato\n\n**1. Partes Envolvidas:**\n*   **Contratada (Prestadora):** Cujo nome é representado pela empresa \"Capa\" (ou representada por ela).\n*   **Contratante (Cliente):** JOAO CONTRATANTE, CPF n°: 601.400.123-40.\n\n**2. Serviços Contratados:**\nOs serviços abrangem a gestão de marketing e conteúdo nas seguintes áreas:\n*   **Criação de Conteúdo:** Desenvol"
+}

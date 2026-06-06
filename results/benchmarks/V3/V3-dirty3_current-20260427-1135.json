@@ -1,0 +1,24 @@
+{
+  "label": "dirty3_current",
+  "scenario": "dirty3",
+  "mode": "current_tag",
+  "apply_clean": false,
+  "history_turns_before": 6,
+  "history_turns_sent": 6,
+  "faithfulness_score": 0.25,
+  "fact_hits": 1,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": false,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1135",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um contrato de prestação de serviços de marketing digital entre a empresa **CEREJA E OLIVE** (prestadora de serviços) e um cliente (quem assina o contrato).\n\nAbaixo segue a análise estruturada do conteúdo:\n\n### 📋 Análise do Contrato\n\n**1. Partes Envolvidas:**\n*   **Prestadora:** CEREJA E OLIVE (detém a responsabilidade pela execução dos serviços de marketing).\n*   **Contratante (Cliente):** A pessoa física que assina o contrato (dados pessoais completos não fornecidos no trecho, mas a menção de um contratante é clara).\n\n**2. Objeto do Contrato:**\n*   Prestação de serviços de m"
+}

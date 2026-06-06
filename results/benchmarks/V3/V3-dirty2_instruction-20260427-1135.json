@@ -1,0 +1,24 @@
+{
+  "label": "dirty2_instruction",
+  "scenario": "dirty2",
+  "mode": "instruction_strong",
+  "apply_clean": false,
+  "history_turns_before": 6,
+  "history_turns_sent": 6,
+  "faithfulness_score": 0.75,
+  "fact_hits": 3,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": true,
+    "cidade": true,
+    "tipo": true
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1135",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um **Contrato de Prestação de Serviços** detalhando a relação comercial entre as partes envolvidas.\n\nAbaixo está a descrição estruturada do conteúdo, utilizando exclusivamente o texto fornecido:\n\n***\n\n### 📋 Descrição do Documento\n\n**1. Nome das Partes:**\n\n*   **Contratada (Prestadora de Serviços):** CEREJA E OLIVE! A - ME\n    *   **CNPJ:** 37.262.522/0001-71\n    *   **Sede:** Rua Jovino Dinoa, 4470 - Beirol, Macapa, Amapa.\n    *   **Representante Legal:** Fellipe Santos de Oliveira.\n    *   **Contato da Agência:** Telefone móvel: (96) 98130-0384 | WhatsApp: 88-2600 | E-mail: b"
+}

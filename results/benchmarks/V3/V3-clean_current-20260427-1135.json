@@ -1,0 +1,24 @@
+{
+  "label": "clean_current",
+  "scenario": "clean",
+  "mode": "current_tag",
+  "apply_clean": false,
+  "history_turns_before": 0,
+  "history_turns_sent": 0,
+  "faithfulness_score": 0.75,
+  "fact_hits": 3,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": true,
+    "cidade": true,
+    "tipo": true
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1135",
+  "model": "gemma4:e4b",
+  "response_preview": "**(Vault Pilot Agent - Iniciando Análise Documental)**\n\nO conteúdo fornecido é um rascunho ou cópia integral de um **Contrato de Prestação de Serviço**, focado na área de Marketing Digital. A análise foi realizada com alta confiança, pois o texto contém estruturas contratuais completas.\n\n---\n\n### 🔍 Resumo Detalhado do Conteúdo (Para Revisão Humana)\n\nEste documento formaliza a contratação de serviços de marketing digital.\n\n**1. Partes Envolvidas:**\n\n*   **CONTRATADA (Fornecedora de Serviços):** CEREJA E OLIVE! A - ME.\n    *   CNPJ: 37.262.522/0001-71.\n    *   Representante: Fellipe Santos de Ol"
+}

@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 5,
+    "mode": "full",
+    "label": "n5_full"
+  },
+  "tokens_estimated": 328,
+  "mentioned": 9,
+  "correct": 9,
+  "invented": 0,
+  "faithfulness_score": 1.0,
+  "timestamp": "20260427-1009",
+  "model": "gemma4:e4b",
+  "response_preview": "**[Vault Pilot Agent - Iniciando Análise de Diretório]**\n\nOs arquivos no diretório de staging (`/home/conrado/testes/vault/input`) foram listados com sucesso. Todos os arquivos estão contidos na subpasta `CONRADO/ACADEMICO/`, sugerindo que este acervo se refere a materiais acadêmicos de propriedade "
+}

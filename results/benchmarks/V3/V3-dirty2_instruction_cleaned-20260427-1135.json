@@ -1,0 +1,24 @@
+{
+  "label": "dirty2_instruction_cleaned",
+  "scenario": "dirty2",
+  "mode": "instruction_strong",
+  "apply_clean": true,
+  "history_turns_before": 6,
+  "history_turns_sent": 3,
+  "faithfulness_score": 0.75,
+  "fact_hits": 3,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": true,
+    "cidade": true,
+    "tipo": true
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1135",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um **Contrato de Prestação de Serviços** entre duas partes.\n\nA seguir, está a descrição detalhada do seu conteúdo, baseada exclusivamente no texto fornecido:\n\n### 📝 Detalhes do Contrato\n\n**1. Partes Envolvidas:**\n\n*   **CONTRATADA (A Prestadora de Serviços):** CEREJA E OLIVE! A - ME.\n    *   **CNPJ:** 37.262.522/0001-71.\n    *   **Sede:** Rua Jovino Dinoa, 4470 - Beirol, Macapa, Amapa.\n    *   **Representante Legal:** Fellipe Santos de Oliveira (CPF: 886.731.622-20).\n*   **CONTRATANTE (O Contratante):** JOAO CONRADO VASCONCELOS NOGUEIRA.\n    *   **CPF:** 601.4 072-49.\n    *   "
+}

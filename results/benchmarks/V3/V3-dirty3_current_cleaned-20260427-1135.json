@@ -1,0 +1,24 @@
+{
+  "label": "dirty3_current_cleaned",
+  "scenario": "dirty3",
+  "mode": "current_tag",
+  "apply_clean": true,
+  "history_turns_before": 6,
+  "history_turns_sent": 4,
+  "faithfulness_score": 0.5,
+  "fact_hits": 2,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": false,
+    "cnpj": true,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_attempt": false,
+  "known_hallucination": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1135",
+  "model": "gemma4:e4b",
+  "response_preview": "Este documento é um **Contrato de Prestação de Serviços** de marketing digital e conteúdo.\n\nAbaixo está a descrição estruturada dos dados extraídos do texto:\n\n### 📝 Resumo do Conteúdo do Documento\n\n**Tipo de Documento:** Contrato de Prestação de Serviços (Marketing Digital).\n\n**1. Partes Envolvidas:**\n*   **CONTRATADA (Agência/Prestadora):** CEREJA E OLIVE! A - ME.\n    *   **CNPJ:** 37.262.522/0001-71\n    *   *Observação:* É a empresa prestadora dos serviços.\n*   **CONTRATANTE:** JOAO CONTRATANTE (Identificação incompleta no texto, mas é a parte que contrata os serviços).\n    *   *Observação:*"
+}

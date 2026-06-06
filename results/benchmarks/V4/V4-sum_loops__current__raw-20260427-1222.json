@@ -1,0 +1,26 @@
+{
+  "label": "sum_loops__current__raw",
+  "scenario": "summary_loops",
+  "mode": "current_tag",
+  "apply_trunc": false,
+  "history_turns_raw": 7,
+  "history_turns_sent": 7,
+  "faithfulness_score": 0.5,
+  "fact_hits": 2,
+  "total_facts": 4,
+  "hits_detail": {
+    "empresa": true,
+    "cnpj": false,
+    "cidade": false,
+    "tipo": true
+  },
+  "tool_call_markup": false,
+  "hallucination_detected": false,
+  "waiting_pattern": false,
+  "bug_reproduced": false,
+  "file_chars": 2489,
+  "extract_method": "tesseract_ocr",
+  "timestamp": "20260427-1222",
+  "model": "gemma4:e4b",
+  "response_preview": "Com base no texto fornecido, trata-se de um contrato de prestação de serviços de marketing.\n\nAbaixo está o resumo detalhado das informações contidas no documento:\n\n---\n\n### 📑 Resumo do Contrato de Serviços\n\n**Tipo de Contrato:** Prestação de serviços de marketing.\n\n**Partes Envolvidas:**\n*   **Prestadora de Serviço:** Cia. Cereja & Oliva (dados de contato não totalmente visíveis, mas o nome e o ramo de atuação são evidentes).\n*   **Cliente:** João Conrado Vasconcelos Nogueira.\n\n**Detalhes do Acordo:**\n1.  **Serviço Principal:** Marketing digital e gestão de redes sociais.\n2.  **Escopo Detalhad"
+}

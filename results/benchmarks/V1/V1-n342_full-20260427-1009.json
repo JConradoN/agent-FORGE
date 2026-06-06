@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 342,
+    "mode": "full",
+    "label": "n342_full"
+  },
+  "tokens_estimated": 21774,
+  "mentioned": 8,
+  "correct": 0,
+  "invented": 8,
+  "faithfulness_score": 0.0,
+  "timestamp": "20260427-1009",
+  "model": "gemma4:e4b",
+  "response_preview": "Os arquivos encontrados estão organizados em pastas e em um nível superior.\n\n**Pasta `EMILIA`**\n*   `EMILIA.pdf`\n\n**Pasta `EMILIA_FISCAL`**\n*   `comprovante_pagamento_de_energia.pdf`\n\n**Pasta `EMILIA_FISCAL_EXTRATO`**\n*   `extrato_de_energia.pdf`\n\n**Pasta `EMILIA_TRABALHO`**\n*   `carteira_trabalho_e"
+}

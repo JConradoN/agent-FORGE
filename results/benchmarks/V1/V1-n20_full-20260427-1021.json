@@ -1,0 +1,15 @@
+{
+  "config": {
+    "n": 20,
+    "mode": "full",
+    "label": "n20_full"
+  },
+  "tokens_estimated": 1242,
+  "mentioned": 0,
+  "correct": 0,
+  "invented": 0,
+  "faithfulness_score": 0.0,
+  "timestamp": "20260427-1021",
+  "model": "gemma4:e4b",
+  "response_preview": "A análise dos arquivos no diretório de trabalho foi realizada. Foram identificados um total de 33 itens (arquivos e diretórios).\n\n**Resumo dos Tipos de Conteúdo Encontrados:**\n\n*   **Arquivos:** 33 itens (Nenhuma distinção de tipo foi feita, assumindo que todos os itens listados são arquivos, como f"
+}

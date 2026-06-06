@@ -460,6 +460,16 @@ def _mock_chat_tool_call_resp(tool_name: str, args: dict | None = None) -> objec
     return r
 
 
+def _mock_simple_resp(text: str = "Resposta.") -> object:
+    """Mock para /api/generate (sem history, sem tools)."""
+    from unittest.mock import Mock
+    r = Mock()
+    r.status_code = 200
+    r.json.return_value = {"model": "qwen3.5:9b", "response": text, "done": True}
+    r.text = "ok"
+    return r
+
+
 def _mock_chat_text_resp(text: str = "Resposta final.") -> object:
     from unittest.mock import Mock
     r = Mock()
@@ -653,3 +663,158 @@ class TestEvalCommand:
         runner = CliRunner()
         result = runner.invoke(app, ["eval", "--agent-dir", str(agent_dir), "--dataset", str(dataset)])
         assert "3/3" in result.output
+
+
+# ---------------------------------------------------------------------------
+# Loop guard
+# ---------------------------------------------------------------------------
+
+class TestLoopGuard:
+    def test_repeated_tool_call_stops_loop(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import requests
+        from unittest.mock import Mock
+
+        # ciclo 0: pede tool; ciclo 1: pede mesma tool → loop detectado; final: resposta
+        tool_resp = _mock_chat_tool_call_resp("collect_system_health")
+        final_resp = _mock_chat_text_resp("Detectei loop, respondo direto.")
+        monkeypatch.setattr(requests, "post", Mock(side_effect=[
+            tool_resp, tool_resp, final_resp,
+        ]))
+
+        tools = [ToolSpec(name="collect_system_health", description="Coleta")]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("estado?")
+
+        # Deve retornar sem explodir — loop guard acionado
+        assert result["output"] is not None
+        assert len(result["output"]) > 0
+
+    def test_max_tool_cycles_respected(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import requests
+        from unittest.mock import Mock
+
+        # 2 tools diferentes → 2 ciclos → final
+        monkeypatch.setattr(requests, "post", Mock(side_effect=[
+            _mock_chat_tool_call_resp("collect_system_health"),
+            _mock_chat_tool_call_resp("read_log_tail"),
+            _mock_chat_text_resp("Resposta após 2 ciclos."),
+        ]))
+
+        tools = [
+            ToolSpec(name="collect_system_health", description="Saúde"),
+            ToolSpec(name="read_log_tail", description="Logs"),
+        ]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("estado e logs?")
+        assert result["output"] == "Resposta após 2 ciclos."
+
+    def test_tool_calls_log_includes_cycle_number(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import requests
+        from unittest.mock import Mock
+
+        monkeypatch.setattr(requests, "post", Mock(side_effect=[
+            _mock_chat_tool_call_resp("collect_system_health"),
+            _mock_chat_text_resp("OK."),
+        ]))
+
+        tools = [ToolSpec(name="collect_system_health", description="Coleta")]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("estado?")
+
+        log = result["metadata"]["tool_calls_log"]
+        assert log[0]["cycle"] == 0
+
+
+# ---------------------------------------------------------------------------
+# Reflexão autônoma
+# ---------------------------------------------------------------------------
+
+def _make_agent_dir_with_reflection(tmp_path: Path, reflection_rounds: int) -> Path:
+    spec = AgentSpec(
+        spec_version="0.1",
+        agent=AgentIdentity(id="reflect_agent", name="Reflect Agent", purpose="Testing"),
+        persona=AgentPersona(tone="direto", style="técnico"),
+        channel=ChannelSpec(type="cli"),
+        tools=[],
+        memory=MemorySpec(type="none", enabled=False),
+        output=OutputSpec(mode="text"),
+        guardrails=GuardrailSpec(),
+        eval=EvaluationSpec(),
+        deployment=DeploymentSpec(provider="ollama"),
+        model_policy=ModelPolicySpec(default_model="qwen3.5:9b"),
+        workflow=WorkflowSpec(mode="respond_or_tool", reflection_rounds=reflection_rounds),
+    )
+    agent_dir = tmp_path / "reflect_agent"
+    agent_dir.mkdir()
+    save_agent_spec(agent_dir / "agent.yaml", spec)
+    with (agent_dir / "runtime.yaml").open("w", encoding="utf-8") as fh:
+        yaml.safe_dump(build_runtime_config(spec), fh, allow_unicode=True, sort_keys=False)
+    with (agent_dir / "tools.yaml").open("w", encoding="utf-8") as fh:
+        yaml.safe_dump(build_tools_config(spec), fh, allow_unicode=True, sort_keys=False)
+    return agent_dir
+
+
+class TestReflection:
+    def test_zero_reflection_rounds_single_inference(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import requests
+        from unittest.mock import Mock
+
+        # sem tools → _generate_simple → formato "response"
+        mock_post = Mock(return_value=_mock_simple_resp("Primeira resposta."))
+        monkeypatch.setattr(requests, "post", mock_post)
+
+        agent_dir = _make_agent_dir_with_reflection(tmp_path, reflection_rounds=0)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("teste")
+
+        assert result["output"] == "Primeira resposta."
+        assert mock_post.call_count == 1
+
+    def test_one_reflection_round_calls_provider_twice(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import requests
+        from unittest.mock import Mock
+
+        # call 1: inferência principal (simple); call 2: reflexão (simple)
+        monkeypatch.setattr(requests, "post", Mock(side_effect=[
+            _mock_simple_resp("Primeira resposta."),
+            _mock_simple_resp("Resposta refinada."),
+        ]))
+
+        agent_dir = _make_agent_dir_with_reflection(tmp_path, reflection_rounds=1)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("teste")
+
+        assert result["output"] == "Resposta refinada."
+
+    def test_two_reflection_rounds_calls_provider_three_times(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import requests
+        from unittest.mock import Mock
+
+        mock_post = Mock(side_effect=[
+            _mock_simple_resp("v1"),
+            _mock_simple_resp("v2"),
+            _mock_simple_resp("v3"),
+        ])
+        monkeypatch.setattr(requests, "post", mock_post)
+
+        agent_dir = _make_agent_dir_with_reflection(tmp_path, reflection_rounds=2)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("teste")
+
+        assert result["output"] == "v3"
+        assert mock_post.call_count == 3
