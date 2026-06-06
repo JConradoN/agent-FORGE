@@ -5,7 +5,7 @@ import requests
 from agentforge.providers.base import BaseProvider, ProviderError, ProviderRequest, ProviderResponse
 
 _BASE_URL = "http://localhost:11434"
-_TIMEOUT = 120  # seconds — gemma4:e4b needs headroom on larger contexts
+_TIMEOUT = int(__import__("os").environ.get("OLLAMA_TIMEOUT", "900"))  # default 900s, overridable
 
 
 class OllamaProviderError(ProviderError):

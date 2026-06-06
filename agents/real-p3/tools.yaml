@@ -1,0 +1,34 @@
+tools_version: '0.1'
+agent_id: real-p3
+tools:
+- name: write_file
+  required: false
+  description: Escreve arquivo Python no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Usar para criar memory_search.py e test_memory_search.py.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho
+    relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  output_schema: null
+- name: read_file
+  required: false
+  description: Lê arquivo do diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Usar para reler arquivos criados antes de executar testes.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho
+    relativo do arquivo"}},"required":["path"]}'
+  output_schema: null
+- name: run_bash
+  required: false
+  description: Executa comando bash no diretório de trabalho. Use para rodar pytest
+    e verificar se testes passam.
+  category: null
+  status: stable
+  when_to_use: 'Usar para executar: python3 -m pytest test_memory_search.py -v'
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Comando
+    bash a executar"}},"required":["command"]}'
+  output_schema: null

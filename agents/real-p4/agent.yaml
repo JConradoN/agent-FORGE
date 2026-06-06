@@ -1,0 +1,56 @@
+spec_version: '0.1'
+agent:
+  id: real-p4
+  name: Skill Generator
+  purpose: Gera skills completas e acionáveis para Claude Code a partir de descrições. Produz documentação técnica pronta para uso com frontmatter YAML válido.
+persona:
+  tone: técnico
+  style: claro e acionável
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: write_file
+    required: false
+    description: Escreve arquivo no diretório de trabalho.
+    when_to_use: "Usar para criar fox-deploy.md e fox-deploy-test.sh."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  - name: read_file
+    required: false
+    description: Lê arquivo do diretório de trabalho.
+    when_to_use: "Usar para reler a skill criada antes de executar o teste."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"}},"required":["path"]}'
+  - name: run_bash
+    required: false
+    description: Executa comando bash no diretório de trabalho.
+    when_to_use: "Usar para executar: bash fox-deploy-test.sh"
+    input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Comando bash a executar"}},"required":["command"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - incluir frontmatter YAML válido com name e description
+  - incluir seções sobre quando usar, pré-requisitos, passo a passo, erros comuns e exemplos
+  - executar bash fox-deploy-test.sh para validar antes de responder
+  must_not:
+  - criar skill sem executar o teste de validação
+  - omitir comandos docker compose ou notificação via Claudio
+eval:
+  user_score_enabled: false
+  notes: Cenário REAL P4 — skill generator fox-deploy
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:9b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 12
+  reflection_rounds: 0

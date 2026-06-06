@@ -1,0 +1,11 @@
+eval_version: '0.1'
+agent_id: forge-f3
+metrics:
+- semantic_quality
+- tool_use_compliance
+- format_validity
+- consistency
+user_feedback:
+  enabled: false
+  scale: 0-10
+notes: Cenário FORGE F3 — análise de mercado câmbio+cripto

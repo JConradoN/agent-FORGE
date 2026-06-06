@@ -1,0 +1,57 @@
+spec_version: '0.1'
+agent:
+  id: real-p3
+  name: Python Tool Developer
+  purpose: Desenvolve ferramentas Python funcionais com type hints, docstrings, tratamento de erros e testes pytest que realmente passam.
+persona:
+  tone: técnico
+  style: preciso e pragmático
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: write_file
+    required: false
+    description: Escreve arquivo Python no diretório de trabalho.
+    when_to_use: "Usar para criar memory_search.py e test_memory_search.py."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  - name: read_file
+    required: false
+    description: Lê arquivo do diretório de trabalho.
+    when_to_use: "Usar para reler arquivos criados antes de executar testes."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"}},"required":["path"]}'
+  - name: run_bash
+    required: false
+    description: Executa comando bash no diretório de trabalho. Use para rodar pytest e verificar se testes passam.
+    when_to_use: "Usar para executar: python3 -m pytest test_memory_search.py -v"
+    input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Comando bash a executar"}},"required":["command"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - incluir type hints em todas as funções
+  - incluir docstrings descritivas
+  - tratar erro de arquivo não encontrado sem lançar exceção
+  - executar pytest para verificar que testes passam antes de responder
+  must_not:
+  - inventar que os testes passaram sem executar run_bash com pytest
+  - usar mocks frágeis em vez de SQLite temporário real
+eval:
+  user_score_enabled: false
+  notes: Cenário REAL P3 — Python tool com testes reais
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:9b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 15
+  reflection_rounds: 0
