@@ -6,7 +6,7 @@ Diferente de frameworks genéricos de IA, o AgentForge foca na previsibilidade d
 
 ### Diferenciais
 - **Spec-Driven:** O agente nasce de uma especificação YAML (`agent.yaml`) e gera artefatos de runtime imutáveis.
-- **Local-First:** Otimizado para Ollama, com foco em modelos como `gemma4:e4b`.
+- **Local-First:** Otimizado para Ollama, com foco em modelos como `qwen3.5:9b` e `qwen3.5:27b`.
 - **Artefatos Explícitos:** O framework separa o `system_prompt.md` das configurações de modelo, facilitando o versionamento e a auditoria de prompts.
 - **Provider Registry:** Abstração de infraestrutura que permite alternar entre execução real (Ollama) e testes determinísticos (Mock) via configuração de deployment.
 
@@ -18,7 +18,7 @@ Diferente de frameworks genéricos de IA, o AgentForge foca na previsibilidade d
 - **SO:** Linux (Ubuntu/Debian recomendado).
 - **Python:** 3.11 ou superior.
 - **Ollama:** Instalado e rodando (localmente ou via Docker).
-- **Modelo recomendado:** `gemma4:e4b` (estável) ou `qwen3.5:9b` (sensível ao prompt).
+- **Modelo recomendado:** `qwen3.5:9b` (melhor custo-benefício, 7GB VRAM) ou `qwen3.5:27b` (tarefas complexas, 17GB VRAM).
 
 ### Instalação
 1. Clone o repositório:
