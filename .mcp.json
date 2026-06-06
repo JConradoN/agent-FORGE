@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "agentforge": {
-      "command": "/home/conrado/repos/estudo/agents-framework/.venv/bin/agentforge",
+      "command": "/path/to/agents-framework/.venv/bin/agentforge",
       "args": ["mcp"]
     }
   }
