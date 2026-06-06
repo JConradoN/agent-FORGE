@@ -142,7 +142,11 @@ class AgentRuntime:
         return execute_tool(tool_name, **kwargs)
 
     def _build_tools_schema(self) -> list[dict]:
-        """Converte ToolSpec list para formato OpenAI/Ollama."""
+        """Converte ToolSpec list para formato OpenAI/Ollama.
+
+        Se workflow.agents não estiver vazio, injeta run_agent como ferramenta
+        de delegação com a lista de workers disponíveis na descrição.
+        """
         schema = []
         for tool in self.tools:
             description = tool.description or ""
@@ -168,6 +172,39 @@ class AgentRuntime:
                     "parameters": params,
                 },
             })
+
+        # Injeta run_agent quando há workers declarados no workflow.
+        declared_agents = self.agent_spec.workflow.agents
+        if declared_agents:
+            agents_list = "\n".join(
+                f"  - {a.name} (agent_dir={a.agent_dir}): {a.description or 'sem descrição'}"
+                for a in declared_agents
+            )
+            schema.append({
+                "type": "function",
+                "function": {
+                    "name": "run_agent",
+                    "description": (
+                        "Delega uma tarefa para um agente especializado e retorna o output.\n"
+                        f"Agentes disponíveis:\n{agents_list}"
+                    ),
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "agent_dir": {
+                                "type": "string",
+                                "description": "Diretório do agente (use os valores agent_dir listados acima)",
+                            },
+                            "input": {
+                                "type": "string",
+                                "description": "Tarefa ou pergunta para o agente",
+                            },
+                        },
+                        "required": ["agent_dir", "input"],
+                    },
+                },
+            })
+
         return schema
 
     def _run_tool_calling_cycle(
