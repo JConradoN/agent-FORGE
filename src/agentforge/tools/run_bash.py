@@ -52,7 +52,7 @@ def run_bash(command: str) -> str:
     try:
         proc = subprocess.run(
             command,
-            shell=True,
+            shell=True,  # nosec B602 — intentional: this tool executes agent-issued shell commands; blocklist above guards destructive patterns
             capture_output=True,
             text=True,
             cwd=str(workdir),

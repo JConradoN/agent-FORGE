@@ -6,7 +6,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-STAGING_DIR = Path("/home/conrado/testes/vault/input")
+STAGING_DIR = Path(os.environ.get("VAULT_INPUT_DIR", "/tmp/vault/input"))
 
 PdfTxT_EXTENSIONS = {".pdf"}
 DOCX_EXTENSIONS = {".docx", ".doc"}
@@ -19,8 +19,7 @@ def extract_pdf_direct(path: Path) -> dict[str, Any]:
     
     try:
         result = subprocess.run(
-            f"pdftotext -layout '{path}' -",
-            shell=True,
+            ["pdftotext", "-layout", str(path), "-"],
             capture_output=True,
             text=True,
             timeout=30,
@@ -36,16 +35,14 @@ def extract_pdf_direct(path: Path) -> dict[str, Any]:
             with tempfile.TemporaryDirectory() as tmp_dir:
                 tmp_base = str(Path(tmp_dir) / "page")
                 subprocess.run(
-                    f"pdftoppm -png -singlefile '{path}' {tmp_base}",
-                    shell=True,
+                    ["pdftoppm", "-png", "-singlefile", str(path), tmp_base],
                     capture_output=True,
                     timeout=60,
                 )
                 png_file = Path(f"{tmp_base}.png")
                 if png_file.exists():
                     ocr_result = subprocess.run(
-                        f"tesseract '{png_file}' stdout",
-                        shell=True,
+                        ["tesseract", str(png_file), "stdout"],
                         capture_output=True,
                         text=True,
                         timeout=120,
@@ -77,8 +74,7 @@ def _extract_from_docx(path: Path) -> dict[str, Any]:
 
     try:
         result = subprocess.run(
-            f"pandoc '{path}' -t plain",
-            shell=True,
+            ["pandoc", str(path), "-t", "plain"],
             capture_output=True,
             text=True,
             timeout=30,
@@ -94,8 +90,7 @@ def _extract_from_docx(path: Path) -> dict[str, Any]:
 def _extract_from_image(path: Path) -> dict[str, Any]:
     try:
         result = subprocess.run(
-            f"tesseract '{path}' stdout",
-            shell=True,
+            ["tesseract", str(path), "stdout"],
             capture_output=True,
             text=True,
             timeout=60,
