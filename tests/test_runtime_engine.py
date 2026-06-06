@@ -410,3 +410,246 @@ class TestAlternativeProvider:
         result = runner.invoke(app, ["run", "--agent-dir", str(agent_dir), "--input", "Oi"])
         assert result.exit_code == 0, result.output
         assert "mock" in result.output
+
+
+# ---------------------------------------------------------------------------
+# Tool calling pipeline
+# ---------------------------------------------------------------------------
+
+def _make_agent_dir_with_tools(tmp_path: Path, tools: list[ToolSpec]) -> Path:
+    spec = AgentSpec(
+        spec_version="0.1",
+        agent=AgentIdentity(id="tool_agent", name="Tool Agent", purpose="Testing tools"),
+        persona=AgentPersona(tone="direto", style="técnico"),
+        channel=ChannelSpec(type="cli"),
+        tools=tools,
+        memory=MemorySpec(type="none", enabled=False),
+        output=OutputSpec(mode="text"),
+        guardrails=GuardrailSpec(),
+        eval=EvaluationSpec(),
+        deployment=DeploymentSpec(provider="ollama"),
+        model_policy=ModelPolicySpec(default_model="qwen3.5:9b"),
+        workflow=WorkflowSpec(mode="respond_or_tool"),
+    )
+    agent_dir = tmp_path / "tool_agent"
+    agent_dir.mkdir()
+    save_agent_spec(agent_dir / "agent.yaml", spec)
+    with (agent_dir / "runtime.yaml").open("w", encoding="utf-8") as fh:
+        yaml.safe_dump(build_runtime_config(spec), fh, allow_unicode=True, sort_keys=False)
+    with (agent_dir / "tools.yaml").open("w", encoding="utf-8") as fh:
+        yaml.safe_dump(build_tools_config(spec), fh, allow_unicode=True, sort_keys=False)
+    return agent_dir
+
+
+def _mock_chat_tool_call_resp(tool_name: str, args: dict | None = None) -> object:
+    from unittest.mock import Mock
+    r = Mock()
+    r.status_code = 200
+    r.json.return_value = {
+        "model": "qwen3.5:9b",
+        "message": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+                {"function": {"name": tool_name, "arguments": args or {}}}
+            ],
+        },
+        "done": True,
+    }
+    r.text = "ok"
+    return r
+
+
+def _mock_chat_text_resp(text: str = "Resposta final.") -> object:
+    from unittest.mock import Mock
+    r = Mock()
+    r.status_code = 200
+    r.json.return_value = {
+        "model": "qwen3.5:9b",
+        "message": {"role": "assistant", "content": text},
+        "done": True,
+    }
+    r.text = "ok"
+    return r
+
+
+class TestBuildToolsSchema:
+    def test_empty_tools_returns_empty_list(self, tmp_path: Path) -> None:
+        agent_dir = _make_agent_dir_with_tools(tmp_path, [])
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        schema = runtime._build_tools_schema()
+        assert schema == []
+
+    def test_tool_appears_in_schema(self, tmp_path: Path) -> None:
+        tools = [ToolSpec(name="collect_system_health", description="Coleta métricas")]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        schema = runtime._build_tools_schema()
+        assert len(schema) == 1
+        assert schema[0]["type"] == "function"
+        assert schema[0]["function"]["name"] == "collect_system_health"
+
+    def test_when_to_use_included_in_description(self, tmp_path: Path) -> None:
+        tools = [ToolSpec(
+            name="collect_system_health",
+            description="Coleta métricas",
+            when_to_use="quando perguntado sobre saúde do servidor",
+            when_not_to_use="para perguntas sobre código",
+        )]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        schema = runtime._build_tools_schema()
+        desc = schema[0]["function"]["description"]
+        assert "quando perguntado sobre saúde do servidor" in desc
+        assert "para perguntas sobre código" in desc
+
+    def test_multiple_tools_all_appear(self, tmp_path: Path) -> None:
+        tools = [
+            ToolSpec(name="collect_system_health", description="Saúde"),
+            ToolSpec(name="read_log_tail", description="Logs"),
+        ]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        schema = runtime._build_tools_schema()
+        names = [s["function"]["name"] for s in schema]
+        assert "collect_system_health" in names
+        assert "read_log_tail" in names
+
+
+class TestToolCallingCycle:
+    def test_model_calls_tool_and_gets_second_inference(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import requests
+        from unittest.mock import Mock, call
+
+        responses = [
+            _mock_chat_tool_call_resp("collect_system_health"),
+            _mock_chat_text_resp("CPU está em 10%."),
+        ]
+        mock_post = Mock(side_effect=responses)
+        monkeypatch.setattr(requests, "post", mock_post)
+
+        tools = [ToolSpec(name="collect_system_health", description="Coleta métricas")]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("Como está o servidor?")
+
+        assert result["output"] == "CPU está em 10%."
+        assert mock_post.call_count == 2
+
+    def test_tool_calls_logged_in_metadata(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import requests
+        from unittest.mock import Mock
+
+        monkeypatch.setattr(requests, "post", Mock(side_effect=[
+            _mock_chat_tool_call_resp("collect_system_health"),
+            _mock_chat_text_resp("OK."),
+        ]))
+
+        tools = [ToolSpec(name="collect_system_health", description="Coleta")]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("estado?")
+
+        log = result["metadata"]["tool_calls_log"]
+        assert log is not None
+        assert log[0]["tool"] == "collect_system_health"
+
+    def test_no_tool_call_returns_direct_output(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import requests
+        from unittest.mock import Mock
+
+        monkeypatch.setattr(requests, "post", Mock(return_value=_mock_chat_text_resp("Resposta direta.")))
+
+        tools = [ToolSpec(name="collect_system_health", description="Coleta")]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("olá")
+
+        assert result["output"] == "Resposta direta."
+        assert result["metadata"]["tool_calls_log"] is None
+
+    def test_tools_schema_passed_to_provider(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import requests
+        from unittest.mock import Mock
+
+        mock_post = Mock(return_value=_mock_chat_text_resp("ok"))
+        monkeypatch.setattr(requests, "post", mock_post)
+
+        tools = [ToolSpec(name="collect_system_health", description="Coleta")]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        runtime.run("teste")
+
+        posted = mock_post.call_args[1]["json"]
+        assert "tools" in posted
+        assert posted["tools"][0]["function"]["name"] == "collect_system_health"
+
+
+# ---------------------------------------------------------------------------
+# agentforge eval command
+# ---------------------------------------------------------------------------
+
+class TestEvalCommand:
+    def test_eval_creates_jsonl_output(self, tmp_path: Path) -> None:
+        agent_dir = _make_agent_dir_with_provider(tmp_path, "mock")
+        dataset = tmp_path / "dataset.yaml"
+        dataset.write_text(
+            "cases:\n  - input: 'Olá'\n    notes: 'teste básico'\n",
+            encoding="utf-8",
+        )
+        runner = CliRunner()
+        result = runner.invoke(app, [
+            "eval",
+            "--agent-dir", str(agent_dir),
+            "--dataset", str(dataset),
+        ])
+        assert result.exit_code == 0, result.output
+        eval_dir = agent_dir / "eval_runs"
+        assert eval_dir.exists()
+        jsonl_files = list(eval_dir.glob("*.jsonl"))
+        assert len(jsonl_files) == 1
+
+    def test_eval_records_input_and_output(self, tmp_path: Path) -> None:
+        import json as _json
+        agent_dir = _make_agent_dir_with_provider(tmp_path, "mock")
+        dataset = tmp_path / "dataset.yaml"
+        dataset.write_text(
+            "cases:\n  - input: 'Qual é o estado?'\n",
+            encoding="utf-8",
+        )
+        runner = CliRunner()
+        runner.invoke(app, ["eval", "--agent-dir", str(agent_dir), "--dataset", str(dataset)])
+        jsonl = next((agent_dir / "eval_runs").glob("*.jsonl"))
+        entry = _json.loads(jsonl.read_text())
+        assert entry["input"] == "Qual é o estado?"
+        assert entry["ok"] is True
+        assert "output" in entry
+
+    def test_eval_missing_dataset_exits_nonzero(self, tmp_path: Path) -> None:
+        agent_dir = _make_agent_dir_with_provider(tmp_path, "mock")
+        runner = CliRunner()
+        result = runner.invoke(app, [
+            "eval",
+            "--agent-dir", str(agent_dir),
+            "--dataset", str(tmp_path / "ghost.yaml"),
+        ])
+        assert result.exit_code != 0
+
+    def test_eval_reports_case_count(self, tmp_path: Path) -> None:
+        agent_dir = _make_agent_dir_with_provider(tmp_path, "mock")
+        dataset = tmp_path / "dataset.yaml"
+        dataset.write_text(
+            "cases:\n  - input: 'A'\n  - input: 'B'\n  - input: 'C'\n",
+            encoding="utf-8",
+        )
+        runner = CliRunner()
+        result = runner.invoke(app, ["eval", "--agent-dir", str(agent_dir), "--dataset", str(dataset)])
+        assert "3/3" in result.output
