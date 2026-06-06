@@ -12,7 +12,7 @@ Busca cotações de câmbio e cripto via API, analisa tendências e gera relató
 | Campo              | Valor                          |
 |--------------------|--------------------------------|
 | Canal              | cli            |
-| Modelo padrão      | qwen3.5:9b |
+| Modelo padrão      | qwen3.5:27b |
 | Modelo fallback    | —                     |
 | Workflow           | respond_or_tool           |
 | Memória            | desabilitada                  |

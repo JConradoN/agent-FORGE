@@ -12,7 +12,7 @@ Gera skills completas e acionáveis para Claude Code a partir de descrições. P
 | Campo              | Valor                          |
 |--------------------|--------------------------------|
 | Canal              | cli            |
-| Modelo padrão      | qwen3.5:9b |
+| Modelo padrão      | qwen3.5:27b |
 | Modelo fallback    | —                     |
 | Workflow           | respond_or_tool           |
 | Memória            | desabilitada                  |

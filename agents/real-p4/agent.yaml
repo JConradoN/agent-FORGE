@@ -39,6 +39,7 @@ guardrails:
   - incluir frontmatter YAML válido com name e description
   - incluir seções sobre quando usar, pré-requisitos, passo a passo, erros comuns e exemplos
   - executar bash fox-deploy-test.sh para validar antes de responder
+  - terminar a resposta com a frase exata 'SKILL CRIADA'
   must_not:
   - criar skill sem executar o teste de validação
   - omitir comandos docker compose ou notificação via Claudio
@@ -48,7 +49,7 @@ eval:
 deployment:
   provider: ollama
 model_policy:
-  default_model: qwen3.5:9b
+  default_model: qwen3.5:27b
   fallback_model: null
 workflow:
   mode: respond_or_tool

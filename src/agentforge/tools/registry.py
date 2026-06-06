@@ -59,5 +59,12 @@ def _register_builtin_tools() -> None:
     register_tool("run_bash", run_bash)
     register_tool("send_claudio", send_claudio)
 
+    from agentforge.tools.register_tool_file import register_tool_file
+    register_tool("register_tool_file", register_tool_file)
+
+    # Carrega tools geradas por agentes (persiste entre sessões via tool_registry/)
+    from agentforge.tools.dynamic_loader import load_dynamic_tools
+    load_dynamic_tools()
+
 
 _register_builtin_tools()

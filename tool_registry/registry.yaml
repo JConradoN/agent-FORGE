@@ -1,0 +1,11 @@
+tools:
+- created_by: tool-builder+human-fix
+  description: Busca na agent-mesh shared_memory por query LIKE no key e value. Retorna
+    top-3 resultados.
+  file: search_memory.py
+  function: search_memory
+  input_schema: '{"type":"object","properties":{"query":{"type":"string","description":"Termo
+    de busca"},"db_path":{"type":"string","description":"Caminho opcional ao SQLite,
+    default ~/.agent-mesh/state.db"}},"required":["query"]}'
+  name: search_memory
+  registered_at: '2026-06-06T20:14:00.325922+00:00'

@@ -90,6 +90,7 @@ class OllamaProvider(BaseProvider):
             "model": request.model,
             "messages": messages,
             "stream": False,
+            "think": False,  # desativa thinking mode do Qwen3 — evita message.content vazio
         }
         if request.tools_schema:
             payload["tools"] = request.tools_schema
@@ -124,12 +125,17 @@ class OllamaProvider(BaseProvider):
         output_text = message.get("content") or ""
         tool_calls_raw = message.get("tool_calls")
 
-        # When model decides to call tools, content may be empty — that's valid.
+        # qwen3.5 com think:False às vezes coloca o output em message.thinking
+        # quando tools estão no payload — usa como fallback antes de falhar.
         if not output_text and not tool_calls_raw:
-            raise OllamaResponseError(
-                f"Resposta do Ollama (chat) não contém message.content nem tool_calls. "
-                f"Campos recebidos: {list(data.keys())}"
-            )
+            thinking = message.get("thinking") or ""
+            if thinking:
+                output_text = thinking
+            else:
+                raise OllamaResponseError(
+                    f"Resposta do Ollama (chat) não contém message.content nem tool_calls. "
+                    f"Campos recebidos: {list(data.keys())}"
+                )
 
         tool_calls: list[dict] | None = None
         if tool_calls_raw:

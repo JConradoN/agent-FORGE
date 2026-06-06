@@ -24,11 +24,18 @@ Desenvolve ferramentas Python funcionais com type hints, docstrings, tratamento 
 - incluir docstrings descritivas
 - tratar erro de arquivo não encontrado sem lançar exceção
 - executar pytest para verificar que testes passam antes de responder
+- nomear a função pública exatamente search_memory (sem underscore, sem prefixo privado)
+- usar raise ValueError("query cannot be empty") com todas as palavras em minúsculo para query vazia
+- nos testes usar exatamente from memory_search import search_memory
+- usar read_file para reler memory_search.py antes de escrever test_memory_search.py
+- terminar a resposta com a frase exata 'TOOL CRIADO'
 
 ## Comportamentos Proibidos
 
 - inventar que os testes passaram sem executar run_bash com pytest
 - usar mocks frágeis em vez de SQLite temporário real
+- nomear a função com prefixo underscore como _search_shared_memory ou _search
+- criar inconsistência entre o nome da função em memory_search.py e o import nos testes
 
 ## Tools Disponíveis
 
@@ -69,5 +76,5 @@ Executa comando bash no diretório de trabalho. Use para rodar pytest e verifica
 
 ## Política de Modelo e Workflow
 
-- **Modelo padrão:** qwen3.5:9b
+- **Modelo padrão:** qwen3.5:27b
 - **Workflow:** respond_or_tool

@@ -17,6 +17,7 @@ A qualidade de um agente local depende menos do modelo escolhido e mais de como 
 - [Fluxo Básico](#fluxo-básico)
 - [Canais de Execução](#canais-de-execução)
 - [Tool Calling](#tool-calling)
+- [Tool Registry — Agentes que Criam Ferramentas](#tool-registry--agentes-que-criam-ferramentas)
 - [Guardrails Ativos](#guardrails-ativos)
 - [Reflexão Autônoma](#reflexão-autônoma)
 - [Avaliação e Scoring](#avaliação-e-scoring)
@@ -39,6 +40,7 @@ A qualidade de um agente local depende menos do modelo escolhido e mais de como 
 | **Eval com LLM Judge** | Scoring multidimensional usando Ollama local ou Gemini como avaliador. |
 | **4 Canais** | CLI, HTTP (n8n), MCP (Claude Code/Desktop), Telegram — mesma spec, qualquer interface. |
 | **Multi-Agente** | Orquestrador delega subtarefas para workers declarados no YAML via `run_agent`. |
+| **Tool Registry** | Agentes criam, testam e registram novas ferramentas Python em runtime. Tools ficam disponíveis permanentemente para todos os agentes. |
 | **296 testes** | Cobertura ampla garantindo estabilidade do runtime e contratos de API. |
 
 ---
@@ -48,7 +50,22 @@ A qualidade de um agente local depende menos do modelo escolhido e mais de como 
 **Requisitos:**
 - Python 3.11+
 - Ollama instalado e rodando (`docker compose` ou local)
-- Modelo recomendado: `qwen3.5:9b` (melhor custo-benefício, ~7 GB VRAM)
+- Modelo recomendado: `qwen3.5:9b` (tarefas simples) ou `qwen3.5:27b` (tarefas complexas)
+
+### Modelos Recomendados
+
+O AgentForge funciona com qualquer modelo Ollama, mas foi **otimizado empiricamente para a família qwen3.5** com base em 4 meses de benchmarks (ABS → LOP → FORGE → REAL) cobrindo 19 modelos locais.
+
+| Modelo | VRAM | Velocidade* | Uso recomendado |
+|---|---|---|---|
+| `qwen3.5:9b` | ~7 GB | ~45 tok/s | Monitoramento, orquestração, consultas simples |
+| `qwen3.5:27b` | ~17 GB | ~25 tok/s | Coding com testes, análise multi-step, geração de documentação |
+
+*Medido no fox-server (Xeon E5-2696v3 + dual RTX 3060 12GB).
+
+Resultados nos cenários de avaliação com qwen3.5:27b: **FORGE F3 94.4%**, **REAL P4 91.7%**.
+
+> Detalhes metodológicos e critérios de seleção: [`docs/MODEL-STRATEGY.md`](docs/MODEL-STRATEGY.md)
 
 ```bash
 git clone <URL-do-repo>
@@ -183,6 +200,52 @@ tools:
 
 ---
 
+## Tool Registry — Agentes que Criam Ferramentas
+
+O AgentForge implementa o padrão **Voyager**: agentes criam novas ferramentas Python durante a execução, testam com pytest real e as registram permanentemente. Toda ferramenta registrada fica disponível para qualquer agente na próxima sessão — sem reinicialização.
+
+**Fluxo completo:**
+
+```
+tool-builder recebe descrição
+    → write_file: implementação.py
+    → read_file: relê antes de escrever os testes (coerência)
+    → write_file: test_implementacao.py
+    → run_bash: pytest (testes reais, sem mocks)
+    → register_tool_file: copia para tool_registry/ + atualiza registry.yaml
+    → Tool disponível imediatamente e em toda sessão futura
+```
+
+**Usando o tool-builder:**
+
+```bash
+agentforge run --agent-dir agents/tool-builder --input "
+Crie uma tool Python chamada rate_limiter que controla requisições por janela deslizante.
+Após pytest passar, registrar no framework.
+"
+```
+
+**Usando uma tool registrada em outro agente:**
+
+```yaml
+# agent.yaml
+tools:
+  - name: search_memory
+    description: Busca na agent-mesh shared_memory por query LIKE no key e value.
+    when_to_use: "Usar para recuperar contexto de sessões anteriores."
+    input_schema: '{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}'
+```
+
+**Tools disponíveis em `tool_registry/`:**
+
+| Tool | Descrição |
+|---|---|
+| `search_memory` | Busca em `~/.agent-mesh/state.db` por LIKE em key e value. Retorna top-3. |
+
+> Documentação completa: [`docs/TOOL-REGISTRY.md`](docs/TOOL-REGISTRY.md)
+
+---
+
 ## Guardrails Ativos
 
 Guardrails são verificados **após** o output ser gerado, antes de retornar ao usuário.
@@ -302,51 +365,50 @@ O judge pontua cada critério de 0–100 e calcula score médio. Suporta modelos
 
 ```
 agents-framework/
-├── agents/                   # Diretório de agentes (cada um autocontido)
-│   ├── lab-ops/              # Agente de referência — monitoramento de infra
-│   │   ├── agent.yaml        # Spec do agente (fonte de verdade)
-│   │   ├── system_prompt.md  # Prompt gerado
-│   │   ├── runtime.yaml      # Parâmetros de execução
-│   │   ├── tools.yaml        # Schema de ferramentas
-│   │   ├── eval.yaml         # Config de avaliação
-│   │   └── eval_dataset.yaml # Casos de teste
-│   └── ...
+├── agents/                    # Agentes (cada um autocontido)
+│   ├── lab-ops/               # Monitoramento de infra (agente de referência)
+│   ├── tool-builder/          # Cria e registra ferramentas Python
+│   ├── forge-f3/              # Análise de câmbio + cripto (benchmark FORGE F3)
+│   ├── real-p3/               # Python tool com testes reais (benchmark REAL P3)
+│   ├── real-p4/               # Skill generator (benchmark REAL P4)
+│   └── orchestrator/          # Orquestrador multi-agente
+│
+├── tool_registry/             # Ferramentas geradas por agentes
+│   ├── registry.yaml          # Manifesto persistente (gerenciado automaticamente)
+│   └── search_memory.py       # Busca na agent-mesh shared_memory
+│
 ├── src/agentforge/
-│   ├── channels/             # Canais de execução
-│   │   ├── http.py           # FastAPI REST (n8n, automações)
-│   │   ├── mcp_server.py     # FastMCP (Claude Code/Desktop)
-│   │   └── telegram.py       # Bot Telegram (polling async)
-│   ├── cli/
-│   │   └── main.py           # Todos os comandos CLI
-│   ├── core/
-│   │   ├── agent_models.py   # AgentSpec e sub-specs (Pydantic)
-│   │   └── validation.py     # Carregamento e validação de YAML
-│   ├── eval/
-│   │   └── judge.py          # LLM Judge (Ollama + Gemini)
+│   ├── channels/              # Canais de execução
+│   │   ├── http.py            # FastAPI REST (n8n, automações)
+│   │   ├── mcp_server.py      # FastMCP (Claude Code/Desktop)
+│   │   └── telegram.py        # Bot Telegram (polling async)
 │   ├── providers/
-│   │   ├── base.py           # ProviderRequest / ProviderResponse
-│   │   ├── ollama.py         # Integração Ollama (chat + generate)
-│   │   ├── mock.py           # Provider determinístico para testes
-│   │   └── registry.py       # Factory de providers
+│   │   ├── ollama.py          # Integração Ollama (chat + generate + think:false)
+│   │   └── mock.py            # Provider determinístico para testes
 │   ├── runtime/
-│   │   ├── engine.py         # AgentRuntime: pipeline completo
-│   │   └── memory.py         # Histórico, janela, persistência
+│   │   ├── engine.py          # AgentRuntime: pipeline completo
+│   │   └── memory.py          # Histórico, janela, persistência
 │   ├── tools/
-│   │   ├── registry.py       # Execução de ferramentas por nome
-│   │   ├── system_health.py  # collect_system_health
-│   │   ├── read_log_tail.py  # read_log_tail
-│   │   ├── vault_scan.py     # scan_directory
-│   │   └── vault_extract.py  # extração de arquivos vault
-│   ├── generators/
-│   │   └── agent_files.py    # Geração de artefatos a partir da spec
-│   └── wizard/
-│       └── flow.py           # Wizard interativo CLI
-├── tests/                    # 291 testes
+│   │   ├── registry.py        # _ToolRegistry: builtins + dinâmicas
+│   │   ├── dynamic_loader.py  # Carrega tool_registry/ ao inicializar
+│   │   ├── register_tool_file.py  # Valida, copia e registra arquivos Python
+│   │   ├── write_file.py      # Escrita/leitura de arquivos (AGENT_WORKDIR)
+│   │   ├── run_bash.py        # Bash com blocklist de destrutivos
+│   │   ├── http_get.py        # GET HTTP
+│   │   └── send_claudio.py    # Notificação via Telegram (bot Claudio)
+│   └── generators/
+│       └── agent_files.py     # Geração de artefatos a partir da spec
+│
+├── scripts/
+│   └── run_benchmark_eval.py  # Runner dos cenários FORGE + REAL
+│
+├── tests/                     # 278 testes (MockProvider, sem Ollama)
 ├── docs/
-│   ├── ARCHITECTURE.md       # Referência técnica completa
-│   └── BLUEPRINT.md          # Blueprint histórico v1
-├── specs/                    # Schemas YAML do framework
-├── .mcp.json                 # Config MCP para Claude Code
+│   ├── ARCHITECTURE.md        # Referência técnica completa
+│   ├── MODEL-STRATEGY.md      # Seleção de modelos qwen3.5 (empírico)
+│   ├── FINETUNING-STRATEGY.md # Estratégia de fine-tuning LoRA
+│   └── TOOL-REGISTRY.md       # Tool Registry: agentes que criam ferramentas
+├── .mcp.json                  # Config MCP para Claude Code
 └── pyproject.toml
 ```
 
