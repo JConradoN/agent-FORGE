@@ -818,3 +818,117 @@ class TestReflection:
 
         assert result["output"] == "v3"
         assert mock_post.call_count == 3
+
+
+# ---------------------------------------------------------------------------
+# Guardrails ativos
+# ---------------------------------------------------------------------------
+
+def _make_agent_dir_with_guardrails(tmp_path: Path, must_not: list[str]) -> Path:
+    spec = AgentSpec(
+        spec_version="0.1",
+        agent=AgentIdentity(id="guard_agent", name="Guard Agent", purpose="Testing"),
+        persona=AgentPersona(tone="direto", style="técnico"),
+        channel=ChannelSpec(type="cli"),
+        tools=[],
+        memory=MemorySpec(type="none", enabled=False),
+        output=OutputSpec(mode="text"),
+        guardrails=GuardrailSpec(must_not=must_not),
+        eval=EvaluationSpec(),
+        deployment=DeploymentSpec(provider="ollama"),
+        model_policy=ModelPolicySpec(default_model="qwen3.5:9b"),
+        workflow=WorkflowSpec(mode="respond_or_tool"),
+    )
+    agent_dir = tmp_path / "guard_agent"
+    agent_dir.mkdir()
+    save_agent_spec(agent_dir / "agent.yaml", spec)
+    with (agent_dir / "runtime.yaml").open("w", encoding="utf-8") as fh:
+        yaml.safe_dump(build_runtime_config(spec), fh, allow_unicode=True, sort_keys=False)
+    with (agent_dir / "tools.yaml").open("w", encoding="utf-8") as fh:
+        yaml.safe_dump(build_tools_config(spec), fh, allow_unicode=True, sort_keys=False)
+    return agent_dir
+
+
+class TestGuardrails:
+    def test_no_must_not_rules_skips_check(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Sem must_not, nenhuma chamada extra ao provider."""
+        import requests
+        from unittest.mock import Mock
+
+        mock_post = Mock(return_value=_mock_simple_resp("Resposta normal."))
+        monkeypatch.setattr(requests, "post", mock_post)
+
+        agent_dir = _make_agent_dir_with_guardrails(tmp_path, must_not=[])
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("teste")
+
+        assert result["output"] == "Resposta normal."
+        assert mock_post.call_count == 1
+        assert result["metadata"].get("guardrail_violations") is None
+
+    def test_clean_output_passes_without_retry(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Output sem violação: 1 chamada principal + 1 check (NENHUMA)."""
+        import requests
+        from unittest.mock import Mock
+
+        monkeypatch.setattr(requests, "post", Mock(side_effect=[
+            _mock_simple_resp("Resposta legítima."),   # inferência principal
+            _mock_simple_resp("NENHUMA"),               # check guardrail
+        ]))
+
+        agent_dir = _make_agent_dir_with_guardrails(tmp_path, must_not=["inventar dados"])
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("teste")
+
+        assert result["output"] == "Resposta legítima."
+        assert result["metadata"].get("guardrail_violations") is None
+
+    def test_violation_triggers_retry_and_corrects(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Violação detectada → retry → output corrigido, sem violações residuais."""
+        import requests
+        from unittest.mock import Mock
+
+        monkeypatch.setattr(requests, "post", Mock(side_effect=[
+            _mock_simple_resp("Inventei dados falsos."),    # inferência principal
+            _mock_simple_resp("inventar dados"),            # check → violação
+            _mock_simple_resp("Dados reais do sistema."),  # correção (retry)
+            _mock_simple_resp("NENHUMA"),                   # re-check → limpo
+        ]))
+
+        agent_dir = _make_agent_dir_with_guardrails(tmp_path, must_not=["inventar dados"])
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("teste")
+
+        assert result["output"] == "Dados reais do sistema."
+        assert result["metadata"].get("guardrail_violations") is None
+
+    def test_persistent_violation_recorded_in_metadata(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Violação persiste após todos os retries → registrada em guardrail_violations."""
+        import requests
+        from unittest.mock import Mock
+
+        # 1 main + 1 check + 2*(1 retry + 1 check) = 6 chamadas totais
+        monkeypatch.setattr(requests, "post", Mock(side_effect=[
+            _mock_simple_resp("Ainda inventei dados."),    # inferência principal
+            _mock_simple_resp("inventar dados"),           # check inicial → violação
+            _mock_simple_resp("Continuo inventando."),     # retry 0
+            _mock_simple_resp("inventar dados"),           # re-check → ainda violação
+            _mock_simple_resp("Invento mais uma vez."),    # retry 1
+            _mock_simple_resp("inventar dados"),           # re-check → persistente
+        ]))
+
+        agent_dir = _make_agent_dir_with_guardrails(tmp_path, must_not=["inventar dados"])
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        result = runtime.run("teste")
+
+        violations = result["metadata"].get("guardrail_violations")
+        assert violations is not None
+        assert len(violations) > 0

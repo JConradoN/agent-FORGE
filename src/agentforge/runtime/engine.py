@@ -252,6 +252,77 @@ class AgentRuntime:
         final_response = provider.generate(final_req)
         return final_response.output_text, tool_results_log
 
+    def _check_guardrail_violations(self, output_text: str) -> list[str]:
+        """Usa o modelo para detectar quais regras must_not foram violadas no output."""
+        must_not = self.agent_spec.guardrails.must_not
+        if not must_not:
+            return []
+
+        rules = "\n".join(f"- {r}" for r in must_not)
+        prompt = (
+            "Analise o texto abaixo e identifique QUAIS das seguintes regras foram violadas.\n"
+            "Responda APENAS com as regras violadas, uma por linha.\n"
+            "Se nenhuma foi violada, responda exatamente: NENHUMA\n\n"
+            f"Regras proibidas:\n{rules}\n\n"
+            f"Texto a analisar:\n{output_text}"
+        )
+        provider = self._get_provider()
+        req = ProviderRequest(
+            agent_id=self.runtime_config.agent_id,
+            input_text=prompt,
+            system_prompt=None,
+            model=self.runtime_config.model_default,
+            history=[],
+        )
+        resp = provider.generate(req)
+        result = resp.output_text.strip()
+        if not result or result.upper() == "NENHUMA":
+            return []
+        return [line.lstrip("- ").strip() for line in result.splitlines() if line.strip()]
+
+    def _apply_guardrails(
+        self,
+        input_text: str,
+        output_text: str,
+        system_prompt: str | None,
+        history: list[dict],
+        max_retries: int = 2,
+    ) -> tuple[str, list[str]]:
+        """
+        Verifica must_not e re-executa com prompt de correção até max_retries vezes.
+        Retorna (output_text_final, violations_restantes).
+        """
+        violations = self._check_guardrail_violations(output_text)
+        if not violations:
+            return output_text, []
+
+        provider = self._get_provider()
+        for attempt in range(max_retries):
+            self.logger.warning(
+                "guardrail[%d/%d]: violações detectadas: %s",
+                attempt + 1, max_retries, violations,
+            )
+            correction_prompt = (
+                "Sua resposta anterior violou as seguintes restrições:\n"
+                + "\n".join(f"- {v}" for v in violations)
+                + "\n\nReescreva sua resposta sem violar essas restrições.\n\n"
+                f"Pergunta original: {input_text}"
+            )
+            req = ProviderRequest(
+                agent_id=self.runtime_config.agent_id,
+                input_text=correction_prompt,
+                system_prompt=system_prompt,
+                model=self.runtime_config.model_default,
+                history=history,
+            )
+            resp = provider.generate(req)
+            output_text = resp.output_text
+            violations = self._check_guardrail_violations(output_text)
+            if not violations:
+                break
+
+        return output_text, violations
+
     def _reflect(
         self,
         original_input: str,
@@ -470,6 +541,17 @@ class AgentRuntime:
         if reflection_rounds > 0:
             output_text = self._reflect(input_text, output_text, system_prompt, reflection_rounds)
 
+        # Guardrails ativos — verifica must_not e retenta se necessário.
+        guardrail_violations: list[str] = []
+        if self.agent_spec.guardrails.must_not:
+            output_text, guardrail_violations = self._apply_guardrails(
+                input_text, output_text, system_prompt, history
+            )
+            if guardrail_violations:
+                self.logger.error(
+                    "guardrail: violações persistentes após retries: %s", guardrail_violations
+                )
+
         # Update in-memory history for multi-turn sessions.
         if self.runtime_config.conversation_multi_turn:
             self._history.append({"role": "user", "content": input_text})
@@ -499,6 +581,7 @@ class AgentRuntime:
                 "tool_data": tool_data,
                 "tool_calls_log": tool_results_log if tool_results_log else None,
                 "conversation_turn": len(self._history) // 2,
+                "guardrail_violations": guardrail_violations if guardrail_violations else None,
                 **(metadata or {}),
             },
             "provider_response": {
