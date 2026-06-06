@@ -8,4 +8,4 @@ metrics:
 user_feedback:
   enabled: false
   scale: 0-10
-notes: Cenário REAL P3 — Python tool com testes reais
+notes: REAL P3 scenario — Python tool with real tests

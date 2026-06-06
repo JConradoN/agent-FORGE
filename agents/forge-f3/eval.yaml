@@ -8,4 +8,4 @@ metrics:
 user_feedback:
   enabled: false
   scale: 0-10
-notes: Cenário FORGE F3 — análise de mercado câmbio+cripto
+notes: FORGE F3 scenario — exchange+crypto market analysis

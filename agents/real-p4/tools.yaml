@@ -3,31 +3,28 @@ agent_id: real-p4
 tools:
 - name: write_file
   required: false
-  description: Escreve arquivo no diretório de trabalho.
+  description: Writes file to the working directory.
   category: null
   status: stable
-  when_to_use: Usar para criar fox-deploy.md e fox-deploy-test.sh.
+  when_to_use: Use to create fox-deploy.md and fox-deploy-test.sh.
   when_not_to_use: null
-  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho
-    relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
   output_schema: null
 - name: read_file
   required: false
-  description: Lê arquivo do diretório de trabalho.
+  description: Reads file from the working directory.
   category: null
   status: stable
-  when_to_use: Usar para reler a skill criada antes de executar o teste.
+  when_to_use: Use to reread the created skill before running the test.
   when_not_to_use: null
-  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho
-    relativo do arquivo"}},"required":["path"]}'
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"}},"required":["path"]}'
   output_schema: null
 - name: run_bash
   required: false
-  description: Executa comando bash no diretório de trabalho.
+  description: Executes bash command in the working directory.
   category: null
   status: stable
-  when_to_use: 'Usar para executar: bash fox-deploy-test.sh'
+  when_to_use: 'Use to execute: bash fox-deploy-test.sh'
   when_not_to_use: null
-  input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Comando
-    bash a executar"}},"required":["command"]}'
+  input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Bash command to execute"}},"required":["command"]}'
   output_schema: null

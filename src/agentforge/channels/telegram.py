@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def make_message_handler(runtime: AgentRuntime):
-    """Retorna um handler assíncrono que processa mensagens via AgentRuntime."""
+    """Returns an asynchronous handler that processes messages via AgentRuntime."""
 
     async def handle_message(
         update: Update, context: ContextTypes.DEFAULT_TYPE
@@ -32,10 +32,10 @@ def make_message_handler(runtime: AgentRuntime):
             output = result["output"]
             violations = result["metadata"].get("guardrail_violations")
             if violations:
-                output += "\n\n⚠️ Aviso: resposta revisada por guardrails."
+                output += "\n\n⚠️ Warning: response revised by guardrails."
         except Exception as exc:
-            logger.exception("Erro ao processar mensagem do Telegram: %s", exc)
-            output = "Erro ao processar sua mensagem. Tente novamente."
+            logger.exception("Error processing Telegram message: %s", exc)
+            output = "Error processing your message. Please try again."
 
         await update.message.reply_text(output)
 
@@ -52,7 +52,7 @@ def create_application(runtime: AgentRuntime, token: str) -> Application:
 
 def run_polling(runtime: AgentRuntime, token: str) -> None:
     logger.info(
-        "Telegram bot iniciando para agente '%s' (modelo: %s)",
+        "Telegram bot starting for agent '%s' (model: %s)",
         runtime.agent_spec.agent.id,
         runtime.runtime_config.model_default,
     )

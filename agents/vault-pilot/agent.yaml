@@ -2,10 +2,10 @@ spec_version: '0.1'
 agent:
   id: vault-pilot
   name: Vault Pilot Agent
-  purpose: Agente de análise e classificação de documentos em staging (sem modificar arquivos)
+  purpose: Document analysis and classification agent in staging (without modifying files)
 persona:
-  tone: técnico
-  style: preciso
+  tone: technical
+  style: precise
   personality: null
 channel:
   type: cli
@@ -13,10 +13,10 @@ channel:
 tools:
   - name: scan_directory
     required: true
-    description: Lista arquivos no diretório de staging com caminhos, tamanhos e extensões
+    description: Lists files in the staging directory with paths, sizes, and extensions
   - name: extract_file_content
     required: false
-    description: Extrai texto de arquivos (PDF, DOC, DOCX, imagens, etc.)
+    description: Extracts text from files (PDF, DOC, DOCX, images, etc.)
 memory:
   type: session_summary
   enabled: true
@@ -27,14 +27,14 @@ output:
   format: text
 guardrails:
   must:
-  - trabalhar apenas em /home/conrado/testes/vault/input
-  - nunca modificar arquivos reais
-  - usar tools para obtener dados concretos antes de conclusoes
-  - sempre marcar needs_review quando incerto
+  - only work in /home/conrado/testes/vault/input
+  - never modify real files
+  - use tools to obtain concrete data before drawing conclusions
+  - always mark needs_review when uncertain
   must_not:
-  - mover, apagar ou renomear arquivos
-  - acessar vault de produção
-  - inventar fatos
+  - move, delete, or rename files
+  - access production vault
+  - invent facts
 eval:
   user_score_enabled: false
   notes: null

@@ -1,76 +1,76 @@
-# lab-ops — Agente de Referência
+# lab-ops — Reference Agent
 
-Agente operacional para monitoramento de saúde do servidor e inspeção de logs em ambiente de laboratório. É o agente de referência do AgentForge — implementa todos os mecanismos do framework e serve como baseline para validação e benchmarks.
+Operational agent for server health monitoring and log inspection in a laboratory environment. It is the reference agent for AgentForge — it implements all framework mechanisms and serves as a baseline for validation and benchmarks.
 
 ---
 
-## Configuração
+## Configuration
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| Modelo | `qwen3.5:9b` |
+| Model | `qwen3.5:9b` |
 | Provider | `ollama` |
-| Modo | `respond_or_tool` |
-| Max ciclos de tool | 3 |
-| Memória | `session_summary`, 6 turns |
+| Mode | `respond_or_tool` |
+| Max tool cycles | 3 |
+| Memory | `session_summary`, 6 turns |
 
 ---
 
-## Ferramentas
+## Tools
 
-| Ferramenta | Obrigatória | Uso |
+| Tool | Mandatory | Usage |
 |---|---|---|
-| `collect_system_health` | Sim | CPU, RAM, disco, GPU, processos |
-| `read_log_tail` | Não | Últimas linhas de arquivo de log |
+| `collect_system_health` | Yes | CPU, RAM, disk, GPU, processes |
+| `read_log_tail` | No | Last lines of a log file |
 
-### Decisão de tool use
+### Tool use decision
 
-O modelo é instruído via `when_to_use` / `when_not_to_use`:
+The model is instructed via `when_to_use` / `when_not_to_use`:
 
-- `collect_system_health`: usar quando o usuário perguntar sobre saúde do sistema, recursos ou processos
-- `read_log_tail`: usar quando o usuário perguntar sobre logs específicos, erros ou eventos recentes
+- `collect_system_health`: use when the user asks about system health, resources, or processes
+- `read_log_tail`: use when the user asks about specific logs, errors, or recent events
 
 ---
 
 ## Guardrails
 
-**Must (comportamentos obrigatórios):**
-- Sempre executar `collect_system_health` antes de responder sobre saúde do sistema
-- Fornecer recomendações objetivas baseadas nos dados
-- Usar caminhos absolutos ou relativos ao servidor para logs
+**Must (mandatory behaviors):**
+- Always execute `collect_system_health` before responding about system health
+- Provide objective recommendations based on data
+- Use absolute paths or paths relative to the server for logs
 
-**Must-not (proibições verificadas ativamente):**
-- Inventar métricas
-- Acessar arquivos fora do diretório de logs do servidor
-- Alterar qualquer arquivo do sistema
+**Must-not (actively verified prohibitions):**
+- Invent metrics
+- Access files outside the server's log directory
+- Change any system file
 
-Os guardrails `must_not` são verificados pelo próprio modelo após cada output. Se violado, o runtime reenvia um prompt de correção automaticamente.
+The `must_not` guardrails are verified by the model itself after each output. If violated, the runtime automatically resends a correction prompt.
 
 ---
 
-## Executar
+## Run
 
 ```bash
-# CLI direto
-agentforge run --agent-dir agents/lab-ops --input "Como está o servidor?"
+# Direct CLI
+agentforge run --agent-dir agents/lab-ops --input "How is the server?"
 
-# Modo legível
-agentforge run --agent-dir agents/lab-ops --input "Há erros nos logs?" --mode pretty
+# Readable mode
+agentforge run --agent-dir agents/lab-ops --input "Are there errors in the logs?" --mode pretty
 
-# API HTTP (para n8n ou automações)
+# HTTP API (for n8n or automations)
 agentforge serve --agent-dir agents/lab-ops --port 8080
 
-# Bot Telegram
+# Telegram Bot
 export TELEGRAM_BOT_TOKEN="..."
 agentforge telegram --agent-dir agents/lab-ops
 
-# Ferramentas MCP no Claude Code (.mcp.json já configurado)
+# MCP Tools in Claude Code (.mcp.json already configured)
 agentforge mcp --transport stdio
 ```
 
 ---
 
-## Avaliar
+## Evaluate
 
 ```bash
 agentforge eval \
@@ -78,49 +78,49 @@ agentforge eval \
   --dataset agents/lab-ops/eval_dataset.yaml
 ```
 
-O dataset (`eval_dataset.yaml`) contém 8 casos de teste cobrindo:
-- Consulta de saúde geral do sistema
-- Análise de uso de recursos específicos (CPU, RAM, GPU)
-- Inspeção de logs
-- Diagnóstico de processos
-- Questões fora de escopo (deve recusar ou redirecionar)
+The dataset (`eval_dataset.yaml`) contains 8 test cases covering:
+- General system health inquiry
+- Analysis of specific resource usage (CPU, RAM, GPU)
+- Log inspection
+- Process diagnosis
+- Out-of-scope questions (should refuse or redirect)
 
-Resultados salvos em `agents/lab-ops/eval_runs/<timestamp>.jsonl`.
+Results saved in `agents/lab-ops/eval_runs/<timestamp>.jsonl`.
 
 ---
 
-## Estrutura de arquivos
+## File structure
 
 ```
 agents/lab-ops/
-├── agent.yaml         # Spec (fonte de verdade)
-├── system_prompt.md   # Prompt gerado — não editar manualmente
-├── runtime.yaml       # Parâmetros de execução gerados
-├── tools.yaml         # Schema de ferramentas gerado
-├── eval.yaml          # Configuração de avaliação gerada
-├── eval_dataset.yaml  # 8 casos de teste mantidos manualmente
-├── history.json       # Histórico multi-turn (gerado em runtime)
+├── agent.yaml         # Spec (source of truth)
+├── system_prompt.md   # Generated prompt — do not edit manually
+├── runtime.yaml       # Generated execution parameters
+├── tools.yaml         # Generated tool schema
+├── eval.yaml          # Generated evaluation configuration
+├── eval_dataset.yaml  # 8 manually maintained test cases
+├── history.json       # Multi-turn history (generated at runtime)
 └── runs/
-    └── runs.jsonl     # Log de execuções (append-only, gerado em runtime)
+    └── runs.jsonl     # Execution log (append-only, generated at runtime)
 ```
 
 ---
 
-## Por que lab-ops é o agente de referência
+## Why lab-ops is the reference agent
 
-- **Cobre todos os mecanismos**: tool calling model-driven, loop guard, guardrails ativos, reflexão, memória multi-turn, logging, eval
-- **Domínio controlado**: infra local tem estado verificável — fácil validar se a resposta é baseada em dados reais
-- **Guardrails não-triviais**: `must_not: inventar métricas` testa se o modelo alucinat quando as ferramentas falham
-- **Dataset de eval estruturado**: 8 casos com notas sobre comportamento esperado servem como regression suite
+- **Covers all mechanisms**: model-driven tool calling, loop guard, active guardrails, reflection, multi-turn memory, logging, eval
+- **Controlled domain**: local infra has verifiable state — easy to validate if the response is based on real data
+- **Non-trivial guardrails**: `must_not: invent metrics` tests if the model hallucinates when tools fail
+- **Structured eval dataset**: 8 cases with notes on expected behavior serve as a regression suite
 
 ---
 
-## Regenerar artefatos
+## Regenerate artifacts
 
-Se o `agent.yaml` for modificado, regenere os artefatos:
+If `agent.yaml` is modified, regenerate the artifacts:
 
 ```bash
 agentforge generate --path agents/lab-ops/agent.yaml
 ```
 
-Isso atualiza `system_prompt.md`, `runtime.yaml`, `tools.yaml` e `eval.yaml`. O `eval_dataset.yaml` é mantido manualmente e não é sobrescrito.
+This updates `system_prompt.md`, `runtime.yaml`, `tools.yaml`, and `eval.yaml`. `eval_dataset.yaml` is manually maintained and is not overwritten.

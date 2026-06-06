@@ -116,14 +116,14 @@ def extract_file_content(
     if not path.exists():
         return {
             "error": "file_not_found",
-            "message": f"Arquivo não encontrado: {path}",
+            "message": f"File not found: {path}",
             "file_path": str(path),
         }
 
     if not path.is_file():
         return {
             "error": "not_a_file",
-            "message": "Caminho não é um arquivo",
+            "message": "Path is not a file",
             "file_path": str(path),
         }
 

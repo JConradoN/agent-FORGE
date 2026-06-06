@@ -3,17 +3,17 @@ agent_id: lab-ops
 tools:
   - name: collect_system_health
     required: true
-    description: Coleta métricas de saúde do sistema (CPU, memória, disco, GPU, load average, processos)
-    when_to_use: Quando o usuário perguntar sobre estado do servidor, CPU, RAM, disco, GPU, processos, load average, saúde do sistema
-    when_not_to_use: Quando o usuário pedir especificamente sobre logs, syslog, erros recentes
+    description: Collects system health metrics (CPU, memory, disk, GPU, load average, processes)
+    when_to_use: When the user asks about server status, CPU, RAM, disk, GPU, processes, load average, system health
+    when_not_to_use: When the user specifically asks about logs, syslog, recent errors
 
   - name: read_log_tail
     required: false
-    description: Lê as últimas linhas de um arquivo de log do sistema
+    description: Reads the last lines of a system log file
     when_to_use: >
-      Quando o usuário pedir syslog, log de sistema, últimas linhas de log,
-      erros recentes no log, eventos suspeitos em log, verificar saída de log,
-      analisar arquivo de log, /var/log/syslog, messages, kern.log, etc.
+      When the user asks for syslog, system log, last log lines,
+      recent log errors, suspicious log events, check log output,
+      analyze log file, /var/log/syslog, messages, kern.log, etc.
     when_not_to_use: >
-      Quando o usuário pedir apenas métricas de saúde (CPU, RAM, disco) —
-      usar collect_system_health
+      When the user asks only for health metrics (CPU, RAM, disk) —
+      use collect_system_health

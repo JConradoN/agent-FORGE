@@ -2,10 +2,10 @@ spec_version: '0.1'
 agent:
   id: lab-ops
   name: Lab Ops Agent
-  purpose: Agente operacional para monitoramento de saúde do servidor e inspeção de logs em ambiente de laboratório
+  purpose: Operational agent for server health monitoring and log inspection in a laboratory environment
 persona:
-  tone: técnico
-  style: preciso
+  tone: technical
+  style: precise
   personality: null
 channel:
   type: cli
@@ -13,10 +13,10 @@ channel:
 tools:
   - name: collect_system_health
     required: true
-    description: Coleta métricas de saúde do sistema (CPU, memória, disco, GPU, processos)
+    description: Collects system health metrics (CPU, memory, disk, GPU, processes)
   - name: read_log_tail
     required: false
-    description: Lê as últimas linhas de um arquivo de log
+    description: Reads the last lines of a log file
 memory:
   type: session_summary
   enabled: true
@@ -27,13 +27,13 @@ output:
   format: text
 guardrails:
   must:
-  - sempre executar collect_system_health antes de responder sobre saúde do sistema
-  - fornecer recomendações objetivas baseadas nos dados
-  - usar caminhos absolutos ou relativos ao servidor para logs
+  - always execute collect_system_health before responding about system health
+  - provide objective recommendations based on the data
+  - use absolute paths or relative to the server for logs
   must_not:
-  - inventar métricas
-  - acessar arquivos fora do diretório de logs do servidor
-  - alterar qualquer arquivo do sistema
+  - invent metrics
+  - access files outside the server log directory
+  - alter any system file
 eval:
   user_score_enabled: false
   notes: null

@@ -3,7 +3,7 @@ from __future__ import annotations
 from functools import partial
 from typing import Any, Callable
 
-_ToolRegistry: dict[str, Callable] = {}
+ _ToolRegistry: dict[str, Callable] = {}
 
 
 def register_tool(name: str, func: Callable, **default_kwargs: Any) -> None:
@@ -62,7 +62,7 @@ def _register_builtin_tools() -> None:
     from agentforge.tools.register_tool_file import register_tool_file
     register_tool("register_tool_file", register_tool_file)
 
-    # Carrega tools geradas por agentes (persiste entre sessões via tool_registry/)
+    # Loads agent-generated tools (persists between sessions via tool_registry/)
     from agentforge.tools.dynamic_loader import load_dynamic_tools
     load_dynamic_tools()
 

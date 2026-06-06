@@ -1,25 +1,25 @@
 # Skill Generator
 
 **ID:** `real-p4`  
-**Versão da spec:** 0.1
+**Spec version:** 0.1
 
-## Propósito
+## Purpose
 
-Gera skills completas e acionáveis para Claude Code a partir de descrições. Produz documentação técnica pronta para uso com frontmatter YAML válido.
+Generates complete and actionable skills for Claude Code from descriptions. Produces ready-to-use technical documentation with valid YAML frontmatter.
 
-## Configuração
+## Configuration
 
-| Campo              | Valor                          |
+| Field              | Value                          |
 |--------------------|--------------------------------|
-| Canal              | cli            |
-| Modelo padrão      | qwen3.5:27b |
-| Modelo fallback    | —                     |
+| Channel            | cli            |
+| Default model      | qwen3.5:27b |
+| Fallback model     | —                     |
 | Workflow           | respond_or_tool           |
-| Memória            | desabilitada                  |
+| Memory             | disabled                  |
 | Tools              | `write_file`, `read_file`, `run_bash`                   |
-| Saída              | text             |
+| Output             | text             |
 
-## Arquivos gerados
+## Generated files
 
 - `agent.yaml`
 - `system_prompt.md`

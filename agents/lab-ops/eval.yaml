@@ -2,19 +2,19 @@ eval_version: '0.1'
 agent_id: lab-ops
 tests:
   - name: health_check_single_turn
-    description: Ejecutar una sola consulta de health check
-    input: Muestra el estado del servidor
+    description: Execute a single health check query
+    input: Show server status
     expected:
       tool_executed: collect_system_health
       output_contains:
         - cpu
         - memory
-        - disco
+        - disk
   - name: multi_turn_conversation
-    description: Mantener una conversación de múltiples turns
+    description: Maintain a multi-turn conversation
     turns:
-      - input: Estado actual del servidor
-      - input: Cuál es el uso de CPU?
+      - input: Current server status
+      - input: What is the CPU usage?
     expected:
       history_length: 4
       memory_preserved: true

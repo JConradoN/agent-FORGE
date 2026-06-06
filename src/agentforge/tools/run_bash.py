@@ -33,14 +33,14 @@ def _is_blocked(command: str) -> str | None:
     cmd_lower = command.lower()
     for pattern in _BLOCKLIST:
         if re.search(pattern, cmd_lower):
-            return f"[BLOQUEADO] Comando não permitido (padrão: {pattern})."
+            return f"[BLOCKED] Command not allowed (pattern: {pattern})."
     return None
 
 
 def run_bash(command: str) -> str:
-    """Executa command no AGENT_WORKDIR com timeout de 120s. Comandos destrutivos são bloqueados."""
+    """Executes command in AGENT_WORKDIR with a 120s timeout. Destructive commands are blocked."""
     if not command or not command.strip():
-        return "[ERRO] 'command' é obrigatório."
+        return "[ERROR] 'command' is required."
 
     block = _is_blocked(command)
     if block:
@@ -60,9 +60,9 @@ def run_bash(command: str) -> str:
         )
         out = proc.stdout + proc.stderr
         if len(out) > 4000:
-            out = out[:4000] + f"\n... [truncado — {len(out)} chars total]"
-        return out or "(sem saída)"
+            out = out[:4000] + f"\n... [truncated — {len(out)} chars total]"
+        return out or "(no output)"
     except subprocess.TimeoutExpired:
-        return f"[ERRO] Timeout após {BASH_TIMEOUT}s."
+        return f"[ERROR] Timeout after {BASH_TIMEOUT}s."
     except Exception as e:
-        return f"[ERRO] {e}"
+        return f"[ERROR] {e}"

@@ -8,4 +8,4 @@ metrics:
 user_feedback:
   enabled: false
   scale: 0-10
-notes: Agente de criação e registro de tools no tool_registry/
+notes: Agent for creating and registering tools in tool_registry/

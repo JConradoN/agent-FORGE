@@ -1,25 +1,25 @@
-# Analista de Mercado
+# Market Analyst
 
 **ID:** `forge-f3`  
-**Versão da spec:** 0.1
+**Spec version:** 0.1
 
-## Propósito
+## Purpose
 
-Busca cotações de câmbio e cripto via API, analisa tendências e gera relatório com recomendações. Notifica resultado pelo Claudio.
+Fetches exchange rates and crypto quotes via API, analyzes trends, and generates a report with recommendations. Notifies the result through Claudio.
 
-## Configuração
+## Configuration
 
-| Campo              | Valor                          |
+| Field              | Value                          |
 |--------------------|--------------------------------|
-| Canal              | cli            |
-| Modelo padrão      | qwen3.5:27b |
-| Modelo fallback    | —                     |
+| Channel            | cli            |
+| Default model      | qwen3.5:27b |
+| Fallback model     | —                     |
 | Workflow           | respond_or_tool           |
-| Memória            | desabilitada                  |
+| Memory             | disabled                  |
 | Tools              | `http_get`, `write_file`, `send_claudio`                   |
-| Saída              | text             |
+| Output             | text             |
 
-## Arquivos gerados
+## Generated files
 
 - `agent.yaml`
 - `system_prompt.md`

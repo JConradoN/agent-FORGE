@@ -27,50 +27,50 @@ def register_tool_file(
     created_by: str = "tool-builder",
 ) -> dict:
     """
-    Valida, copia e registra um arquivo Python como tool no AgentForge.
+    Validates, copies, and registers a Python file as a tool in AgentForge.
 
-    Após o registro, a tool fica disponível para todos os agentes que a
-    declararem no agent.yaml. O registro persiste entre sessões via
+    After registration, the tool becomes available to all agents that
+    declare it in agent.yaml. Registration persists between sessions via
     tool_registry/registry.yaml.
 
     Args:
-        source_path: Caminho relativo ao AGENT_WORKDIR do arquivo Python.
-        tool_name: Nome da tool (deve ser snake_case, único no registry).
-        function_name: Nome da função Python pública a expor como tool.
-        description: Descrição da tool para uso no schema de tools.
-        input_schema: JSON schema dos parâmetros (string JSON).
-        created_by: Identificação do agente criador.
+        source_path: Path to the Python file relative to AGENT_WORKDIR.
+        tool_name: Name of the tool (must be snake_case, unique in the registry).
+        function_name: Name of the public Python function to expose as a tool.
+        description: Description of the tool for use in the tools schema.
+        input_schema: JSON schema of parameters (JSON string).
+        created_by: Identification of the creator agent.
 
     Returns:
-        dict com success, tool_name, registry_path ou error.
+        dict with success, tool_name, registry_path, or error.
     """
     source = Path(source_path)
     if not source.is_absolute():
         source = _workdir() / source_path
 
     if not source.exists():
-        return {"success": False, "error": f"Arquivo não encontrado: {source}"}
+        return {"success": False, "error": f"File not found: {source}"}
 
     # Validação de sintaxe
     try:
         ast.parse(source.read_text(encoding="utf-8"))
     except SyntaxError as e:
-        return {"success": False, "error": f"Erro de sintaxe: {e}"}
+        return {"success": False, "error": f"Syntax error: {e}"}
 
     # Validação de importação e existência da função
     module_key = f"_agentforge_validate_{tool_name}"
     try:
         spec = importlib.util.spec_from_file_location(module_key, source)
         if spec is None or spec.loader is None:
-            return {"success": False, "error": "Não foi possível carregar o módulo"}
+            return {"success": False, "error": "Could not load the module"}
         module = importlib.util.module_from_spec(spec)
         sys.modules[module_key] = module
         spec.loader.exec_module(module)  # type: ignore[attr-defined]
         func = getattr(module, function_name, None)
         if func is None:
-            return {"success": False, "error": f"Função '{function_name}' não encontrada no módulo"}
+            return {"success": False, "error": f"Function '{function_name}' not found in the module"}
     except Exception as e:
-        return {"success": False, "error": f"Erro ao importar: {e}"}
+        return {"success": False, "error": f"Import error: {e}"}
 
     # Copia para tool_registry/
     REGISTRY_DIR.mkdir(exist_ok=True)
@@ -110,5 +110,5 @@ def register_tool_file(
         "success": True,
         "tool_name": tool_name,
         "registry_path": str(dest),
-        "message": f"Tool '{tool_name}' registrada com sucesso em tool_registry/",
+        "message": f"Tool '{tool_name}' registered successfully in tool_registry/",
     }

@@ -14,86 +14,86 @@ def build_system_prompt(spec: AgentSpec) -> str:
     lines: list[str] = [
         f"# System Prompt: {spec.agent.name}",
         "",
-        "## Identidade",
+        "## Identity",
         "",
-        f"Você é **{spec.agent.name}** (ID: `{spec.agent.id}`).",
+        f"You are **{spec.agent.name}** (ID: `{spec.agent.id}`).",
         "",
-        "## Objetivo",
+        "## Objective",
         "",
         spec.agent.purpose,
         "",
         "## Persona",
         "",
-        f"- **Tom:** {spec.persona.tone}",
-        f"- **Estilo:** {spec.persona.style}",
+        f"- **Tone:** {spec.persona.tone}",
+        f"- **Style:** {spec.persona.style}",
     ]
     if spec.persona.personality:
-        lines.append(f"- **Personalidade:** {spec.persona.personality}")
+        lines.append(f"- **Personality:** {spec.persona.personality}")
 
     lines += [
         "",
-        "## Canal",
+        "## Channel",
         "",
-        f"- **Tipo:** {spec.channel.type}",
+        f"- **Type:** {spec.channel.type}",
     ]
     if spec.channel.interface:
         lines.append(f"- **Interface:** {spec.channel.interface}")
 
-    lines += ["", "## Comportamentos Obrigatórios", ""]
+    lines += ["", "## Mandatory Behaviors", ""]
     if spec.guardrails.must:
         lines += [f"- {item}" for item in spec.guardrails.must]
     else:
-        lines.append("Nenhum definido.")
+        lines.append("None defined.")
 
-    lines += ["", "## Comportamentos Proibidos", ""]
+    lines += ["", "## Forbidden Behaviors", ""]
     if spec.guardrails.must_not:
         lines += [f"- {item}" for item in spec.guardrails.must_not]
     else:
-        lines.append("Nenhum definido.")
+        lines.append("None defined.")
 
-    lines += ["", "## Tools Disponíveis", ""]
+    lines += ["", "## Available Tools", ""]
     if spec.tools:
         for tool in spec.tools:
-            req_tag = " **(obrigatória)**" if tool.required else ""
+            req_tag = " **(mandatory)**" if tool.required else ""
             cat_tag = f" [{tool.category}]" if tool.category else ""
             status_tag = f" `{tool.status}`" if tool.status != "stable" else ""
             lines.append(f"### `{tool.name}`{req_tag}{cat_tag}{status_tag}")
             if tool.description:
                 lines += ["", tool.description]
             if tool.when_to_use:
-                lines += ["", f"**Quando usar:** {tool.when_to_use}"]
+                lines += ["", f"**When to use:** {tool.when_to_use}"]
             if tool.when_not_to_use:
-                lines += ["", f"**Quando NÃO usar:** {tool.when_not_to_use}"]
+                lines += ["", f"**When NOT to use:** {tool.when_not_to_use}"]
             if tool.input_schema:
-                lines += ["", f"**Entrada:** `{tool.input_schema}`"]
+                lines += ["", f"**Input:** `{tool.input_schema}`"]
             if tool.output_schema:
-                lines += ["", f"**Saída:** `{tool.output_schema}`"]
+                lines += ["", f"**Output:** `{tool.output_schema}`"]
             lines.append("")
     else:
-        lines.append("Nenhuma tool definida.")
+        lines.append("No tools defined.")
 
     lines += [
         "",
-        "## Política de Memória",
+        "## Memory Policy",
         "",
-        f"- **Habilitada:** {'sim' if spec.memory.enabled else 'não'}",
-        f"- **Tipo:** {spec.memory.type}",
+        f"- **Enabled:** {'yes' if spec.memory.enabled else 'no'}",
+        f"- **Type:** {spec.memory.type}",
         "",
-        "## Formato de Saída",
+        "## Output Format",
         "",
-        f"- **Modo:** {spec.output.mode}",
+        f"- **Mode:** {spec.output.mode}",
     ]
     if spec.output.format:
-        lines.append(f"- **Formato:** {spec.output.format}")
+        lines.append(f"- **Format:** {spec.output.format}")
 
     lines += [
         "",
-        "## Política de Modelo e Workflow",
+        "## Model and Workflow Policy",
         "",
-        f"- **Modelo padrão:** {spec.model_policy.default_model}",
+        f"- **Default model:** {spec.model_policy.default_model}",
     ]
     if spec.model_policy.fallback_model:
-        lines.append(f"- **Modelo fallback:** {spec.model_policy.fallback_model}")
+        lines.append(f"- **Fallback model:** {spec.model_policy.fallback_model}")
     lines.append(f"- **Workflow:** {spec.workflow.mode}")
     lines.append("")
 
@@ -167,32 +167,32 @@ def build_tools_config(spec: AgentSpec) -> dict:
 
 def build_agent_readme(spec: AgentSpec) -> str:
     fallback = spec.model_policy.fallback_model or "—"
-    tools_list = ", ".join(f"`{t.name}`" for t in spec.tools) if spec.tools else "Nenhuma"
-    memory_info = f"{spec.memory.type} (habilitada)" if spec.memory.enabled else "desabilitada"
+    tools_list = ", ".join(f"`{t.name}`" for t in spec.tools) if spec.tools else "None"
+    memory_info = f"{spec.memory.type} (enabled)" if spec.memory.enabled else "disabled"
 
     lines: list[str] = [
         f"# {spec.agent.name}",
         "",
         f"**ID:** `{spec.agent.id}`  ",
-        f"**Versão da spec:** {spec.spec_version}",
+        f"**Spec version:** {spec.spec_version}",
         "",
-        "## Propósito",
+        "## Purpose",
         "",
         spec.agent.purpose,
         "",
-        "## Configuração",
+        "## Configuration",
         "",
-        f"| Campo              | Valor                          |",
+        f"| Field              | Value                          |",
         f"|--------------------|--------------------------------|",
-        f"| Canal              | {spec.channel.type}            |",
-        f"| Modelo padrão      | {spec.model_policy.default_model} |",
-        f"| Modelo fallback    | {fallback}                     |",
+        f"| Channel              | {spec.channel.type}            |",
+        f"| Default model      | {spec.model_policy.default_model} |",
+        f"| Fallback model    | {fallback}                     |",
         f"| Workflow           | {spec.workflow.mode}           |",
-        f"| Memória            | {memory_info}                  |",
+        f"| Memory            | {memory_info}                  |",
         f"| Tools              | {tools_list}                   |",
-        f"| Saída              | {spec.output.mode}             |",
+        f"| Output              | {spec.output.mode}             |",
         "",
-        "## Arquivos gerados",
+        "## Generated files",
         "",
     ]
     for fname in _GENERATED_FILES:

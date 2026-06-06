@@ -47,15 +47,15 @@ def _html_to_text(raw: str) -> str:
 
 
 def http_get(url: str, headers: dict | None = None) -> str:
-    """Faz GET em url e retorna texto limpo (HTML→texto). Limitado a 4000 chars."""
+    """Performs a GET on url and returns cleaned text (HTML→text). Limited to 4000 chars."""
     try:
         req = urllib.request.Request(url, headers=headers or {})
         with urllib.request.urlopen(req, timeout=30) as r:
             raw = r.read().decode("utf-8", errors="replace")
     except Exception as e:
-        return f"[ERRO] {e}"
+        return f"[ERROR] {e}"
 
     text = _html_to_text(raw)
     if len(text) > HTTP_MAX_CHARS:
-        text = text[:HTTP_MAX_CHARS] + f"\n... [truncado — {len(text)} chars total]"
+        text = text[:HTTP_MAX_CHARS] + f"\n... [truncated — {len(text)} chars total]"
     return text

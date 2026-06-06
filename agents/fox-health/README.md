@@ -1,25 +1,25 @@
 # Fox Health Monitor
 
 **ID:** `fox-health`  
-**Versão da spec:** 0.1
+**Spec version:** 0.1
 
-## Propósito
+## Purpose
 
-Agente de diagnóstico de saúde do sistema fox-server - analisa CPU, memória, disco, GPU e processos
+Diagnostic agent for fox-server system health - analyzes CPU, memory, disk, GPU, and processes
 
-## Configuração
+## Configuration
 
-| Campo              | Valor                          |
+| Field              | Value                          |
 |--------------------|--------------------------------|
-| Canal              | cli            |
-| Modelo padrão      | gemma4:e4b |
-| Modelo fallback    | —                     |
+| Channel            | cli            |
+| Default model      | gemma4:e4b |
+| Fallback model     | —                     |
 | Workflow           | respond_or_tool           |
-| Memória            | desabilitada                  |
+| Memory             | disabled                  |
 | Tools              | `collect_system_health`                   |
-| Saída              | text             |
+| Output             | text             |
 
-## Arquivos gerados
+## Generated files
 
 - `agent.yaml`
 - `system_prompt.md`

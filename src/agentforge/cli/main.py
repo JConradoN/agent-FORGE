@@ -16,30 +16,30 @@ console = Console()
 
 @app.command()
 def info() -> None:
-    """Exibe informações básicas do projeto."""
+    """Displays basic project information."""
     cwd = Path.cwd()
     console.print("[bold]agents-framework[/bold]")
-    console.print("  Versão:    0.1.0")
+    console.print("  Version:    0.1.0")
     console.print("  Status:    bootstrap OK")
-    console.print(f"  Diretório: {cwd}")
+    console.print(f"  Directory: {cwd}")
 
 
 @app.command()
 def validate(
-    root: Path = typer.Option(Path("."), "--root", help="Raiz do projeto a validar"),
+    root: Path = typer.Option(Path("."), "--root", help="Project root to validate"),
 ) -> None:
-    """Valida os spec YAMLs do projeto."""
+    """Validates project spec YAMLs."""
     results = validate_all_specs(root)
 
-    table = Table(title="Validação de specs", show_lines=True)
-    table.add_column("Arquivo", style="cyan", no_wrap=True)
-    table.add_column("Tipo", style="magenta")
+    table = Table(title="Spec validation", show_lines=True)
+    table.add_column("File", style="cyan", no_wrap=True)
+    table.add_column("Type", style="magenta")
     table.add_column("Status", justify="center")
-    table.add_column("Erros")
+    table.add_column("Errors")
 
     all_valid = True
     for r in results:
-        status = "[green]OK[/green]" if r.valid else "[red]FALHOU[/red]"
+        status = "[green]OK[/green]" if r.valid else "[red]FAILED[/red]"
         errors = "\n".join(r.errors) if r.errors else ""
         table.add_row(r.path, r.spec_type, status, errors)
         if not r.valid:
@@ -53,57 +53,57 @@ def validate(
 
 @app.command()
 def wizard(
-    root: Path = typer.Option(Path("."), "--root", help="Raiz do projeto"),
+    root: Path = typer.Option(Path("."), "--root", help="Project root"),
 ) -> None:
-    """Wizard interativo para criar spec de agente."""
+    """Interactive wizard to create agent spec."""
     from agentforge.wizard.flow import run_agent_wizard
 
     output_path = run_agent_wizard(root)
-    console.print(f"\n[green]Spec do agente gerada em:[/green] {output_path}")
+    console.print(f"\n[green]Agent spec generated at:[/green] {output_path}")
 
 
 @app.command(name="validate-agent")
 def validate_agent(
-    path: Path = typer.Option(..., "--path", help="Caminho do agent.yaml a validar"),
+    path: Path = typer.Option(..., "--path", help="Path to agent.yaml to validate"),
 ) -> None:
-    """Valida um agent.yaml."""
+    """Validates an agent.yaml."""
     try:
         spec = validate_agent_spec(path)
         console.print(f"[green]OK[/green] — {spec.agent.name} ({path})")
     except (FileNotFoundError, ValueError, ValidationError) as exc:
-        console.print(f"[red]FALHOU[/red] — {exc}")
+        console.print(f"[red]FAILED[/red] — {exc}")
         raise typer.Exit(code=1)
 
 
 @app.command()
 def generate(
-    path: Path = typer.Option(..., "--path", help="Caminho do agent.yaml"),
+    path: Path = typer.Option(..., "--path", help="Path to agent.yaml"),
 ) -> None:
-    """Gera artefatos derivados de um agent.yaml."""
+    """Generates artifacts derived from an agent.yaml."""
     from agentforge.generators.agent_files import generate_agent_files
 
     try:
         generated = generate_agent_files(path)
         for p in generated:
-            console.print(f"  [green]gerado:[/green] {p}")
+            console.print(f"  [green]generated:[/green] {p}")
     except (FileNotFoundError, ValueError, ValidationError) as exc:
-        console.print(f"[red]ERRO[/red] — {exc}")
+        console.print(f"[red]ERROR[/red] — {exc}")
         raise typer.Exit(code=1)
 
 
 @app.command()
 def run(
-    agent_dir: Path = typer.Option(Path("agents/claudio"), "--agent-dir", help="Diretório do agente"),
-    input_text: str = typer.Option(..., "--input", help="Texto de entrada para o agente"),
-    mode: str = typer.Option("raw", "--mode", help="Modo de saída: raw (JSON) ou pretty (human-readable)"),
+    agent_dir: Path = typer.Option(Path("agents/claudio"), "--agent-dir", help="Agent directory"),
+    input_text: str = typer.Option(..., "--input", help="Input text for the agent"),
+    mode: str = typer.Option("raw", "--mode", help="Output mode: raw (JSON) or pretty (human-readable)"),
 ) -> None:
-    """Executa o agente usando o provider configurado."""
+    """Executes the agent using the configured provider."""
     from agentforge.providers.base import ProviderError
     from agentforge.providers.registry import ProviderNotImplementedError
     from agentforge.runtime.engine import AgentRuntime
 
     if mode not in ("raw", "pretty"):
-        console.print(f"[red]Modo inválido:[/red] {mode}. Use 'raw' ou 'pretty'.")
+        console.print(f"[red]Invalid mode:[/red] {mode}. Use 'raw' or 'pretty'.")
         raise typer.Exit(code=1)
 
     try:
@@ -119,22 +119,22 @@ def run(
         else:
             console.print_json(json.dumps(result))
     except ProviderNotImplementedError as exc:
-        console.print(f"[red]Provider não disponível[/red] — {exc}")
+        console.print(f"[red]Provider not available[/red] — {exc}")
         raise typer.Exit(code=1)
     except ProviderError as exc:
-        console.print(f"[red]Erro no provider[/red] — {exc}")
+        console.print(f"[red]Provider error[/red] — {exc}")
         raise typer.Exit(code=1)
     except (FileNotFoundError, ValueError, ValidationError) as exc:
-        console.print(f"[red]ERRO[/red] — {exc}")
+        console.print(f"[red]ERROR[/red] — {exc}")
         raise typer.Exit(code=1)
 
 
 @app.command()
 def eval(
-    agent_dir: Path = typer.Option(..., "--agent-dir", help="Diretório do agente"),
-    dataset: Path = typer.Option(..., "--dataset", help="Arquivo YAML com casos de teste"),
+    agent_dir: Path = typer.Option(..., "--agent-dir", help="Agent directory"),
+    dataset: Path = typer.Option(..., "--dataset", help="YAML file with test cases"),
 ) -> None:
-    """Executa avaliação do agente com um dataset de casos."""
+    """Executes agent evaluation with a case dataset."""
     import datetime as dt
 
     import yaml
@@ -144,19 +144,19 @@ def eval(
     from agentforge.runtime.engine import AgentRuntime
 
     if not dataset.exists():
-        console.print(f"[red]Dataset não encontrado:[/red] {dataset}")
+        console.print(f"[red]Dataset not found:[/red] {dataset}")
         raise typer.Exit(code=1)
 
     raw = yaml.safe_load(dataset.read_text(encoding="utf-8"))
     cases = raw.get("cases", [])
     if not cases:
-        console.print("[red]Dataset vazio ou sem campo 'cases'.[/red]")
+        console.print("[red]Dataset empty or missing 'cases' field.[/red]")
         raise typer.Exit(code=1)
 
     try:
         runtime = AgentRuntime.from_agent_dir(agent_dir)
     except (FileNotFoundError, ValueError) as exc:
-        console.print(f"[red]ERRO ao carregar agente[/red] — {exc}")
+        console.print(f"[red]ERROR loading agent[/red] — {exc}")
         raise typer.Exit(code=1)
 
     timestamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d-%H%M%S")
@@ -164,9 +164,9 @@ def eval(
     eval_dir.mkdir(exist_ok=True)
     out_path = eval_dir / f"{timestamp}.jsonl"
 
-    console.print(f"[bold]Avaliação:[/bold] {runtime.agent_spec.agent.name}")
-    console.print(f"  Dataset: {dataset} ({len(cases)} casos)")
-    console.print(f"  Saída:   {out_path}")
+    console.print(f"[bold]Evaluation:[/bold] {runtime.agent_spec.agent.name}")
+    console.print(f"  Dataset: {dataset} ({len(cases)} cases)")
+    console.print(f"  Output:   {out_path}")
     console.print("")
 
     eval_spec = runtime.agent_spec.eval
@@ -174,7 +174,7 @@ def eval(
     criteria = eval_spec.criteria
     use_judge = bool(judge_model and criteria)
     if use_judge:
-        console.print(f"  Judge:   {judge_model} ({len(criteria)} critérios)")
+        console.print(f"  Judge:   {judge_model} ({len(criteria)} criteria)")
         from agentforge.eval.judge import score as judge_score
     console.print("")
 
@@ -208,21 +208,21 @@ def eval(
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
     console.print("")
-    console.print(f"[bold]Resultado:[/bold] {passed}/{len(cases)} casos OK")
+    console.print(f"[bold]Result:[/bold] {passed}/{len(cases)} cases OK")
     if scores:
         avg = round(sum(scores) / len(scores))
-        console.print(f"[bold]Score médio:[/bold] {avg}%")
-    console.print(f"[green]Salvo em:[/green] {out_path}")
+        console.print(f"[bold]Average score:[/bold] {avg}%")
+    console.print(f"[green]Saved to:[/green] {out_path}")
 
 
 @app.command()
 def serve(
-    agent_dir: Path = typer.Option(..., "--agent-dir", help="Diretório do agente"),
-    host: str = typer.Option("0.0.0.0", "--host", help="Host de escuta"),
-    port: int = typer.Option(8080, "--port", help="Porta HTTP"),
-    reload: bool = typer.Option(False, "--reload", help="Auto-reload em desenvolvimento"),
+    agent_dir: Path = typer.Option(..., "--agent-dir", help="Agent directory"),
+    host: str = typer.Option("0.0.0.0", "--host", help="Listening host"),
+    port: int = typer.Option(8080, "--port", help="HTTP port"),
+    reload: bool = typer.Option(False, "--reload", help="Auto-reload in development"),
 ) -> None:
-    """Sobe o agente como servidor HTTP (compatível com n8n, Telegram, etc)."""
+    """Starts the agent as an HTTP server (compatible with n8n, Telegram, etc.)."""
     import uvicorn
 
     from agentforge.channels.http import create_app
@@ -231,13 +231,13 @@ def serve(
     try:
         runtime = AgentRuntime.from_agent_dir(agent_dir)
     except (FileNotFoundError, ValueError) as exc:
-        console.print(f"[red]ERRO ao carregar agente[/red] — {exc}")
+        console.print(f"[red]ERROR loading agent[/red] — {exc}")
         raise typer.Exit(code=1)
 
     fast_app = create_app(runtime)
 
     console.print(f"[bold]AgentForge HTTP[/bold] — {runtime.agent_spec.agent.name}")
-    console.print(f"  Modelo:    {runtime.runtime_config.model_default}")
+    console.print(f"  Model:    {runtime.runtime_config.model_default}")
     console.print(f"  Provider:  {runtime.runtime_config.provider}")
     console.print(f"  Endpoint:  http://{host}:{port}")
     console.print(f"  POST /run  {{\"input\": \"...\"}}")
@@ -249,11 +249,11 @@ def serve(
 
 @app.command(name="mcp")
 def mcp_server(
-    transport: str = typer.Option("stdio", "--transport", help="Transporte: stdio (Claude Code) ou http"),
-    host: str = typer.Option("0.0.0.0", "--host", help="Host (apenas transport=http)"),
-    port: int = typer.Option(8081, "--port", help="Porta (apenas transport=http)"),
+    transport: str = typer.Option("stdio", "--transport", help="Transport: stdio (Claude Code) or http"),
+    host: str = typer.Option("0.0.0.0", "--host", help="Host (only for transport=http)"),
+    port: int = typer.Option(8081, "--port", help="Port (only for transport=http)"),
 ) -> None:
-    """Inicia o servidor MCP — expõe ferramentas para Claude Code / Claude Desktop."""
+    """Starts the MCP server — exposes tools to Claude Code / Claude Desktop."""
     from agentforge.channels.mcp_server import run_http, run_stdio
 
     if transport == "stdio":
@@ -262,40 +262,40 @@ def mcp_server(
         console.print(f"[bold]AgentForge MCP[/bold] — HTTP/SSE em http://{host}:{port}")
         run_http(host=host, port=port)
     else:
-        console.print(f"[red]Transport inválido:[/red] {transport}. Use 'stdio' ou 'http'.")
+        console.print(f"[red]Invalid transport:[/red] {transport}. Use 'stdio' or 'http'.")
         raise typer.Exit(code=1)
 
 
 @app.command()
 def telegram(
-    agent_dir: Path = typer.Option(..., "--agent-dir", help="Diretório do agente"),
+    agent_dir: Path = typer.Option(..., "--agent-dir", help="Agent directory"),
     token: str = typer.Option(
         "",
         "--token",
         envvar="TELEGRAM_BOT_TOKEN",
-        help="Token do bot Telegram (ou env TELEGRAM_BOT_TOKEN)",
+        help="Telegram bot token (or TELEGRAM_BOT_TOKEN env)",
     ),
 ) -> None:
-    """Sobe o agente como bot Telegram (polling)."""
+    """Starts the agent as a Telegram bot (polling)."""
     from pydantic import ValidationError
 
     from agentforge.channels.telegram import run_polling
     from agentforge.runtime.engine import AgentRuntime
 
     if not token:
-        console.print("[red]ERRO[/red] — Token não fornecido. Use --token ou TELEGRAM_BOT_TOKEN.")
+        console.print("[red]ERROR[/red] — Token not provided. Use --token or TELEGRAM_BOT_TOKEN.")
         raise typer.Exit(code=1)
 
     try:
         runtime = AgentRuntime.from_agent_dir(agent_dir)
     except (FileNotFoundError, ValueError, ValidationError) as exc:
-        console.print(f"[red]ERRO ao carregar agente[/red] — {exc}")
+        console.print(f"[red]ERROR loading agent[/red] — {exc}")
         raise typer.Exit(code=1)
 
     console.print(f"[bold]AgentForge Telegram[/bold] — {runtime.agent_spec.agent.name}")
-    console.print(f"  Modelo:   {runtime.runtime_config.model_default}")
+    console.print(f"  Model:   {runtime.runtime_config.model_default}")
     console.print(f"  Provider: {runtime.runtime_config.provider}")
-    console.print(f"  Modo:     polling (Ctrl+C para parar)")
+    console.print(f"  Mode:     polling (Ctrl+C to stop)")
     console.print("")
 
     run_polling(runtime, token)

@@ -37,15 +37,15 @@ def _opt(raw: str) -> str | None:
 
 def _wizard_single_tool(index: int) -> ToolSpec:
     typer.echo(f"\n  Tool {index + 1}:")
-    name = typer.prompt("    Nome da tool")
-    description = _opt(typer.prompt("    Descrição", default=""))
-    category = _opt(typer.prompt("    Categoria (search/compute/io/api/...)", default=""))
-    required = typer.confirm("    É obrigatória?", default=False)
+    name = typer.prompt("    Tool name")
+    description = _opt(typer.prompt("    Description", default=""))
+    category = _opt(typer.prompt("    Category (search/compute/io/api/...)", default=""))
+    required = typer.confirm("    Is it mandatory?", default=False)
     status = typer.prompt("    Status (stable/optional/experimental)", default="stable")
-    when_to_use = _opt(typer.prompt("    Quando usar (vazio para pular)", default=""))
-    when_not_to_use = _opt(typer.prompt("    Quando NÃO usar (vazio para pular)", default=""))
-    input_schema = _opt(typer.prompt("    Contrato de entrada (ex: query:str — vazio para pular)", default=""))
-    output_schema = _opt(typer.prompt("    Contrato de saída (ex: results:list — vazio para pular)", default=""))
+    when_to_use = _opt(typer.prompt("    When to use (empty to skip)", default=""))
+    when_not_to_use = _opt(typer.prompt("    When NOT to use (empty to skip)", default=""))
+    input_schema = _opt(typer.prompt("    Input contract (e.g.: query:str — empty to skip)", default=""))
+    output_schema = _opt(typer.prompt("    Output contract (e.g.: results:list — empty to skip)", default=""))
     return ToolSpec(
         name=name,
         required=required,
@@ -62,53 +62,53 @@ def _wizard_single_tool(index: int) -> ToolSpec:
 def run_agent_wizard(root: str | Path) -> Path:
     root = Path(root)
 
-    typer.echo("\nWizard de criação de agente\n")
+    typer.echo("\nAgent creation wizard\n")
 
-    # --- Identidade ---
-    name = typer.prompt("Nome do agente")
+    # --- Identity ---
+    name = typer.prompt("Agent name")
     agent_id_default = _slugify(name)
-    agent_id = _opt(typer.prompt("ID do agente", default=agent_id_default)) or agent_id_default
-    purpose = typer.prompt("Propósito do agente")
+    agent_id = _opt(typer.prompt("Agent ID", default=agent_id_default)) or agent_id_default
+    purpose = typer.prompt("Agent purpose")
 
-    # --- Canal e persona ---
-    channel_type = typer.prompt("Canal (cli, telegram, web, api)")
-    tone = typer.prompt("Tom", default="direto")
-    style = typer.prompt("Estilo", default="técnico")
-    personality = _opt(typer.prompt("Personalidade (vazio para pular)", default=""))
+    # --- Channel and persona ---
+    channel_type = typer.prompt("Channel (cli, telegram, web, api)")
+    tone = typer.prompt("Tone", default="direct")
+    style = typer.prompt("Style", default="technical")
+    personality = _opt(typer.prompt("Personality (empty to skip)", default=""))
 
-    # --- Modelo e provider ---
-    default_model = typer.prompt("Modelo padrão", default="gemma4:e4b")
-    fallback_model = _opt(typer.prompt("Modelo fallback (vazio para nenhum)", default=""))
-    provider = typer.prompt("Provider de deployment", default="ollama")
+    # --- Model and provider ---
+    default_model = typer.prompt("Default model", default="gemma4:e4b")
+    fallback_model = _opt(typer.prompt("Fallback model (empty for none)", default=""))
+    provider = typer.prompt("Deployment provider", default="ollama")
 
     # --- Workflow ---
-    workflow_mode = typer.prompt("Modo do workflow", default="respond_or_tool")
-    multi_turn = typer.confirm("Habilitar multi-turn (conversa contínua)?", default=False)
+    workflow_mode = typer.prompt("Workflow mode", default="respond_or_tool")
+    multi_turn = typer.confirm("Enable multi-turn (continuous conversation)?", default=False)
 
-    # --- Memória ---
-    memory_enabled = typer.confirm("Habilitar memória?", default=False)
+    # --- Memory ---
+    memory_enabled = typer.confirm("Enable memory?", default=False)
     memory_type = "none"
     memory_max_turns = 0
     memory_policy = "truncate"
     if memory_enabled:
-        memory_type = typer.prompt("Tipo de memória", default="session_summary")
-        max_turns_raw = typer.prompt("Limite de turnos no histórico (0 = ilimitado)", default="0")
+        memory_type = typer.prompt("Memory type", default="session_summary")
+        max_turns_raw = typer.prompt("History turn limit (0 = unlimited)", default="0")
         try:
             memory_max_turns = max(0, int(max_turns_raw))
         except ValueError:
             memory_max_turns = 0
-        memory_policy = typer.prompt("Política de memória (truncate/summarize)", default="truncate")
+        memory_policy = typer.prompt("Memory policy (truncate/summarize)", default="truncate")
 
-    # --- Saída e avaliação ---
-    output_format = typer.prompt("Formato de saída", default="text")
-    user_score = typer.confirm("Habilitar score do usuário?", default=False)
+    # --- Output and evaluation ---
+    output_format = typer.prompt("Output format", default="text")
+    user_score = typer.confirm("Enable user score?", default=False)
 
     # --- Guardrails ---
-    must_raw = typer.prompt("Comportamentos obrigatórios (vírgula, vazio para nenhum)", default="")
-    must_not_raw = typer.prompt("Comportamentos proibidos (vírgula, vazio para nenhum)", default="")
+    must_raw = typer.prompt("Mandatory behaviors (comma-separated, empty for none)", default="")
+    must_not_raw = typer.prompt("Forbidden behaviors (comma-separated, empty for none)", default="")
 
     # --- Tools ---
-    n_tools_raw = typer.prompt("Quantas tools você quer declarar? (0 para nenhuma)", default="0")
+    n_tools_raw = typer.prompt("How many tools do you want to declare? (0 for none)", default="0")
     try:
         n_tools = max(0, int(n_tools_raw))
     except ValueError:
@@ -116,11 +116,11 @@ def run_agent_wizard(root: str | Path) -> Path:
 
     tools: list[ToolSpec] = []
     if n_tools > 0:
-        typer.echo("\nDeclaração de tools:")
+        typer.echo("\nTool declaration:")
         for i in range(n_tools):
             tools.append(_wizard_single_tool(i))
 
-    # --- Construção do spec ---
+    # --- Build spec ---
     spec = AgentSpec(
         spec_version="0.1",
         agent=AgentIdentity(id=agent_id, name=name, purpose=purpose),
@@ -144,20 +144,20 @@ def run_agent_wizard(root: str | Path) -> Path:
         workflow=WorkflowSpec(mode=workflow_mode, multi_turn=multi_turn),
     )
 
-    # --- Salvar agent.yaml ---
+    # --- Save agent.yaml ---
     agent_yaml_path = root / "agents" / agent_id / "agent.yaml"
     save_agent_spec(agent_yaml_path, spec)
-    typer.echo(f"\nagent.yaml salvo em: {agent_yaml_path}")
+    typer.echo(f"\nagent.yaml saved to: {agent_yaml_path}")
 
-    # --- Gerar arquivos derivados ---
+    # --- Generate derived files ---
     from agentforge.generators.agent_files import generate_agent_files
 
     generated = generate_agent_files(agent_yaml_path)
-    typer.echo("\nArquivos gerados:")
+    typer.echo("\nGenerated files:")
     for p in generated:
         typer.echo(f"  {p.name}")
 
-    typer.echo(f"\nPara testar o agente:")
-    typer.echo(f'  agentforge run --agent-dir {agent_yaml_path.parent} --input "Olá"')
+    typer.echo(f"\nTo test the agent:")
+    typer.echo(f'  agentforge run --agent-dir {agent_yaml_path.parent} --input "Hello"')
 
     return agent_yaml_path

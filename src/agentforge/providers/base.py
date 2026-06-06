@@ -30,7 +30,7 @@ class ProviderResponse(BaseModel):
 
 
 class ProviderError(Exception):
-    """Exceção base para todos os erros de provider."""
+    """Base exception for all provider errors."""
 
 
 class BaseProvider(ABC):

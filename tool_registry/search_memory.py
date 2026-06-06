@@ -6,13 +6,13 @@ from typing import Optional
 
 
 def _get_default_db_path() -> str:
-    """Retorna o caminho padrão para o banco de dados SQLite do agent-mesh.
+    """Returns the default path for the agent-mesh SQLite database.
     
     Returns:
-        Caminho completo para ~/.agent-mesh/state.db
+        Full path to ~/.agent-mesh/state.db
     
     Raises:
-        RuntimeError: Se não for possível determinar a home directory.
+        RuntimeError: If it's not possible to determine the home directory.
     """
     home_dir = os.path.expanduser("~")
     if not home_dir or home_dir == "~":
@@ -21,13 +21,13 @@ def _get_default_db_path() -> str:
 
 
 def _connect_to_db(db_path: str) -> sqlite3.Connection | None:
-    """Conecta ao banco de dados SQLite se ele existir.
+    """Connects to the SQLite database if it exists.
     
     Args:
-        db_path: Caminho para o arquivo do banco de dados.
+        db_path: Path to the database file.
         
     Returns:
-        Conexão SQLite ou None se o arquivo não existir.
+        SQLite connection or None if the file does not exist.
     """
     if not os.path.exists(db_path):
         return None
@@ -38,27 +38,27 @@ def _connect_to_db(db_path: str) -> sqlite3.Connection | None:
 
 
 def search_memory(query: str, db_path: Optional[str] = None) -> list[dict]:
-    """Busca na shared_memory do agent-mesh por termos similares ao query.
+    """Searches the agent-mesh shared_memory for terms similar to the query.
     
-    Realiza uma busca LIKE nas colunas 'key' e 'value' da tabela 
-    'shared_memory', retornando os 3 melhores resultados com previews
-    dos valores truncados para 200 caracteres.
+    Performs a LIKE search on the 'key' and 'value' columns of the 
+    'shared_memory' table, returning the top 3 results with value previews 
+    truncated to 200 characters.
     
     Args:
-        query: Termo de busca obrigatório (não pode ser vazio).
-        db_path: Caminho opcional para o banco de dados SQLite. Se não 
-                 fornecido, usa ~/.agent-mesh/state.db por padrão.
+        query: Mandatory search term (cannot be empty).
+        db_path: Optional path to the SQLite database. If not 
+                 provided, uses ~/.agent-mesh/state.db by default.
         
     Returns:
-        Lista de dicionários com estrutura: [{key, value_preview, agent, updated_at}].
-        Retorna lista vazia se o arquivo do banco não existir ou não houver resultados.
+        List of dictionaries with structure: [{key, value_preview, agent, updated_at}].
+        Returns an empty list if the database file does not exist or there are no results.
         
     Raises:
-        ValueError: Se a query for vazia ou apenas espaços em branco.
+        ValueError: If the query is empty or just whitespace.
         
     Example:
-        >>> results = search_memory("tarefa importante")
-        >>> print(len(results))  # até 3 resultados
+        >>> results = search_memory("important task")
+        >>> print(len(results))  # up to 3 results
         
         >>> from mypath import db_file
         >>> custom_results = search_memory("config", "/custom/path/db.sqlite")
@@ -75,7 +75,7 @@ def search_memory(query: str, db_path: Optional[str] = None) -> list[dict]:
     try:
         cursor = conn.cursor()
         
-        # Busca LIKE em key e value, ordenada por relevância (aproximada via updated_at DESC)
+        # LIKE search in key and value, ordered by relevance (approximated via updated_at DESC)
         search_pattern = f"%{query}%"
         sql_query = """
             SELECT 

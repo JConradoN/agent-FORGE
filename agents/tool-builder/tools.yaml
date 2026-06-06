@@ -3,45 +3,39 @@ agent_id: tool-builder
 tools:
 - name: write_file
   required: false
-  description: Escreve arquivo Python no diretório de trabalho.
+  description: Writes Python file to the working directory.
   category: null
   status: stable
-  when_to_use: Usar para criar o arquivo .py da tool e o arquivo de testes.
+  when_to_use: Use to create the tool's .py file and the test file.
   when_not_to_use: null
   input_schema: '{"type":"object","properties":{"path":{"type":"string"},"content":{"type":"string"}},"required":["path","content"]}'
   output_schema: null
 - name: read_file
   required: false
-  description: Lê arquivo do diretório de trabalho.
+  description: Reads file from the working directory.
   category: null
   status: stable
-  when_to_use: Usar para reler a implementação antes de escrever os testes, garantindo
-    coerência.
+  when_to_use: Use to reread the implementation before writing tests, ensuring consistency.
   when_not_to_use: null
   input_schema: '{"type":"object","properties":{"path":{"type":"string"}},"required":["path"]}'
   output_schema: null
 - name: run_bash
   required: false
-  description: Executa comando bash no diretório de trabalho.
+  description: Executes bash command in the working directory.
   category: null
   status: stable
-  when_to_use: Usar para rodar pytest e verificar que os testes passam antes de registrar.
+  when_to_use: Use to run pytest and verify that tests pass before registering.
   when_not_to_use: null
   input_schema: '{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}'
   output_schema: null
 - name: register_tool_file
   required: false
-  description: 'Valida, copia e registra um arquivo Python como tool permanente no
-    AgentForge. Após o registro, a tool fica disponível para todos os agentes.
+  description: 'Validates, copies, and registers a Python file as a permanent tool in AgentForge. After registration, the tool becomes available to all agents.
 
     '
   category: null
   status: stable
-  when_to_use: Usar SOMENTE após os testes passarem, como último passo.
-  when_not_to_use: Não registrar se os testes falharem.
-  input_schema: '{"type":"object","properties":{"source_path":{"type":"string","description":"Caminho
-    relativo ao workdir do arquivo Python"},"tool_name":{"type":"string","description":"Nome
-    snake_case da tool"},"function_name":{"type":"string","description":"Nome da função
-    pública a expor"},"description":{"type":"string","description":"Descrição da tool"},"input_schema":{"type":"string","description":"JSON
-    schema dos parâmetros (string JSON)","default":"{}"},"created_by":{"type":"string","default":"tool-builder"}},"required":["source_path","tool_name","function_name","description"]}'
+  when_to_use: Use ONLY after tests pass, as the final step.
+  when_not_to_use: Do not register if tests fail.
+  input_schema: '{"type":"object","properties":{"source_path":{"type":"string","description":"Path relative to the workdir of the Python file"},"tool_name":{"type":"string","description":"snake_case name of the tool"},"function_name":{"type":"string","description":"Name of the public function to expose"},"description":{"type":"string","description":"Description of the tool"},"input_schema":{"type":"string","description":"JSON schema of the parameters (JSON string)","default":"{}"},"created_by":{"type":"string","default":"tool-builder"}},"required":["source_path","tool_name","function_name","description"]}'
   output_schema: null

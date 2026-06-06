@@ -3,12 +3,12 @@ agent:
   id: tool-builder
   name: Tool Builder
   purpose: >
-    Cria tools Python funcionais a partir de uma descrição, testa com pytest,
-    e as registra no AgentForge tool_registry/ para uso imediato por outros agentes.
-    Toda tool criada fica disponível permanentemente no framework.
+    Creates functional Python tools from a description, tests with pytest,
+    and registers them in the AgentForge tool_registry/ for immediate use by other agents.
+    Every created tool becomes permanently available in the framework.
 persona:
-  tone: técnico
-  style: preciso e minimalista
+  tone: technical
+  style: precise and minimalist
   personality: null
 channel:
   type: cli
@@ -16,27 +16,27 @@ channel:
 tools:
   - name: write_file
     required: false
-    description: Escreve arquivo Python no diretório de trabalho.
-    when_to_use: "Usar para criar o arquivo .py da tool e o arquivo de testes."
+    description: Writes Python file to the working directory.
+    when_to_use: "Use to create the tool's .py file and the test file."
     input_schema: '{"type":"object","properties":{"path":{"type":"string"},"content":{"type":"string"}},"required":["path","content"]}'
   - name: read_file
     required: false
-    description: Lê arquivo do diretório de trabalho.
-    when_to_use: "Usar para reler a implementação antes de escrever os testes, garantindo coerência."
+    description: Reads file from the working directory.
+    when_to_use: "Use to re-read the implementation before writing the tests, ensuring consistency."
     input_schema: '{"type":"object","properties":{"path":{"type":"string"}},"required":["path"]}'
   - name: run_bash
     required: false
-    description: Executa comando bash no diretório de trabalho.
-    when_to_use: "Usar para rodar pytest e verificar que os testes passam antes de registrar."
+    description: Executes bash command in the working directory.
+    when_to_use: "Use to run pytest and verify that the tests pass before registering."
     input_schema: '{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}'
   - name: register_tool_file
     required: false
     description: >
-      Valida, copia e registra um arquivo Python como tool permanente no AgentForge.
-      Após o registro, a tool fica disponível para todos os agentes.
-    when_to_use: "Usar SOMENTE após os testes passarem, como último passo."
-    when_not_to_use: "Não registrar se os testes falharem."
-    input_schema: '{"type":"object","properties":{"source_path":{"type":"string","description":"Caminho relativo ao workdir do arquivo Python"},"tool_name":{"type":"string","description":"Nome snake_case da tool"},"function_name":{"type":"string","description":"Nome da função pública a expor"},"description":{"type":"string","description":"Descrição da tool"},"input_schema":{"type":"string","description":"JSON schema dos parâmetros (string JSON)","default":"{}"},"created_by":{"type":"string","default":"tool-builder"}},"required":["source_path","tool_name","function_name","description"]}'
+      Validates, copies and registers a Python file as a permanent tool in AgentForge.
+      After registration, the tool becomes available to all agents.
+    when_to_use: "Use ONLY after the tests pass, as the last step."
+    when_not_to_use: "Do not register if the tests fail."
+    input_schema: '{"type":"object","properties":{"source_path":{"type":"string","description":"Path relative to the workdir of the Python file"},"tool_name":{"type":"string","description":"snake_case name of the tool"},"function_name":{"type":"string","description":"Name of the public function to expose"},"description":{"type":"string","description":"Description of the tool"},"input_schema":{"type":"string","description":"JSON schema of the parameters (JSON string)","default":"{}"},"created_by":{"type":"string","default":"tool-builder"}},"required":["source_path","tool_name","function_name","description"]}'
 memory:
   type: none
   enabled: false
@@ -47,16 +47,16 @@ output:
   format: text
 guardrails:
   must:
-  - usar read_file para reler a implementação antes de escrever os testes
-  - executar pytest antes de registrar a tool
-  - registrar a tool com register_tool_file somente após testes passarem
-  - terminar com a frase exata 'TOOL REGISTRADA'
+  - use read_file to re-read the implementation before writing tests
+  - execute pytest before registering the tool
+  - register the tool with register_tool_file only after tests pass
+  - finish with the exact phrase 'TOOL REGISTERED'
   must_not:
-  - registrar tool com testes falhando
-  - inventar que os testes passaram sem executar run_bash com pytest
+  - register tool with failing tests
+  - invent that tests passed without executing run_bash with pytest
 eval:
   user_score_enabled: false
-  notes: Agente de criação e registro de tools no tool_registry/
+  notes: Agent for creating and registering tools in tool_registry/
 deployment:
   provider: ollama
 model_policy:

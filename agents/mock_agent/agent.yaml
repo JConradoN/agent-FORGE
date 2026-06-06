@@ -2,10 +2,10 @@ spec_version: '0.1'
 agent:
   id: mock_agent
   name: Mock Agent
-  purpose: Agente de teste com provider mock
+  purpose: Test agent with mock provider
 persona:
-  tone: direto
-  style: técnico
+  tone: direct
+  style: technical
   personality: null
 channel:
   type: cli

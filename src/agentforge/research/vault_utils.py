@@ -9,7 +9,7 @@ from difflib import SequenceMatcher
 from pathlib import Path
 
 # Constants for tool output compression
-_TOKEN_THRESHOLD = 800  # heurístico baseado no V1
+_TOKEN_THRESHOLD = 800  # heuristic based on V1
 
 # Constants for fuzzy matching (V5.1)
 SCORE_FUZZY_MIN = 0.80       # minimum score to consider a fuzzy match
@@ -19,11 +19,11 @@ DELTA_MIN = 0.15             # minimum delta between top-1 and top-2 for fuzzy
 
 def _summarize_scan_output(tool_data: dict, mode: str = "full", max_items: int = 20) -> dict:
     """
-    Transforma o tool_data de scan_directory em diferentes formatos para benchmark.
+    Transforms scan_directory tool_data into different formats for benchmarking.
     mode: "full" | "top_n" | "summary" | "by_folder" | "plain_text"
 
-    Esta função NÃO altera o comportamento padrão do engine.
-    Uso destinado exclusivamente a scripts de benchmark e testes internos.
+    This function DOES NOT change the default engine behavior.
+    Intended exclusively for benchmark scripts and internal testing.
     """
     files = tool_data.get("files", [])
     total = tool_data.get("file_count", len(files))
@@ -46,7 +46,7 @@ def _summarize_scan_output(tool_data: dict, mode: str = "full", max_items: int =
     if mode == "summary":
         ext_count = Counter(f.get("extension") for f in files)
         folder_count = Counter(
-            str(Path(f.get("path") or "raiz").parent)
+            str(Path(f.get("path") or "root").parent)
             for f in files
         )
         return {
@@ -62,7 +62,7 @@ def _summarize_scan_output(tool_data: dict, mode: str = "full", max_items: int =
         for f in files:
             path = f.get("path") or ""
             parts = path.split("/")
-            folder = "/".join(parts[:-1]) if len(parts) > 1 else "raiz"
+            folder = "/".join(parts[:-1]) if len(parts) > 1 else "root"
             folders[folder].append(f.get("name") or path)
         return {
             "directory": base,
@@ -74,11 +74,11 @@ def _summarize_scan_output(tool_data: dict, mode: str = "full", max_items: int =
         }
 
     if mode == "plain_text":
-        lines = [f"Diretório: {base}", f"Total: {total} arquivos", ""]
+        lines = [f"Directory: {base}", f"Total: {total} files", ""]
         for f in files[:max_items]:
             lines.append(f"- {f.get('path')}")
         if total > max_items:
-            lines.append(f"... e mais {total - max_items} arquivos")
+            lines.append(f"... and {total - max_items} more files")
         return {"_text": "\n".join(lines)}
 
     return tool_data
@@ -86,8 +86,8 @@ def _summarize_scan_output(tool_data: dict, mode: str = "full", max_items: int =
 
 def _maybe_compress_tool_output(tool_data: dict, tool_name: str) -> dict:
     """
-    Comprime tool outputs grandes automaticamente antes de injetar no prompt.
-    Usado inicialmente no vault-pilot como PoC.
+    Compresses large tool outputs automatically before injecting into the prompt.
+    Initially used in vault-pilot as a PoC.
     """
     try:
         estimated_tokens = len(json.dumps(tool_data)) // 4
@@ -113,13 +113,13 @@ def _build_input_with_file_content(
     tool_prefix: str = "",
 ) -> str:
     """
-    Monta o prompt injetando conteúdo de documento em diferentes formatos.
+    Assembles the prompt by injecting document content in different formats.
     mode: "current_tag" | "tool_response_tag" | "plain_block" |
           "instruction_strong" | "instruction_role" | "content_last" |
           "no_tag"
 
-    Esta função NÃO altera o comportamento padrão do engine.
-    Uso destinado exclusivamente a benchmarks e testes internos.
+    This function DOES NOT change the default engine behavior.
+    Intended exclusively for benchmarks and internal testing.
     """
     if mode == "current_tag":
         return f"{tool_prefix}<file_content>\n{file_text}\n</file_content>\n\nUser: {input_text}"
@@ -129,23 +129,23 @@ def _build_input_with_file_content(
 
     if mode == "plain_block":
         return (
-            f"{tool_prefix}CONTEÚDO DO ARQUIVO:\n"
+            f"{tool_prefix}FILE CONTENT:\n"
             f"---\n{file_text}\n---\n\n"
             f"User: {input_text}"
         )
 
     if mode == "instruction_strong":
         return (
-            f"{tool_prefix}NÃO chame nenhuma ferramenta. "
-            f"Use APENAS o texto abaixo para responder.\n\n"
+            f"{tool_prefix}DO NOT call any tools. "
+            f"Use ONLY the text below to respond.\n\n"
             f"{file_text}\n\n"
             f"User: {input_text}"
         )
 
     if mode == "instruction_role":
         return (
-            f"{tool_prefix}Você recebeu o seguinte documento. "
-            f"Analise-o sem chamar nenhuma ferramenta:\n\n"
+            f"{tool_prefix}You received the following document. "
+            f"Analyze it without calling any tools:\n\n"
             f"{file_text}\n\n"
             f"User: {input_text}"
         )
@@ -153,7 +153,7 @@ def _build_input_with_file_content(
     if mode == "content_last":
         return (
             f"{tool_prefix}User: {input_text}\n\n"
-            f"Conteúdo do documento:\n{file_text}"
+            f"Document content:\n{file_text}"
         )
 
     if mode == "no_tag":
@@ -173,23 +173,23 @@ def _normalize_path_name(text: str) -> str:
 
 def _extract_query_name(utterance: str, file_paths: list[str] | None = None) -> dict:
     """
-    Extrai informações sobre o arquivo alvo a partir do utterance.
+    Extracts information about the target file from the utterance.
 
-    Pipeline em camadas (V5.1):
-      1. Camada 1 — Match de path completo (substring case-insensitive em file_paths).
-      2. Camada 2 — Basename com extensão (aspas ou regex robusta permitindo espaços).
-      3. Camada 3 — Fallback baseado em tokens fortes (removendo stopwords PT).
+    Layered pipeline (V5.1):
+      1. Layer 1 — Full path match (case-insensitive substring in file_paths).
+      2. Layer 2 — Basename with extension (quotes or robust regex allowing spaces).
+      3. Layer 3 — Fallback based on strong tokens (removing Portuguese stopwords).
 
-    Retorna dict com:
-      - query_name: str | None (termo extraído, se houver)
-      - match_hint_path: str | None (path completo se Camada 1 acionar)
-      - tokens: list[str] | None (tokens fortes extraídos, normalizados)
+    Returns dict with:
+      - query_name: str | None (extracted term, if any)
+      - match_hint_path: str | None (full path if Layer 1 triggers)
+      - tokens: list[str] | None (strong extracted tokens, normalized)
       - extraction_source: str ("full_path_substring" | "quoted_or_extension" | "tokens_fallback" | "none")
     """
     file_paths = file_paths or []
 
     # ------------------------------------------------------------------
-    # Camada 1 — Match de path completo
+    # Layer 1 — Full path match
     # ------------------------------------------------------------------
     utterance_norm = _normalize_path_name(utterance)
     for fp in file_paths:
@@ -203,19 +203,19 @@ def _extract_query_name(utterance: str, file_paths: list[str] | None = None) -> 
             }
 
     # ------------------------------------------------------------------
-    # Camada 2 — Basename com extensão (aspas ou padrão robusto)
+    # Layer 2 — Basename with extension (quotes or robust pattern)
     # ------------------------------------------------------------------
-    # Palavras de instrução a remover do início de candidatos capturados pelo regex
+    # Instruction words to remove from the beginning of candidates captured by the regex
     _INSTR_WORDS = {
         "analise", "analisar", "mostre", "mostrar", "me", "o", "a", "os", "as",
         "um", "uma", "do", "da", "de", "dos", "das", "em", "no", "na",
         "arquivo", "documento", "pode", "poderia", "preciso", "quero",
         "ver", "veja", "abrir", "abra", "ler", "leia", "extraia", "use",
         "utilize", "sobre", "traga", "fale", "pro", "pra", "ao", "por",
-        "favor", "please", "que", "para", "com",
+        "favor", "que", "para", "com",
     }
 
-    # 2a. Texto entre aspas (duplas ou simples) — usa a mais longa
+    # 2a. Text between quotes (double or single) — uses the longest one
     quoted = re.findall(r'["\']([^"\']+)["\']', utterance)
     if quoted:
         candidate = max(quoted, key=len)
@@ -229,8 +229,8 @@ def _extract_query_name(utterance: str, file_paths: list[str] | None = None) -> 
             "extraction_source": "quoted_or_extension",
         }
 
-    # 2b. Padrão com extensão — captura greedy, depois remove palavras de instrução
-    #     do início da captura para isolar o nome do arquivo.
+    # 2b. Pattern with extension — greedy capture, then remove instruction words
+    #     from the beginning of the capture to isolate the actual filename.
     m = re.search(
         r'([\w\s\-_]+\.(?:pdf|docx?|odt|pptx?|xlsx?|txt|csv))',
         utterance,
@@ -257,7 +257,7 @@ def _extract_query_name(utterance: str, file_paths: list[str] | None = None) -> 
             }
 
     # ------------------------------------------------------------------
-    # Camada 3 — Fallback baseado em tokens fortes
+    # Layer 3 — Fallback based on strong tokens
     # ------------------------------------------------------------------
     _PT_STOPWORDS = {
         "o", "a", "os", "as", "um", "uma", "uns", "umas",
@@ -270,27 +270,27 @@ def _extract_query_name(utterance: str, file_paths: list[str] | None = None) -> 
         "qual", "quais", "onde", "quando", "como", "por", "que",
         "arquivo", "documento", "relatorio",
         "ver", "mostre", "traga", "fale", "sobre", "existe",
-        # Verbos e palavras de instrução adicionais
+        # Additional verbs and instruction words
         "preciso", "quero", "posso", "pode", "poderia", "gostaria",
         "use", "utilize", "usar", "abrir", "abra", "ler", "leia",
         "veja", "vejo", "analisar", "analisando", "extraindo",
         "mostre", "mostra", "apresente", "apresenta",
-        # Substantivos genéricos que aparecem em instruções
+        # Generic nouns appearing in instructions
         "pasta", "geral", "resumo", "principais", "pontos",
         "numero", "numeros", "dados", "atualizados", "atualizado",
         "copia", "versao", "tipo", "via", "mais",
         "conteudo", "informacoes", "informacao", "detalhes",
         "favor", "please", "voce", "ele", "ela",
-        # Preposições / conjunções extras
+        # Extra prepositions / conjunctions
         "pra", "pro", "ate", "apos", "antes", "depois", "tambem",
         "bem", "assim", "entao", "logo", "ja", "nao", "sim",
-        # Verbos e substantivos genéricos adicionais (comuns em perguntas longas)
+        # Additional generic verbs and nouns (common in long questions)
         "ferramentas", "pontos", "verifique", "verificar", "explicar", "consta",
         "estao", "assinou", "assinado", "recentemente", "algum", "alguma",
         "acesse", "acessar", "salve", "salvar", "envie", "enviar",
     }
 
-    # Nomes próprios que NÃO devem ser filtrados (pessoas do vault)
+    # Proper names that should NOT be filtered (vault people)
     _PROPER_NAMES = {
         "conrado", "nogueira", "emilia", "chaves", "oliveira",
         "maria", "joao", "gonzaga", "luiz", "rafael", "silvana",
@@ -298,10 +298,10 @@ def _extract_query_name(utterance: str, file_paths: list[str] | None = None) -> 
     }
 
     tokens_raw = re.findall(r"\b[\w\-]+\b", utterance.lower())
-    # Normalizar ANTES de checar stopwords: "está"→"esta", "são"→"sao", "você"→"voce"
+    # Normalize BEFORE checking stopwords: "está"→"esta", "são"→"sao", "você"→"voce"
     tokens_norm_pairs = [(t, _normalize_path_name(t)) for t in tokens_raw]
     tokens_norm_pairs = [(t, n) for t, n in tokens_norm_pairs if n and (len(n) > 1 or n in _PROPER_NAMES)]
-    # Manter tokens cujo form normalizado NÃO está em stopwords, OU é nome próprio
+    # Keep tokens whose normalized form is NOT in stopwords, OR is a proper name
     tokens_strong_norm = [
         n for _, n in tokens_norm_pairs
         if (n not in _PT_STOPWORDS) or (n in _PROPER_NAMES)
@@ -329,39 +329,39 @@ def _extract_filename_intent_fuzzy(
     file_paths: list[str],
 ) -> dict:
     """
-    Versão experimental/fuzzy de resolução de path de arquivo (V5.1).
+    Experimental/fuzzy version of file path resolution (V5.1).
 
-    Parâmetros:
-      user_utterance : texto completo da pergunta do usuário
-      file_paths     : lista de paths disponíveis (relativos ao staging,
-                       ex.: ["CONRADO/GERAL/Contrato Conrado Nogueira.pdf", ...])
+    Parameters:
+      user_utterance : full text of the user question
+      file_paths     : list of available paths (relative to staging,
+                       e.g.: ["CONRADO/GERAL/Contrato Conrado Nogueira.pdf", ...])
 
-    Retorna:
+    Returns:
       {
         "match_type":    "exact" | "fuzzy" | "ambiguous" | "none",
         "resolved_path": str | None,
         "candidates":    [{"path": str, "score": float, "reason": str}, ...]
-                         (sempre presente, ordenada por score desc)
-        "extraction":    resultado de _extract_query_name (para debug)
+                         (always present, sorted by score desc)
+        "extraction":    result of _extract_query_name (for debug)
       }
 
-    Regras de decisão (V5.1):
+    Decision rules (V5.1):
       - exact:
-          * match_hint_path presente e válido, OU
-          * score_top1 == 1.0 e único
+          * match_hint_path present and valid, OR
+          * score_top1 == 1.0 and unique
       - fuzzy:
           * score_top1 >= SCORE_FUZZY_MIN (0.80)
           * delta >= DELTA_MIN (0.15)
-          * tokens fortes (se houver) todos presentes no basename
+          * strong tokens (if any) all present in the basename
       - ambiguous:
-          * score_top1 >= SCORE_AMBIGUOUS_MIN (0.50) mas delta < DELTA_MIN,
-            ou múltiplos candidatos com tokens semelhantes
+          * score_top1 >= SCORE_AMBIGUOUS_MIN (0.50) but delta < DELTA_MIN,
+            or multiple candidates with similar tokens
       - none:
-          * score_top1 < SCORE_AMBIGUOUS_MIN, ou
-          * nenhum candidato satisfaz regras de tokens
+          * score_top1 < SCORE_AMBIGUOUS_MIN, or
+          * no candidate satisfies token rules
 
-    Esta função NÃO deve ser usada no runtime.
-    Uso exclusivo para benchmarks/experiments V5/V5.1.
+    This function SHOULD NOT be used in runtime.
+    Exclusive use for benchmarks/experiments V5/V5.1.
     """
     # Step 1: Extract query information using the new pipeline
     extraction = _extract_query_name(user_utterance, file_paths)
@@ -383,18 +383,18 @@ def _extract_filename_intent_fuzzy(
             "extraction": extraction,
         }
 
-    # Preferência de extensão para desempate (menor = mais preferido)
+    # Preference ranking for tie-breaking (lower = more preferred)
     _EXT_RANK = {".pdf": 0, ".docx": 1, ".doc": 2, ".odt": 3, ".xlsx": 4, ".txt": 5}
 
     def _file_rank(path: str) -> tuple[int, int]:
-        """Critério de desempate: extensão preferida e sem sufixo de versão (_2, _3...)."""
+        """Tie-breaking criterion: preferred extension and no version suffix (_2, _3...)."""
         ext = os.path.splitext(path)[1].lower()
         ext_pref = _EXT_RANK.get(ext, 10)
-        # Penaliza arquivos com sufixo versão: _2.pdf, _2.docx etc.
+        # Penalizes files with version suffix: _2.pdf, _2.docx etc.
         has_version = 1 if re.search(r'_\d+\.[a-z]+$', path, re.IGNORECASE) else 0
         return (ext_pref, has_version)
 
-    # Step 3: Pre-filter by ALL tokens when tokens were extracted (qualquer fonte)
+    # Step 3: Pre-filter by ALL tokens when tokens were extracted (any source)
     paths_to_score = list(file_paths)
     if query_tokens:
         eligible = [
@@ -404,7 +404,7 @@ def _extract_filename_intent_fuzzy(
         if eligible:
             paths_to_score = eligible
         else:
-            # Nenhum arquivo contém todos os tokens → arquivo não existe
+            # No file contains all tokens → file does not exist
             return {
                 "match_type": "none",
                 "resolved_path": None,
@@ -419,29 +419,29 @@ def _extract_filename_intent_fuzzy(
         basename_norm = _normalize_path_name(basename)
         dir_norm = _normalize_path_name(os.path.dirname(path))
 
-        # Base score: SequenceMatcher contra BASENAME
+        # Base score: SequenceMatcher against BASENAME
         if query_norm:
             base_score = SequenceMatcher(None, query_norm, basename_norm).ratio()
         else:
             base_score = 0.0
 
-        # Substring hit (query_norm contida em basename ou vice-versa)
+        # Substring hit (query_norm contained in basename or vice versa)
         substr_hit = bool(query_norm and (query_norm in basename_norm or basename_norm in query_norm))
 
-        # Tokens: usar basename SEM extensão para set-membership (evita "nogueira.pdf" ≠ "nogueira")
+        # Tokens: use basename WITHOUT extension for set-membership (avoids "nogueira.pdf" ≠ "nogueira")
         basename_clean = re.sub(
             r'\.(?:pdf|docx?|odt|pptx?|xlsx?|txt|csv)$', '', basename_norm, flags=re.IGNORECASE
         )
         basename_tokens = set(basename_clean.split()) - {""}
 
-        # Token overlap via set-membership (tokens normalizados vs basename sem extensão)
+        # Token overlap via set-membership (normalized tokens vs basename without extension)
         if query_tokens:
             overlap = len(query_tokens & basename_tokens) / len(query_tokens)
         else:
             overlap = 0.0
 
-        # Per-token substring bonus: cada token individualmente encontrado como substring no basename
-        # Cobre casos como "emilia" dentro de "emiliac" ou "rg" dentro de "rgmariaemilia"
+        # Per-token substring bonus: each token individually found as substring in basename
+        # Covers cases like "emilia" inside "emiliac" or "rg" inside "rgmariaemilia"
         tok_substr_ratio = 0.0
         if query_tokens:
             hits = sum(1 for tok in query_tokens if tok in basename_norm)
@@ -480,7 +480,7 @@ def _extract_filename_intent_fuzzy(
             "reason": ", ".join(reasons),
         })
 
-    # Ordenar: score desc, depois critério de desempate (ext preferida, não-versão)
+    # Sort: score desc, then tie-breaking criterion (preferred ext, non-version)
     candidates.sort(key=lambda c: (-c["score"], _file_rank(c["path"])))
 
     if not candidates:
@@ -496,7 +496,7 @@ def _extract_filename_intent_fuzzy(
     delta = score_top1 - score_top2
 
     # Step 5: Decision rules (V5.1)
-    # Exact: score 1.0 único (após desempate por _file_rank, top1 já é o preferido)
+    # Exact: unique 1.0 score (after tie-breaking by _file_rank, top1 is already the preferred one)
     if score_top1 == 1.0 and (len(candidates) == 1 or candidates[1]["score"] < 1.0):
         return {
             "match_type": "exact",

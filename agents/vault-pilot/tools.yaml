@@ -3,12 +3,12 @@ agent_id: vault-pilot
 tools:
   - name: scan_directory
     required: true
-    description: Lista arquivos no diretório de staging com caminhos completos, tamanhos e extensões
-    when_to_use: Quando o usuário pedir para listar arquivos,ver o que existe no staging, ou fazer auditoria
-    when_not_to_use: Quando o usuárioja especificar um arquivo específico para analisar
+    description: Lists files in the staging directory with full paths, sizes, and extensions
+    when_to_use: When the user asks to list files, see what exists in staging, or perform an audit
+    when_not_to_use: When the user already specifies a specific file to analyze
 
   - name: extract_file_content
     required: false
-    description: Extrai texto de arquivos (PDF,DOC,DOCX,imagens,etc.),usando OCR quando necessário
-    when_to_use: Quando precisar analisar o conteúdo de um arquivo específico
-    when_not_to_use: Quando só precisar listar arquivos sem analisar conteúdo
+    description: Extracts text from files (PDF, DOC, DOCX, images, etc.), using OCR when necessary
+    when_to_use: When needing to analyze the content of a specific file
+    when_not_to_use: When only needing to list files without analyzing content

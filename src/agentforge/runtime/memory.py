@@ -27,7 +27,7 @@ def _build_summary_content(
     if existing_content:
         lines.extend(line for line in existing_content.split("\n")[1:] if line.strip())
     for msg in overflow_turns:
-        label = "Usuário" if msg["role"] == "user" else "Assistente"
+        label = "User" if msg["role"] == "user" else "Assistant"
         text = msg["content"].replace("\n", " ").strip()
         lines.append(f"- {label}: {text}")
     return "\n".join(lines)
@@ -123,4 +123,6 @@ def save_history(root_dir: Path, history: list[dict[str, str]]) -> None:
 def clear_history(root_dir: Path) -> None:
     path = root_dir / _HISTORY_FILE
     if path.exists():
+        path.unlink()
+
         path.unlink()

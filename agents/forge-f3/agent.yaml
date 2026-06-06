@@ -1,11 +1,11 @@
 spec_version: '0.1'
 agent:
   id: forge-f3
-  name: Analista de Mercado
-  purpose: Busca cotações de câmbio e cripto via API, analisa tendências e gera relatório com recomendações. Notifica resultado pelo Claudio.
+  name: Market Analyst
+  purpose: Searches for exchange rates and crypto quotes via API, analyzes trends, and generates a report with recommendations. Notifies the result through Claudio.
 persona:
-  tone: técnico
-  style: objetivo e analítico
+  tone: technical
+  style: objective and analytical
   personality: null
 channel:
   type: cli
@@ -13,20 +13,20 @@ channel:
 tools:
   - name: http_get
     required: false
-    description: Faz GET em URL e retorna texto. Use para buscar cotações de câmbio e cripto.
-    when_to_use: "Usar para cada URL de cotação (USD-BRL, EUR-BRL, BTC-BRL, ETH-BRL) e histórico."
-    when_not_to_use: "Não usar para escrever arquivos."
-    input_schema: '{"type":"object","properties":{"url":{"type":"string","description":"URL completa da API"},"headers":{"type":"object","description":"Headers opcionais","default":{}}},"required":["url"]}'
+    description: Performs GET on a URL and returns text. Use to search for exchange rates and crypto quotes.
+    when_to_use: "Use for each quote URL (USD-BRL, EUR-BRL, BTC-BRL, ETH-BRL) and history."
+    when_not_to_use: "Do not use to write files."
+    input_schema: '{"type":"object","properties":{"url":{"type":"string","description":"Complete API URL"},"headers":{"type":"object","description":"Optional headers","default":{}}},"required":["url"]}'
   - name: write_file
     required: false
-    description: Escreve conteúdo em arquivo no diretório de trabalho.
-    when_to_use: "Usar para salvar o relatório de análise em Markdown."
-    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+    description: Writes content to a file in the working directory.
+    when_to_use: "Use to save the analysis report in Markdown."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
   - name: send_claudio
     required: false
-    description: Envia mensagem pelo bot Telegram do Claudio para notificar o usuário.
-    when_to_use: "Usar ao final para enviar resumo das cotações e tendência."
-    input_schema: '{"type":"object","properties":{"message":{"type":"string","description":"Mensagem a enviar (suporta Markdown)"}},"required":["message"]}'
+    description: Sends a message through the Claudio Telegram bot to notify the user.
+    when_to_use: "Use at the end to send a summary of quotes and trends."
+    input_schema: '{"type":"object","properties":{"message":{"type":"string","description":"Message to send (supports Markdown)"}},"required":["message"]}'
 memory:
   type: none
   enabled: false
@@ -37,16 +37,16 @@ output:
   format: text
 guardrails:
   must:
-  - buscar cotações reais via http_get antes de escrever o relatório
-  - incluir seções COTAÇÕES ATUAIS, TENDÊNCIA DO DÓLAR, ANÁLISE DE VOLATILIDADE e RECOMENDAÇÃO
-  - enviar resumo via send_claudio ao final
-  - terminar a resposta com a frase exata 'ANÁLISE CONCLUÍDA'
+  - search for real quotes via http_get before writing the report
+  - include sections CURRENT QUOTES, DOLLAR TREND, VOLATILITY ANALYSIS, and RECOMMENDATION
+  - send summary via send_claudio at the end
+  - finish the response with the exact phrase 'ANALYSIS COMPLETED'
   must_not:
-  - inventar cotações sem consultar a API
-  - usar valores desatualizados ou aproximados
+  - invent quotes without consulting the API
+  - use outdated or approximate values
 eval:
   user_score_enabled: false
-  notes: Cenário FORGE F3 — análise de mercado câmbio+cripto
+  notes: Scenario FORGE F3 — market analysis exchange+crypto
 deployment:
   provider: ollama
 model_policy:

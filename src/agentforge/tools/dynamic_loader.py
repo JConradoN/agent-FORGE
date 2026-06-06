@@ -6,13 +6,13 @@ from pathlib import Path
 
 import yaml
 
-# Repo root = 4 parents acima de src/agentforge/tools/dynamic_loader.py
+# Repo root = 4 parents above src/agentforge/tools/dynamic_loader.py
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 REGISTRY_DIR = _REPO_ROOT / "tool_registry"
 
 
 def load_dynamic_tools() -> list[str]:
-    """Carrega tools registradas em tool_registry/registry.yaml para o _ToolRegistry vivo."""
+    """Loads tools registered in tool_registry/registry.yaml into the live _ToolRegistry."""
     from agentforge.tools.registry import register_tool
 
     registry_yaml = REGISTRY_DIR / "registry.yaml"

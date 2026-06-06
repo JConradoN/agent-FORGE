@@ -18,13 +18,13 @@ def _load_credentials() -> tuple[str, str]:
 
 
 def send_claudio(message: str) -> str:
-    """Envia message via bot Telegram do Claudio."""
+    """Sends message via Claudio's Telegram bot."""
     if not message or not message.strip():
-        return "[ERRO] 'message' é obrigatório."
+        return "[ERROR] 'message' is required."
 
     token, chat_id = _load_credentials()
     if not token or not chat_id or chat_id == "":
-        return "[ERRO] Credenciais Telegram não disponíveis (~/.aurelia/config/app.json)."
+        return "[ERROR] Telegram credentials not available (~/.aurelia/config/app.json)."
 
     try:
         data = urllib.parse.urlencode({
@@ -39,6 +39,6 @@ def send_claudio(message: str) -> str:
         with urllib.request.urlopen(req, timeout=15) as r:
             resp = json.loads(r.read())
             msg_id = resp.get("result", {}).get("message_id", "?")
-            return f"Mensagem enviada. message_id={msg_id}"
+            return f"Message sent. message_id={msg_id}"
     except Exception as e:
-        return f"[ERRO] {e}"
+        return f"[ERROR] {e}"

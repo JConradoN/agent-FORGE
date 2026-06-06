@@ -1,26 +1,26 @@
 # Tool Builder
 
 **ID:** `tool-builder`  
-**Versão da spec:** 0.1
+**Spec version:** 0.1
 
-## Propósito
+## Purpose
 
-Cria tools Python funcionais a partir de uma descrição, testa com pytest, e as registra no AgentForge tool_registry/ para uso imediato por outros agentes. Toda tool criada fica disponível permanentemente no framework.
+Creates functional Python tools from a description, tests them with pytest, and registers them in the AgentForge tool_registry/ for immediate use by other agents. Every created tool becomes permanently available in the framework.
 
 
-## Configuração
+## Configuration
 
-| Campo              | Valor                          |
+| Field              | Value                          |
 |--------------------|--------------------------------|
-| Canal              | cli            |
-| Modelo padrão      | qwen3.5:27b |
-| Modelo fallback    | —                     |
+| Channel            | cli            |
+| Default model      | qwen3.5:27b |
+| Fallback model     | —                     |
 | Workflow           | respond_or_tool           |
-| Memória            | desabilitada                  |
+| Memory             | disabled                  |
 | Tools              | `write_file`, `read_file`, `run_bash`, `register_tool_file`                   |
-| Saída              | text             |
+| Output             | text             |
 
-## Arquivos gerados
+## Generated files
 
 - `agent.yaml`
 - `system_prompt.md`

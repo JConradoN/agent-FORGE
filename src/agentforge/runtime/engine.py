@@ -142,18 +142,18 @@ class AgentRuntime:
         return execute_tool(_tool_name, **kwargs)
 
     def _build_tools_schema(self) -> list[dict]:
-        """Converte ToolSpec list para formato OpenAI/Ollama.
+        """Converts ToolSpec list to OpenAI/Ollama format.
 
-        Se workflow.agents não estiver vazio, injeta run_agent como ferramenta
-        de delegação com a lista de workers disponíveis na descrição.
+        If workflow.agents is not empty, injects run_agent as a delegation tool 
+        with the list of available workers in the description.
         """
         schema = []
         for tool in self.tools:
             description = tool.description or ""
             if tool.when_to_use:
-                description += f" Use quando: {tool.when_to_use}."
+                description += f" Use when: {tool.when_to_use}."
             if tool.when_not_to_use:
-                description += f" Não use quando: {tool.when_not_to_use}."
+                description += f" Do not use when: {tool.when_not_to_use}."
 
             # Deriva parâmetros do input_schema se disponível, senão usa schema vazio.
             if tool.input_schema:
@@ -177,7 +177,7 @@ class AgentRuntime:
         declared_agents = self.agent_spec.workflow.agents
         if declared_agents:
             agents_list = "\n".join(
-                f"  - {a.name} (agent_dir={a.agent_dir}): {a.description or 'sem descrição'}"
+                f"  - {a.name} (agent_dir={a.agent_dir}): {a.description or 'no description'}"
                 for a in declared_agents
             )
             schema.append({
@@ -185,19 +185,19 @@ class AgentRuntime:
                 "function": {
                     "name": "run_agent",
                     "description": (
-                        "Delega uma tarefa para um agente especializado e retorna o output.\n"
-                        f"Agentes disponíveis:\n{agents_list}"
+                        "Delegates a task to a specialized agent and returns the output.\n"
+                        f"Available agents:\n{agents_list}"
                     ),
                     "parameters": {
                         "type": "object",
                         "properties": {
                             "agent_dir": {
                                 "type": "string",
-                                "description": "Diretório do agente (use os valores agent_dir listados acima)",
+                                "description": "Agent directory (use the agent_dir values listed above)",
                             },
                             "input": {
                                 "type": "string",
-                                "description": "Tarefa ou pergunta para o agente",
+                                "description": "Task or question for the agent",
                             },
                         },
                         "required": ["agent_dir", "input"],
@@ -214,14 +214,14 @@ class AgentRuntime:
         history: list[dict],
     ) -> tuple[str, list[dict]]:
         """
-        Ciclo de tool calling com loop guard.
+        Tool calling cycle with loop guard.
 
-        Itera até max_tool_cycles rodadas. Cada rodada:
-          1. Inferência com tools disponíveis
-          2. Se modelo pede tools → executa → injeta resultados → próxima rodada
-          3. Se modelo responde direto → retorna
+        Iterates up to max_tool_cycles rounds. Each round:
+          1. Inference with available tools
+          2. If model requests tools → execute → inject results → next round
+          3. If model responds directly → return
 
-        Loop guard: para se o mesmo (tool, args_hash) se repetir numa rodada.
+        Loop guard: stops if the same (tool, args_hash) repeats in a round.
         """
         provider = self._get_provider()
         tools_schema = self._build_tools_schema()
@@ -258,7 +258,7 @@ class AgentRuntime:
 
                 if call_key in seen_calls:
                     self.logger.warning(
-                        "loop_guard: tool '%s' com args idênticos detectado no ciclo %d — abortando",
+                        "loop_guard: tool '%s' with identical args detected in cycle %d — aborting",
                         tool_name, cycle,
                     )
                     loop_detected = True
@@ -278,11 +278,11 @@ class AgentRuntime:
                 break
 
         # Ciclos esgotados ou loop detectado — última inferência sem tools.
-        self.logger.warning("tool_cycle: max_cycles=%d atingido ou loop detectado — inferência final", max_cycles)
+        self.logger.warning("tool_cycle: max_cycles=%d reached or loop detected — final inference", max_cycles)
 
         # Injeta lembrete de conclusão: re-ancora o modelo no formato de saída esperado.
         must_rules = self.agent_spec.guardrails.must
-        completion_hint = "Produza sua resposta final com base nas ferramentas executadas acima."
+        completion_hint = "Produce your final response based on the tools executed above."
         if must_rules:
             phrases = []
             import re as _re
@@ -290,7 +290,7 @@ class AgentRuntime:
                 quoted = _re.findall(r"'([^']+)'", rule)
                 phrases.extend(quoted)
             if phrases:
-                completion_hint += " Sua resposta DEVE incluir: " + ", ".join(f"'{p}'" for p in phrases[:3])
+                completion_hint += " Your response MUST include: " + ", ".join(f"'{p}'" for p in phrases[:3])
 
         messages.append({"role": "user", "content": completion_hint})
 
@@ -306,15 +306,15 @@ class AgentRuntime:
 
     @staticmethod
     def _strip_xml_tool_tags(text: str) -> str:
-        """Remove blocos <tool_use>...</tool_use> que vazam no output do qwen3.5:27b."""
+        """Removes <tool_use>...</tool_use> blocks that leak in qwen3.5:27b output."""
         import re
         cleaned = re.sub(r"<tool_use>.*?</tool_use>", "", text, flags=re.DOTALL)
         return re.sub(r"\n{3,}", "\n\n", cleaned).strip()
 
     def _check_must_compliance(self, output_text: str) -> list[str]:
         """
-        Verifica quais regras 'must' NÃO foram cumpridas no output.
-        Usa checagem determinística para frases entre aspas, LLM judge para regras abertas.
+        Checks which 'must' rules were NOT met in the output.
+        Uses deterministic checking for quoted phrases, LLM judge for open rules.
         """
         must_rules = self.agent_spec.guardrails.must
         if not must_rules:
@@ -336,12 +336,12 @@ class AgentRuntime:
         if open_rules:
             rules_text = "\n".join(f"- {r}" for r in open_rules)
             prompt = (
-                "Analise o texto abaixo e identifique QUAIS das seguintes regras OBRIGATÓRIAS "
-                "NÃO foram cumpridas.\n"
-                "Responda APENAS com as regras não cumpridas, uma por linha.\n"
-                "Se todas foram cumpridas, responda exatamente: NENHUMA\n\n"
-                f"Regras obrigatórias:\n{rules_text}\n\n"
-                f"Texto a analisar:\n{output_text[:2000]}"
+                "Analyze the text below and identify WHICH of the following MANDATORY rules "
+                "were NOT met.\n"
+                "Respond ONLY with the unmet rules, one per line.\n"
+                "If all were met, respond exactly: NONE\n\n"
+                f"Mandatory rules:\n{rules_text}\n\n"
+                f"Text to analyze:\n{output_text[:2000]}"
             )
             provider = self._get_provider()
             req = ProviderRequest(
@@ -353,24 +353,24 @@ class AgentRuntime:
             )
             resp = provider.generate(req)
             result = resp.output_text.strip()
-            if result and result.upper() != "NENHUMA":
+            if result and result.upper() != "NONE":
                 missing += [line.lstrip("- ").strip() for line in result.splitlines() if line.strip()]
 
         return missing
 
     def _check_guardrail_violations(self, output_text: str) -> list[str]:
-        """Usa o modelo para detectar quais regras must_not foram violadas no output."""
+        """Uses the model to detect which must_not rules were violated in the output."""
         must_not = self.agent_spec.guardrails.must_not
         if not must_not:
             return []
 
         rules = "\n".join(f"- {r}" for r in must_not)
         prompt = (
-            "Analise o texto abaixo e identifique QUAIS das seguintes regras foram violadas.\n"
-            "Responda APENAS com as regras violadas, uma por linha.\n"
-            "Se nenhuma foi violada, responda exatamente: NENHUMA\n\n"
-            f"Regras proibidas:\n{rules}\n\n"
-            f"Texto a analisar:\n{output_text}"
+            "Analyze the text below and identify WHICH of the following rules were violated.\n"
+            "Respond ONLY with the violated rules, one per line.\n"
+            "If none were violated, respond exactly: NONE\n\n"
+            f"Prohibited rules:\n{rules}\n\n"
+            f"Text to analyze:\n{output_text}"
         )
         provider = self._get_provider()
         req = ProviderRequest(
@@ -382,7 +382,7 @@ class AgentRuntime:
         )
         resp = provider.generate(req)
         result = resp.output_text.strip()
-        if not result or result.upper() == "NENHUMA":
+        if not result or result.upper() == "NONE":
             return []
         return [line.lstrip("- ").strip() for line in result.splitlines() if line.strip()]
 
@@ -395,8 +395,8 @@ class AgentRuntime:
         max_retries: int = 2,
     ) -> tuple[str, list[str]]:
         """
-        Verifica must_not e re-executa com prompt de correção até max_retries vezes.
-        Retorna (output_text_final, violations_restantes).
+        Checks must_not and re-executes with a correction prompt up to max_retries times.
+        Returns (final_output_text, remaining_violations).
         """
         violations = self._check_guardrail_violations(output_text)
         if not violations:
@@ -405,14 +405,14 @@ class AgentRuntime:
         provider = self._get_provider()
         for attempt in range(max_retries):
             self.logger.warning(
-                "guardrail[%d/%d]: violações detectadas: %s",
+                "guardrail[%d/%d]: violations detected: %s",
                 attempt + 1, max_retries, violations,
             )
             correction_prompt = (
-                "Sua resposta anterior violou as seguintes restrições:\n"
+                "Your previous response violated the following restrictions:\n"
                 + "\n".join(f"- {v}" for v in violations)
-                + "\n\nReescreva sua resposta sem violar essas restrições.\n\n"
-                f"Pergunta original: {input_text}"
+                + "\n\nRewrite your response without violating these restrictions.\n\n"
+                f"Original question: {input_text}"
             )
             req = ProviderRequest(
                 agent_id=self.runtime_config.agent_id,
@@ -437,26 +437,26 @@ class AgentRuntime:
         rounds: int,
     ) -> str:
         """
-        Auto-crítica iterativa: o modelo revisa o próprio output N vezes.
-        Retorna o output refinado após todos os rounds.
+        Iterative self-criticism: the model reviews its own output N times.
+        Returns the refined output after all rounds.
         """
         provider = self._get_provider()
         current = output_text
 
         _REFLECT_PROMPT = (
-            "Revise sua resposta anterior considerando:\n"
-            "1. Está completa e precisa em relação à pergunta original?\n"
-            "2. Respeita todas as restrições do seu papel?\n"
-            "3. Pode ser mais objetiva ou útil?\n\n"
-            "Se estiver adequada, responda igual. Se não, melhore.\n\n"
-            f"Pergunta original: {original_input}\n\n"
-            f"Sua resposta anterior:\n{current}"
+            "Review your previous response considering:\n"
+            "1. Is it complete and accurate relative to the original question?\n"
+            "2. Does it respect all role restrictions?\n"
+            "3. Can it be more objective or useful?\n\n"
+            "If it is appropriate, respond the same. If not, improve it.\n\n"
+            f"Original question: {original_input}\n\n"
+            f"Your previous response:\n{current}"
         )
 
         for r in range(rounds):
             req = ProviderRequest(
                 agent_id=self.runtime_config.agent_id,
-                input_text=_REFLECT_PROMPT.replace(f"Sua resposta anterior:\n{current}", f"Sua resposta anterior:\n{current}"),
+                input_text=_REFLECT_PROMPT.replace(f"Your previous response:\n{current}", f"Your previous response:\n{current}"),
                 system_prompt=system_prompt,
                 model=self.runtime_config.model_default,
                 history=[],
@@ -480,7 +480,7 @@ class AgentRuntime:
             tool_content = tool_data["_text"]
         else:
             tool_json = json.dumps(tool_data, indent=2, default=str)
-            tool_content = tool_json
+            tool_content = tool_content = tool_json
 
         return f"{_TOOL_PREVIEW_PREFIX}{tool_content}\n</tool_results>\n\nUser: {input_text}"
 
@@ -497,13 +497,13 @@ class AgentRuntime:
         log_keywords = [
             "log",
             "syslog",
-            "últimas linhas",
-            "últimas linhas do",
-            "erros recentes",
-            "eventos recentes",
+            "last lines",
+            "last lines of",
+            "recent errors",
+            "recent events",
             "events",
-            "ver log",
-            "verificar log",
+            "view log",
+            "check log",
         ]
         lower_input = input_text.lower()
         return any(kw in lower_input for kw in log_keywords)
@@ -512,12 +512,12 @@ class AgentRuntime:
         keywords = [
             "analise",
             "analisar",
-            "conteúdo",
-            "extraia",
-            "extrair",
-            "qual o conteúdo",
-            "me explique",
-            "descreva",
+            "content",
+            "extract",
+            "extract",
+            "what is the content",
+            "explain to me",
+            "describe",
             "describe",
             "what is",
             "explain",
@@ -658,19 +658,19 @@ class AgentRuntime:
             )
             if guardrail_violations:
                 self.logger.error(
-                    "guardrail: violações persistentes após retries: %s", guardrail_violations
+                    "guardrail: persistent violations after retries: %s", guardrail_violations
                 )
 
         # Must compliance — verifica regras obrigatórias e corrige se necessário.
         if self.agent_spec.guardrails.must:
             must_missing = self._check_must_compliance(output_text)
             if must_missing:
-                self.logger.warning("must_compliance: regras não cumpridas: %s", must_missing)
+                self.logger.warning("must_compliance: rules not met: %s", must_missing)
                 provider = self._get_provider()
                 correction = (
-                    "Sua resposta está incompleta. As seguintes regras obrigatórias não foram cumpridas:\n"
+                    "Your response is incomplete. The following mandatory rules were not met:\n"
                     + "\n".join(f"- {r}" for r in must_missing)
-                    + "\n\nComplemente sua resposta incluindo os itens em falta."
+                    + "\n\nComplete your response by including the missing items."
                 )
                 req = ProviderRequest(
                     agent_id=self.runtime_config.agent_id,
@@ -725,12 +725,12 @@ class AgentRuntime:
 
     def _run_with_tool_data(self, input_text: str, tool_data: dict) -> str:
         """
-        Executa uma chamada ao modelo injetando tool_data pré-formatado,
-        sem passar pela detecção automática de intent.
+        Executes a call to the model injecting pre-formatted tool_data,
+        without going through automatic intent detection.
 
-        Uso destinado exclusivamente a benchmarks e testes internos.
-        NÃO use este método no pipeline de produção (CLI normal).
-        NÃO altera o comportamento de run() nem do fluxo normal.
+        Intended use exclusively for benchmarks and internal tests.
+        DO NOT use this method in the production pipeline (normal CLI).
+        DO NOT change the behavior of run() or the normal flow.
         """
         if "_text" in tool_data:
             tool_content = tool_data["_text"]
@@ -757,16 +757,16 @@ class AgentRuntime:
         history: list | None = None,
     ) -> str:
         """
-        Executa uma chamada ao modelo injetando conteúdo de documento
-        em diferentes formatos, sem passar pela detecção automática de intent.
+        Executes a call to the model injecting document content
+        in different formats, without going through automatic intent detection.
 
         history:
-          - None → history vazio (mesmo comportamento do V2).
-          - lista fornecida → usada diretamente; permite injetar histórico
-            sintético para benchmarks de corrupção de contexto.
+          - None → empty history (same behavior as V2).
+          - list provided → used directly; allows injecting synthetic history
+            for context corruption benchmarks.
 
-        Uso destinado exclusivamente a benchmarks e testes internos.
-        NÃO use no pipeline de produção.
+        Intended use exclusively for benchmarks and internal tests.
+        DO NOT use in the production pipeline.
         """
         prompt = _build_input_with_file_content(
             input_text=input_text,

@@ -8,4 +8,4 @@ metrics:
 user_feedback:
   enabled: false
   scale: 0-10
-notes: Cenário REAL P4 — skill generator fox-deploy
+notes: REAL P4 scenario — fox-deploy skill generator

@@ -1,25 +1,25 @@
-# Orquestrador
+# Orchestrator
 
 **ID:** `orchestrator`  
-**Versão da spec:** 0.1
+**Spec version:** 0.1
 
-## Propósito
+## Purpose
 
-Analisa pedidos complexos, decompõe em subtarefas e delega para agentes especializados. Sintetiza os resultados em uma resposta coesa.
+Analyzes complex requests, decomposes them into subtasks, and delegates to specialized agents. Synthesizes the results into a cohesive response.
 
-## Configuração
+## Configuration
 
-| Campo              | Valor                          |
+| Field              | Value                          |
 |--------------------|--------------------------------|
-| Canal              | cli            |
-| Modelo padrão      | qwen3.5:9b |
-| Modelo fallback    | —                     |
+| Channel            | cli            |
+| Default model      | qwen3.5:9b |
+| Fallback model     | —                     |
 | Workflow           | respond_or_tool           |
-| Memória            | desabilitada                  |
-| Tools              | Nenhuma                   |
-| Saída              | text             |
+| Memory             | disabled                  |
+| Tools              | None                   |
+| Output             | text             |
 
-## Arquivos gerados
+## Generated files
 
 - `agent.yaml`
 - `system_prompt.md`

@@ -1,25 +1,25 @@
 # Mock Agent
 
 **ID:** `mock_agent`  
-**Versão da spec:** 0.1
+**Spec version:** 0.1
 
-## Propósito
+## Purpose
 
-Agente de teste com provider mock
+Test agent with mock provider
 
-## Configuração
+## Configuration
 
-| Campo              | Valor                          |
+| Field              | Value                          |
 |--------------------|--------------------------------|
-| Canal              | cli            |
-| Modelo padrão      | gemma4:e4b |
-| Modelo fallback    | —                     |
+| Channel            | cli            |
+| Default model      | gemma4:e4b |
+| Fallback model     | —                     |
 | Workflow           | respond_or_tool           |
-| Memória            | desabilitada                  |
-| Tools              | Nenhuma                   |
-| Saída              | text             |
+| Memory             | disabled                  |
+| Tools              | None                   |
+| Output             | text             |
 
-## Arquivos gerados
+## Generated files
 
 - `agent.yaml`
 - `system_prompt.md`

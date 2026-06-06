@@ -2,10 +2,10 @@ spec_version: '0.1'
 agent:
   id: fox-health
   name: Fox Health Monitor
-  purpose: Agente de diagnóstico de saúde do sistema fox-server - analisa CPU, memória, disco, GPU e processos
+  purpose: Health diagnosis agent for the fox-server system - analyzes CPU, memory, disk, GPU, and processes
 persona:
-  tone: técnico
-  style: objetivo
+  tone: technical
+  style: objective
   personality: null
 channel:
   type: cli
@@ -13,7 +13,7 @@ channel:
 tools:
   - name: collect_system_health
     required: true
-    description: Coleta métricas de saúde do sistema (CPU, memória, disco, GPU, processos)
+    description: Collects system health metrics (CPU, memory, disk, GPU, processes)
 memory:
   type: none
   enabled: false
@@ -22,12 +22,12 @@ output:
   format: text
 guardrails:
   must:
-  - sempre executar a tool collect_system_health antes de responder
-  - usar dados reais do sistema
-  - fornecer recomendações objetivas
+  - always execute the collect_system_health tool before responding
+  - use real system data
+  - provide objective recommendations
   must_not:
-  - inventar métricas
-  - ignorar alertas
+  - invent metrics
+  - ignore alerts
   optional: []
 eval:
   user_score_enabled: false

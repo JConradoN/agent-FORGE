@@ -27,7 +27,7 @@ def _call_gemini(prompt: str, model: str) -> str:
                     api_key = line.split("=", 1)[1].strip()
                     break
     if not api_key:
-        raise RuntimeError("GEMINI_API_KEY não definida")
+        raise RuntimeError("GEMINI_API_KEY not defined")
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
     payload = {
@@ -41,24 +41,24 @@ def _call_gemini(prompt: str, model: str) -> str:
     return raw["candidates"][0]["content"]["parts"][0]["text"]
 
 
-_JUDGE_PROMPT = """Você é um avaliador técnico rigoroso de agentes de IA.
+_JUDGE_PROMPT = """You are a rigorous technical evaluator of AI agents.
 
-Pergunta original: {input}
+Original question: {input}
 
-Resposta do agente:
+Agent response:
 {output}
 
-Critérios de avaliação:
+Evaluation criteria:
 {criteria}
 
-Para cada critério, dê uma nota de 0 a 3:
-  0 = ausente ou inadequado
-  1 = tentativa com lacunas sérias
-  2 = satisfatório com falhas menores
-  3 = excelente
+For each criterion, give a score from 0 to 3:
+  0 = absent or inadequate
+  1 = attempt with serious gaps
+  2 = satisfactory with minor flaws
+  3 = excellent
 
-Responda APENAS em JSON válido:
-{{"scores": {{"criterio": 0-3}}, "total": soma, "max": total_possivel, "pct": percentual, "justificativas": {{"criterio": "uma frase"}}}}"""
+Respond ONLY in valid JSON:
+{{"scores": {{"criterion": 0-3}}, "total": sum, "max": total_possible, "pct": percentage, "justifications": {{"criterion": "one sentence"}}}}"""
 
 
 def score(
@@ -111,6 +111,6 @@ def score(
         "total": total,
         "max": max_score,
         "pct": round(total / max_score * 100) if max_score else 0,
-        "justificativas": result.get("justificativas", {}),
+        "justifications": result.get("justifications", {}) or result.get("justificativas", {}),
         "judge_model": judge_model,
     }

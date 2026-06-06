@@ -13,14 +13,14 @@ def scan_directory(directory: str = "") -> dict[str, Any]:
     if not target.exists():
         return {
             "error": "directory_not_found",
-            "message": f"Diretório não encontrado: {target}",
+            "message": f"Directory not found: {target}",
             "requested": str(directory or STAGING_DIR),
         }
 
     if not target.is_dir():
         return {
             "error": "not_a_directory",
-            "message": "Caminho não é um diretório",
+            "message": "Path is not a directory",
             "requested": str(target),
         }
 
@@ -42,7 +42,7 @@ def scan_directory(directory: str = "") -> dict[str, Any]:
     except PermissionError as e:
         return {
             "error": "permission_denied",
-            "message": f"Sem permissão: {e}",
+            "message": f"Permission denied: {e}",
             "path": str(target),
         }
 

@@ -2,10 +2,10 @@ spec_version: '0.1'
 agent:
   id: real-p4
   name: Skill Generator
-  purpose: Gera skills completas e acionáveis para Claude Code a partir de descrições. Produz documentação técnica pronta para uso com frontmatter YAML válido.
+  purpose: Generates complete and actionable skills for Claude Code from descriptions. Produces technical documentation ready for use with valid YAML frontmatter.
 persona:
-  tone: técnico
-  style: claro e acionável
+  tone: technical
+  style: clear and actionable
   personality: null
 channel:
   type: cli
@@ -13,19 +13,19 @@ channel:
 tools:
   - name: write_file
     required: false
-    description: Escreve arquivo no diretório de trabalho.
-    when_to_use: "Usar para criar fox-deploy.md e fox-deploy-test.sh."
-    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+    description: Writes file to the working directory.
+    when_to_use: "Use to create fox-deploy.md and fox-deploy-test.sh."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
   - name: read_file
     required: false
-    description: Lê arquivo do diretório de trabalho.
-    when_to_use: "Usar para reler a skill criada antes de executar o teste."
-    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"}},"required":["path"]}'
+    description: Reads file from the working directory.
+    when_to_use: "Use to re-read the created skill before executing the test."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"}},"required":["path"]}'
   - name: run_bash
     required: false
-    description: Executa comando bash no diretório de trabalho.
-    when_to_use: "Usar para executar: bash fox-deploy-test.sh"
-    input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Comando bash a executar"}},"required":["command"]}'
+    description: Executes bash command in the working directory.
+    when_to_use: "Use to execute: bash fox-deploy-test.sh"
+    input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Bash command to execute"}},"required":["command"]}'
 memory:
   type: none
   enabled: false
@@ -36,16 +36,16 @@ output:
   format: text
 guardrails:
   must:
-  - incluir frontmatter YAML válido com name e description
-  - incluir seções sobre quando usar, pré-requisitos, passo a passo, erros comuns e exemplos
-  - executar bash fox-deploy-test.sh para validar antes de responder
-  - terminar a resposta com a frase exata 'SKILL CRIADA'
+  - include valid YAML frontmatter with name and description
+  - include sections on when to use, prerequisites, step-by-step, common errors, and examples
+  - execute bash fox-deploy-test.sh to validate before responding
+  - finish the response with the exact phrase 'SKILL CREATED'
   must_not:
-  - criar skill sem executar o teste de validação
-  - omitir comandos docker compose ou notificação via Claudio
+  - create skill without executing the validation test
+  - omit docker compose commands or notification via Claudio
 eval:
   user_score_enabled: false
-  notes: Cenário REAL P4 — skill generator fox-deploy
+  notes: Scenario REAL P4 — skill generator fox-deploy
 deployment:
   provider: ollama
 model_policy:

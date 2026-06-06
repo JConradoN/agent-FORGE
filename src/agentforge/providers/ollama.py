@@ -9,15 +9,15 @@ _TIMEOUT = int(__import__("os").environ.get("OLLAMA_TIMEOUT", "900"))  # default
 
 
 class OllamaProviderError(ProviderError):
-    """Erro base do provider Ollama."""
+    """Base error for the Ollama provider."""
 
 
 class OllamaConnectionError(OllamaProviderError):
-    """Falha de conexão ou timeout com o Ollama local."""
+    """Connection failure or timeout with local Ollama."""
 
 
 class OllamaResponseError(OllamaProviderError):
-    """Resposta HTTP inválida ou formato inesperado do Ollama."""
+    """Invalid HTTP response or unexpected format from Ollama."""
 
 
 class OllamaProvider(BaseProvider):
@@ -43,29 +43,29 @@ class OllamaProvider(BaseProvider):
             )
         except requests.exceptions.ConnectionError as exc:
             raise OllamaConnectionError(
-                f"Não foi possível conectar ao Ollama local ({_BASE_URL}). "
-                "Verifique se o serviço está rodando."
+                f"Could not connect to local Ollama ({_BASE_URL}). "
+                "Check if the service is running."
             ) from exc
         except requests.exceptions.Timeout as exc:
             raise OllamaConnectionError(
-                f"Timeout ({_TIMEOUT}s) ao aguardar resposta do Ollama local ({_BASE_URL})."
+                f"Timeout ({_TIMEOUT}s) waiting for response from local Ollama ({_BASE_URL})."
             ) from exc
 
         if response.status_code != 200:
             raise OllamaResponseError(
-                f"Ollama retornou status {response.status_code}: {response.text[:200]}"
+                f"Ollama returned status {response.status_code}: {response.text[:200]}"
             )
 
         try:
             data = response.json()
         except Exception as exc:
-            raise OllamaResponseError("Resposta do Ollama não é JSON válido.") from exc
+            raise OllamaResponseError("Ollama response is not valid JSON.") from exc
 
         output_text = data.get("response")
         if output_text is None:
             raise OllamaResponseError(
-                f"Resposta do Ollama não contém o campo 'response'. "
-                f"Campos recebidos: {list(data.keys())}"
+                f"Ollama response does not contain the 'response' field. "
+                f"Received fields: {list(data.keys())}"
             )
 
         return ProviderResponse(
@@ -90,7 +90,7 @@ class OllamaProvider(BaseProvider):
             "model": request.model,
             "messages": messages,
             "stream": False,
-            "think": False,  # desativa thinking mode do Qwen3 — evita message.content vazio
+            "think": False,  # disables Qwen3 thinking mode — avoids empty message.content
         }
         if request.tools_schema:
             payload["tools"] = request.tools_schema
@@ -103,23 +103,23 @@ class OllamaProvider(BaseProvider):
             )
         except requests.exceptions.ConnectionError as exc:
             raise OllamaConnectionError(
-                f"Não foi possível conectar ao Ollama local ({_BASE_URL}). "
-                "Verifique se o serviço está rodando."
+                f"Could not connect to local Ollama ({_BASE_URL}). "
+                "Check if the service is running."
             ) from exc
         except requests.exceptions.Timeout as exc:
             raise OllamaConnectionError(
-                f"Timeout ({_TIMEOUT}s) ao aguardar resposta do Ollama local ({_BASE_URL})."
+                f"Timeout ({_TIMEOUT}s) waiting for response from local Ollama ({_BASE_URL})."
             ) from exc
 
         if response.status_code != 200:
             raise OllamaResponseError(
-                f"Ollama retornou status {response.status_code}: {response.text[:200]}"
+                f"Ollama returned status {response.status_code}: {response.text[:200]}"
             )
 
         try:
             data = response.json()
         except Exception as exc:
-            raise OllamaResponseError("Resposta do Ollama não é JSON válido.") from exc
+            raise OllamaResponseError("Ollama response is not valid JSON.") from exc
 
         message = data.get("message") or {}
         output_text = message.get("content") or ""
@@ -133,8 +133,8 @@ class OllamaProvider(BaseProvider):
                 output_text = thinking
             else:
                 raise OllamaResponseError(
-                    f"Resposta do Ollama (chat) não contém message.content nem tool_calls. "
-                    f"Campos recebidos: {list(data.keys())}"
+                    f"Ollama response (chat) does not contain message.content or tool_calls. "
+                    f"Received fields: {list(data.keys())}"
                 )
 
         tool_calls: list[dict] | None = None

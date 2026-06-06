@@ -19,9 +19,9 @@ class ProviderRegistry:
         try:
             return self._registry[key]
         except KeyError:
-            known = ", ".join(sorted(self._registry)) or "nenhum"
+            known = ", ".join(sorted(self._registry)) or "none"
             raise ProviderNotImplementedError(
-                f"Provider '{name}' não está disponível. Providers registrados: {known or 'nenhum'}"
+                f"Provider '{name}' is not available. Registered providers: {known or 'none'}"
             ) from None
 
     def create(self, name: str) -> BaseProvider:

@@ -17,14 +17,14 @@ def read_log_tail(
         return {
             "file_path": str(path),
             "error": "file_not_found",
-            "message": f"Arquivo não encontrado: {path}",
+            "message": f"File not found: {path}",
         }
 
     if not path.is_file():
         return {
             "file_path": str(path),
             "error": "not_a_file",
-            "message": "Caminho não é um arquivo regular",
+            "message": "Path is not a regular file",
         }
 
     size_bytes = path.stat().st_size
@@ -33,7 +33,7 @@ def read_log_tail(
         return {
             "file_path": str(path),
             "error": "file_too_large",
-            "message": f"Arquivo maior que {max_size_mb}MB ({size_mb:.1f}MB). Use início de arquivo diferente ou diminua linhas.",
+            "message": f"File larger than {max_size_mb}MB ({size_mb:.1f}MB). Use a different file start or decrease lines.",
         }
 
     try:
@@ -43,7 +43,7 @@ def read_log_tail(
         return {
             "file_path": str(path),
             "error": "read_error",
-            "message": f"Erro ao ler arquivo: {e}",
+            "message": f"Error reading file: {e}",
         }
 
     total_lines = len(all_content)

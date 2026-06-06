@@ -63,8 +63,8 @@ class EvaluationSpec(BaseModel):
 
     user_score_enabled: bool = False
     notes: str | None = None
-    criteria: list[str] = []        # critérios para o judge avaliar
-    judge_model: str | None = None  # modelo para scoring (ex: "gemma4:e4b" ou "gemini-2.5-flash")
+    criteria: list[str] = []        # criteria for the judge to evaluate
+    judge_model: str | None = None  # scoring model (e.g., "gemma4:e4b" or "gemini-2.5-flash")
 
 
 class GuardrailSpec(BaseModel):
@@ -101,9 +101,9 @@ class WorkflowSpec(BaseModel):
 
     mode: str
     multi_turn: bool = False
-    max_tool_cycles: int = 3      # máximo de rodadas de tool calling por run
-    reflection_rounds: int = 0    # rounds de auto-crítica após resposta final
-    agents: list[AgentRef] = []   # workers disponíveis para delegação
+    max_tool_cycles: int = 3      # maximum rounds of tool calling per run
+    reflection_rounds: int = 0    # rounds of self-criticism after final response
+    agents: list[AgentRef] = []   # workers available for delegation
 
 
 class AgentSpec(BaseModel):

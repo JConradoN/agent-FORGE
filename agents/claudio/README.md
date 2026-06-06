@@ -1,25 +1,25 @@
-# Claudio Assistente
+# Claudio Assistant
 
 **ID:** `claudio`  
-**Versão da spec:** 0.1
+**Spec version:** 0.1
 
-## Propósito
+## Purpose
 
-Assistente CLI para responder sobre o laboratório e o próprio framework
+CLI Assistant to answer about the laboratory and the framework itself
 
-## Configuração
+## Configuration
 
-| Campo              | Valor                          |
+| Field              | Value                          |
 |--------------------|--------------------------------|
-| Canal              | cli            |
-| Modelo padrão      | gemma4:e4b |
-| Modelo fallback    | —                     |
+| Channel            | cli            |
+| Default model      | gemma4:e4b |
+| Fallback model     | —                     |
 | Workflow           | respond_or_tool           |
-| Memória            | desabilitada                  |
-| Tools              | Nenhuma                   |
-| Saída              | text             |
+| Memory             | disabled                  |
+| Tools              | None                   |
+| Output             | text             |
 
-## Arquivos gerados
+## Generated files
 
 - `agent.yaml`
 - `system_prompt.md`
