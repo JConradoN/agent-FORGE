@@ -124,5 +124,3 @@ def clear_history(root_dir: Path) -> None:
     path = root_dir / _HISTORY_FILE
     if path.exists():
         path.unlink()
-
-        path.unlink()

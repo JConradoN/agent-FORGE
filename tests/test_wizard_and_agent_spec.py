@@ -268,7 +268,7 @@ def test_wizard_complex_system_prompt_has_tool_details(tmp_path: Path, monkeypat
     assert "web_search" in prompt_text
     assert "search" in prompt_text
     assert "query" in prompt_text
-    assert "Quando usar" in prompt_text or "quando usar" in prompt_text.lower()
+    assert "When to use" in prompt_text or "when to use" in prompt_text.lower()
 
 
 def test_wizard_complex_tools_yaml_has_rich_fields(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

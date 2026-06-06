@@ -1,0 +1,9 @@
+spec_version: "0.1"
+framework:
+  name: agents-framework
+  goal: Spec-first, local-first LLM agent framework with Voyager Tool Registry pattern
+  deployment_target: local
+  default_runtime_provider: ollama
+  optional_build_providers:
+    - litellm
+    - openai

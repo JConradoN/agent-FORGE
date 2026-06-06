@@ -84,18 +84,18 @@ def test_system_prompt_contains_objective() -> None:
 def test_system_prompt_contains_all_sections() -> None:
     prompt = build_system_prompt(_full_spec())
     for section in [
-        "## Identidade",
-        "## Objetivo",
+        "## Identity",
+        "## Objective",
         "## Persona",
-        "## Canal",
-        "## Comportamentos Obrigatórios",
-        "## Comportamentos Proibidos",
-        "## Tools Disponíveis",
-        "## Política de Memória",
-        "## Formato de Saída",
-        "## Política de Modelo e Workflow",
+        "## Channel",
+        "## Mandatory Behaviors",
+        "## Forbidden Behaviors",
+        "## Available Tools",
+        "## Memory Policy",
+        "## Output Format",
+        "## Model and Workflow Policy",
     ]:
-        assert section in prompt, f"Seção ausente: {section}"
+        assert section in prompt, f"Missing section: {section}"
 
 
 def test_system_prompt_guardrails_content() -> None:
@@ -112,12 +112,12 @@ def test_system_prompt_tools_content() -> None:
 
 def test_system_prompt_no_tools_fallback() -> None:
     prompt = build_system_prompt(_minimal_spec())
-    assert "Nenhuma tool definida." in prompt
+    assert "No tools defined." in prompt
 
 
 def test_system_prompt_memory_disabled() -> None:
     prompt = build_system_prompt(_minimal_spec())
-    assert "não" in prompt
+    assert "no" in prompt
 
 
 # ---------------------------------------------------------------------------

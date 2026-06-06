@@ -3,7 +3,7 @@ from __future__ import annotations
 from functools import partial
 from typing import Any, Callable
 
- _ToolRegistry: dict[str, Callable] = {}
+_ToolRegistry: dict[str, Callable] = {}
 
 
 def register_tool(name: str, func: Callable, **default_kwargs: Any) -> None:

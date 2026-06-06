@@ -77,10 +77,10 @@ class TestRunAgentTool:
                    side_effect=ProviderError("conexão recusada")):
             result = run_agent("teste", agent_dir=str(tmp_path))
 
-        assert "erro de provider" in result
+        assert "provider error" in result
 
     def test_missing_agent_returns_error_string(self, tmp_path) -> None:
         from agentforge.channels.mcp_server import run_agent
 
         result = run_agent("teste", agent_dir=str(tmp_path / "nao_existe"))
-        assert "não encontrado" in result
+        assert "not found" in result

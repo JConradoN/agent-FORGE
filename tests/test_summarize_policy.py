@@ -42,11 +42,11 @@ from agentforge.runtime.memory import (
 
 class TestIsSummaryMessage:
     def test_recognizes_valid_summary(self) -> None:
-        msg = {"role": _SUMMARY_ROLE, "content": f"{_SUMMARY_PREFIX}\n- Usuário: x"}
+        msg = {"role": _SUMMARY_ROLE, "content": f"{_SUMMARY_PREFIX}\n- User: x"}
         assert _is_summary_message(msg) is True
 
     def test_rejects_user_role(self) -> None:
-        msg = {"role": "user", "content": f"{_SUMMARY_PREFIX}\n- Usuário: x"}
+        msg = {"role": "user", "content": f"{_SUMMARY_PREFIX}\n- User: x"}
         assert _is_summary_message(msg) is False
 
     def test_rejects_assistant_role(self) -> None:
@@ -73,21 +73,21 @@ class TestBuildSummaryContent:
 
     def test_user_turn_labeled_usuario(self) -> None:
         content = _build_summary_content(None, [{"role": "user", "content": "pergunta"}])
-        assert "- Usuário: pergunta" in content
+        assert "- User: pergunta" in content
 
     def test_assistant_turn_labeled_assistente(self) -> None:
         content = _build_summary_content(None, [{"role": "assistant", "content": "resposta"}])
-        assert "- Assistente: resposta" in content
+        assert "- Assistant: resposta" in content
 
     def test_preserves_existing_content(self) -> None:
-        existing = f"{_SUMMARY_PREFIX}\n- Usuário: antigo"
+        existing = f"{_SUMMARY_PREFIX}\n- User: antigo"
         content = _build_summary_content(existing, [{"role": "user", "content": "novo"}])
-        assert "- Usuário: antigo" in content
-        assert "- Usuário: novo" in content
+        assert "- User: antigo" in content
+        assert "- User: novo" in content
 
     def test_newlines_in_content_replaced(self) -> None:
         content = _build_summary_content(None, [{"role": "user", "content": "linha1\nlinha2"}])
-        assert "\n- " not in content.split(_SUMMARY_PREFIX, 1)[1].split("\n- Usuário:")[0]
+        assert "\n- " not in content.split(_SUMMARY_PREFIX, 1)[1].split("\n- User:")[0]
         assert "linha1 linha2" in content
 
 

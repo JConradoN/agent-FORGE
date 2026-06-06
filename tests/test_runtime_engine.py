@@ -878,7 +878,7 @@ class TestGuardrails:
 
         monkeypatch.setattr(requests, "post", Mock(side_effect=[
             _mock_simple_resp("Resposta legítima."),   # inferência principal
-            _mock_simple_resp("NENHUMA"),               # check guardrail
+            _mock_simple_resp("NONE"),               # check guardrail
         ]))
 
         agent_dir = _make_agent_dir_with_guardrails(tmp_path, must_not=["inventar dados"])
@@ -899,7 +899,7 @@ class TestGuardrails:
             _mock_simple_resp("Inventei dados falsos."),    # inferência principal
             _mock_simple_resp("inventar dados"),            # check → violação
             _mock_simple_resp("Dados reais do sistema."),  # correção (retry)
-            _mock_simple_resp("NENHUMA"),                   # re-check → limpo
+            _mock_simple_resp("NONE"),                   # re-check → limpo
         ]))
 
         agent_dir = _make_agent_dir_with_guardrails(tmp_path, must_not=["inventar dados"])
