@@ -10,6 +10,7 @@ from agentforge.cli.main import app
 from agentforge.core.agent_models import (
     AgentIdentity,
     AgentPersona,
+    AgentRef,
     AgentSpec,
     ChannelSpec,
     DeploymentSpec,
@@ -932,3 +933,115 @@ class TestGuardrails:
         violations = result["metadata"].get("guardrail_violations")
         assert violations is not None
         assert len(violations) > 0
+
+
+# ---------------------------------------------------------------------------
+# Orquestração multi-agente
+# ---------------------------------------------------------------------------
+
+def _make_agent_dir_with_workers(tmp_path: Path, workers: list[AgentRef]) -> Path:
+    spec = AgentSpec(
+        spec_version="0.1",
+        agent=AgentIdentity(id="orchestrator", name="Orquestrador", purpose="Testing"),
+        persona=AgentPersona(tone="direto", style="técnico"),
+        channel=ChannelSpec(type="cli"),
+        tools=[],
+        memory=MemorySpec(type="none", enabled=False),
+        output=OutputSpec(mode="text"),
+        guardrails=GuardrailSpec(),
+        eval=EvaluationSpec(),
+        deployment=DeploymentSpec(provider="ollama"),
+        model_policy=ModelPolicySpec(default_model="qwen3.5:9b"),
+        workflow=WorkflowSpec(mode="respond_or_tool", agents=workers),
+    )
+    agent_dir = tmp_path / "orchestrator"
+    agent_dir.mkdir()
+    save_agent_spec(agent_dir / "agent.yaml", spec)
+    with (agent_dir / "runtime.yaml").open("w", encoding="utf-8") as fh:
+        yaml.safe_dump(build_runtime_config(spec), fh, allow_unicode=True, sort_keys=False)
+    with (agent_dir / "tools.yaml").open("w", encoding="utf-8") as fh:
+        yaml.safe_dump(build_tools_config(spec), fh, allow_unicode=True, sort_keys=False)
+    return agent_dir
+
+
+class TestMultiAgent:
+    def test_run_agent_injected_in_schema_when_workers_declared(
+        self, tmp_path: Path
+    ) -> None:
+        workers = [AgentRef(name="lab-ops", agent_dir="agents/lab-ops", description="Infra")]
+        agent_dir = _make_agent_dir_with_workers(tmp_path, workers)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+
+        schema = runtime._build_tools_schema()
+        names = [e["function"]["name"] for e in schema]
+        assert "run_agent" in names
+
+    def test_run_agent_not_in_schema_when_no_workers(
+        self, tmp_path: Path
+    ) -> None:
+        agent_dir = _make_agent_dir_with_workers(tmp_path, workers=[])
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+
+        schema = runtime._build_tools_schema()
+        names = [e["function"]["name"] for e in schema]
+        assert "run_agent" not in names
+
+    def test_run_agent_schema_lists_worker_names_and_dirs(
+        self, tmp_path: Path
+    ) -> None:
+        workers = [
+            AgentRef(name="lab-ops", agent_dir="agents/lab-ops", description="Infra"),
+            AgentRef(name="doc-agent", agent_dir="agents/doc-agent", description="Docs"),
+        ]
+        agent_dir = _make_agent_dir_with_workers(tmp_path, workers)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+
+        schema = runtime._build_tools_schema()
+        run_agent_entry = next(e for e in schema if e["function"]["name"] == "run_agent")
+        desc = run_agent_entry["function"]["description"]
+
+        assert "lab-ops" in desc
+        assert "agents/lab-ops" in desc
+        assert "doc-agent" in desc
+        assert "agents/doc-agent" in desc
+
+    def test_run_agent_schema_has_correct_parameters(
+        self, tmp_path: Path
+    ) -> None:
+        """Schema de run_agent tem agent_dir e input como parâmetros obrigatórios."""
+        workers = [AgentRef(name="lab-ops", agent_dir="agents/lab-ops", description="Infra")]
+        agent_dir = _make_agent_dir_with_workers(tmp_path, workers)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+
+        schema = runtime._build_tools_schema()
+        entry = next(e for e in schema if e["function"]["name"] == "run_agent")
+        params = entry["function"]["parameters"]
+
+        assert "agent_dir" in params["properties"]
+        assert "input" in params["properties"]
+        assert set(params.get("required", [])) >= {"agent_dir", "input"}
+
+    def test_run_agent_tool_executes_worker_and_returns_output(self) -> None:
+        """A tool run_agent carrega o runtime do worker e retorna o output."""
+        from unittest.mock import Mock, patch
+
+        mock_result = {
+            "agent_id": "lab-ops",
+            "output": "CPU 45%, RAM 60%.",
+            "metadata": {},
+            "provider": "ollama",
+            "provider_response": {},
+            "input": "saúde?",
+        }
+
+        with patch("agentforge.runtime.engine.AgentRuntime.from_agent_dir") as mock_from_dir:
+            mock_runtime = Mock()
+            mock_runtime.run.return_value = mock_result
+            mock_from_dir.return_value = mock_runtime
+
+            from agentforge.tools.run_agent import run_agent
+            result = run_agent(agent_dir="agents/lab-ops", input="saúde?")
+
+        assert result["agent_id"] == "lab-ops"
+        assert result["output"] == "CPU 45%, RAM 60%."
+        mock_runtime.run.assert_called_once_with("saúde?")

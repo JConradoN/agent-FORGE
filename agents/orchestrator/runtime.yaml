@@ -1,0 +1,22 @@
+runtime_version: '0.1'
+agent_id: orchestrator
+provider: ollama
+model:
+  default: qwen3.5:9b
+  fallback: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 8
+  reflection_rounds: 1
+channel:
+  type: cli
+memory:
+  enabled: false
+  type: none
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+conversation:
+  multi_turn: false

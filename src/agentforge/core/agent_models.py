@@ -88,6 +88,14 @@ class ModelPolicySpec(BaseModel):
     fallback_model: str | None = None
 
 
+class AgentRef(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str
+    agent_dir: str
+    description: str | None = None
+
+
 class WorkflowSpec(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -95,6 +103,7 @@ class WorkflowSpec(BaseModel):
     multi_turn: bool = False
     max_tool_cycles: int = 3      # máximo de rodadas de tool calling por run
     reflection_rounds: int = 0    # rounds de auto-crítica após resposta final
+    agents: list[AgentRef] = []   # workers disponíveis para delegação
 
 
 class AgentSpec(BaseModel):

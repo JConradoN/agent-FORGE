@@ -51,7 +51,7 @@ Todas as fases planejadas estão implementadas e cobertas por 291 testes.
 
 ---
 
-## Fase 4 — Canais e UX ✅
+## Fase 4 — Canais, UX e Multi-Agente ✅
 
 **Objetivo:** Mesmo agente acessível por qualquer interface sem alterar a spec.
 
@@ -59,6 +59,8 @@ Todas as fases planejadas estão implementadas e cobertas por 291 testes.
 - **MCP** (`agentforge mcp`): servidor FastMCP expondo 4 ferramentas para Claude Code/Desktop
 - **Telegram** (`agentforge telegram`): bot polling assíncrono com typing action e sinalização de guardrails
 - `.mcp.json` na raiz — ativa as ferramentas automaticamente no Claude Code
+- **Multi-agente híbrido**: `workflow.agents` declara workers; engine injeta `run_agent` no schema; modelo escolhe quando e para quem delegar
+- `agents/orchestrator/` — agente orquestrador de referência delegando para lab-ops
 
 ---
 

@@ -38,7 +38,8 @@ A qualidade de um agente local depende menos do modelo escolhido e mais de como 
 | **Guardrails Ativos** | Verifica `must_not` no output usando o próprio modelo como juiz. Retenta automaticamente se violado. |
 | **Eval com LLM Judge** | Scoring multidimensional usando Ollama local ou Gemini como avaliador. |
 | **4 Canais** | CLI, HTTP (n8n), MCP (Claude Code/Desktop), Telegram — mesma spec, qualquer interface. |
-| **291 testes** | Cobertura ampla garantindo estabilidade do runtime e contratos de API. |
+| **Multi-Agente** | Orquestrador delega subtarefas para workers declarados no YAML via `run_agent`. |
+| **296 testes** | Cobertura ampla garantindo estabilidade do runtime e contratos de API. |
 
 ---
 
@@ -206,6 +207,37 @@ guardrails:
 5. Violações persistentes registradas em `result["metadata"]["guardrail_violations"]`
 
 ---
+
+## Orquestração Multi-Agente
+
+Um orquestrador é um agente regular que declara workers em `workflow.agents`. O engine injeta `run_agent` automaticamente no schema de tools — o modelo decide quando e para quem delegar.
+
+```yaml
+# agents/orchestrator/agent.yaml
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 8
+  agents:
+    - name: lab-ops
+      agent_dir: agents/lab-ops
+      description: Monitoramento de saúde do servidor e inspeção de logs
+    - name: outro-agente
+      agent_dir: agents/outro-agente
+      description: Análise de documentos
+```
+
+**Fluxo de delegação:**
+1. Orquestrador recebe tarefa do usuário
+2. Modelo analisa e decide delegar → chama `run_agent(agent_dir=..., input=...)`
+3. Engine carrega o worker, executa `runtime.run(input)`, retorna o output
+4. Output do worker é injetado no histórico do orquestrador
+5. Orquestrador sintetiza todos os resultados em resposta final
+
+Workers só aparecem no schema se declarados — modelo não pode inventar agents fora da spec.
+
+```bash
+agentforge run --agent-dir agents/orchestrator --input "Relatório completo do servidor"
+```
 
 ## Reflexão Autônoma
 
