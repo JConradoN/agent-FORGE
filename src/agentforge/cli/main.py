@@ -247,5 +247,24 @@ def serve(
     uvicorn.run(fast_app, host=host, port=port, reload=reload)
 
 
+@app.command(name="mcp")
+def mcp_server(
+    transport: str = typer.Option("stdio", "--transport", help="Transporte: stdio (Claude Code) ou http"),
+    host: str = typer.Option("0.0.0.0", "--host", help="Host (apenas transport=http)"),
+    port: int = typer.Option(8081, "--port", help="Porta (apenas transport=http)"),
+) -> None:
+    """Inicia o servidor MCP — expõe ferramentas para Claude Code / Claude Desktop."""
+    from agentforge.channels.mcp_server import run_http, run_stdio
+
+    if transport == "stdio":
+        run_stdio()
+    elif transport == "http":
+        console.print(f"[bold]AgentForge MCP[/bold] — HTTP/SSE em http://{host}:{port}")
+        run_http(host=host, port=port)
+    else:
+        console.print(f"[red]Transport inválido:[/red] {transport}. Use 'stdio' ou 'http'.")
+        raise typer.Exit(code=1)
+
+
 if __name__ == "__main__":
     app()
