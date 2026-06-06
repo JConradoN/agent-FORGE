@@ -1,0 +1,234 @@
+Tool Output Policies: compressão automática de outputs grandes de tools
+
+Contexto:
+
+No agente vault-pilot, o engine injeta tool outputs como JSON inline no prompt, antes do input do usuário, via _build_input_with_tool_results.
+
+A tool scan_directory pode retornar centenas de arquivos; em um caso real, o JSON tinha ~25.000 tokens.
+
+Com o modelo gemma4:e4b (Ollama local em RTX 3060 12GB), experimentos mostraram que:
+
+Até ~328 tokens de tool output (n5_full): faithfulness=1.00 (o modelo segue o output).
+
+Em ~1.242 tokens (n20_full) e acima (3k, 21k): faithfulness=0.00, o modelo ignora o JSON e inventa.
+
+Com o mesmo conteúdo comprimido em formatos summary, top_n, by_folder, plain_text na faixa 165–433 tokens, faithfulness volta a 1.00.
+
+Problema:
+
+Tools com a-output grande (scan/list/search/logs) permitem gerar contextos muito maiores do que o que modelos pequenos/médios conseguem realmente usar.
+
+Sem uma camada de compressão, o modelo:
+
+ignora dados reais da tool,
+
+responde usando priors de treinamento,
+
+gera respostas “plausíveis porém erradas”.
+
+Hipótese confirmada (Experimento V1):
+
+O problema é de VOLUME de contexto, não de “capacidade de ferramenta” ou de “modelo não saber usar tools”.
+
+Existe um limiar prático de tokens de tool output (~800 tokens no setup atual) acima do qual o gemma4:e4b passa a ignorar o output.
+
+Com compressão/resumo abaixo desse limiar, o mesmo modelo usa corretamente as tools sem necessidade de trocar de modelo/hardware.
+
+Objetivo da feature:
+
+Tornar essa compressão parte do framework, e não um hack específico do vault-pilot.
+
+Permitir que cada tool declare metadados de output, e o engine escolha automaticamente uma política de compressão/resumo adequada, antes de injetar o conteúdo no prompt.
+
+Proposta de API (nível de tool):
+
+Adicionar campos opcionais no spec das tools (tools.yaml ou estrutura equivalente):
+
+expected_output_size: "small" | "medium" | "large"
+
+compress_mode: "none" | "top_n" | "summary" | "by_folder" | "plain_text"
+
+compress_max_items: int (para top_n, by_folder, etc.)
+
+Opcional: max_tokens_hint: int (override do threshold global para aquela tool).
+
+Exemplo para scan_directory:
+
+text
+tools:
+  - name: scan_directory
+    module: agentforge.tools.vault_scan
+    expected_output_size: large
+    compress_mode: summary
+    compress_max_items: 20
+Camada de engine: Tool Output Policies
+
+Introduzir um componente/função genérico, por exemplo:
+
+python
+def compress_tool_output(tool_name: str, tool_data: dict, tool_meta: dict, model_limits: ModelLimits) -> dict:
+    ...
+Responsabilidades:
+
+Estimar custo: estimated_tokens = len(json.dumps(tool_data)) // 4.
+
+Determinar threshold efetivo:
+
+threshold global (ex.: 800),
+
+ajustado por tool_meta.max_tokens_hint ou por configuração do modelo.
+
+Se estimated_tokens <= threshold: retornar tool_data original.
+
+Se acima do threshold:
+
+usar tool_meta.compress_mode e compress_max_items para decidir entre:
+
+summary (agregação),
+
+top_n,
+
+by_folder,
+
+plain_text.
+
+fallback para heurística genérica (se tool não tiver metadados):
+
+se tiver files/items/results: top_n com max default,
+
+senão: manter original e logar warning.
+
+Integração com _build_input_with_tool_results:
+
+Em vez de chamar diretamente json.dumps(tool_data) e injetar, o engine faz:
+
+python
+tool_data = compress_tool_output(tool_name, tool_data, tool_meta, model_limits)
+# depois formata como JSON ou texto, como já faz hoje
+Mantém compatibilidade com:
+
+tools de output pequeno (sem compressão),
+
+lógica existente de _TOOL_PREVIEW_PREFIX.
+
+Integração com geração de agentes:
+
+No comando de geração (agentforge generate), ao criar tools.yaml:
+
+sugerir defaults:
+
+tools de listagem: expected_output_size: large, compress_mode: summary/top_n.
+
+tools de leitura de documento: expected_output_size: medium, compress_mode: plain_text, limite de chars.
+
+tools de métricas simples: expected_output_size: small, compress_mode: none.
+
+Impacto esperado:
+
+Para agentes existentes que não configurarem metadados:
+
+comportamento quase idêntico ao atual, exceto quando o engine decidir aplicar heurística de compressão para listas gigantes (opcionalmente ativado por flag).
+
+Para agentes novos / atualizados:
+
+tool outputs passam a ser comprimidos automaticamente,
+
+modelos pequenos e médios se tornam mais confiáveis como “tool users”,
+
+reduz a necessidade de modelos “frontier” só para aguentar contexto gigantesco de tool.
+
+Passo 1 – Corrigir o vault-pilot (PoC local)
+Foco: aplicar o workaround V1 apenas no vault-pilot/engine atual, sem ainda generalizar metadados.
+
+1.1. Adicionar _summarize_scan_output (se ainda não estiver igual ao V1)
+Garantir que src/agentforge/runtime/engine.py contém a função:
+
+python
+def _summarize_scan_output(tool_data: dict, mode: str = "full", max_items: int = 20) -> dict:
+    ...
+com os modos full, top_n, summary, by_folder, plain_text exatamente como no bloco corrigido que você já usou (folders com split("/")[0], plain_text usando "\n", etc.).
+
+1.2. Adicionar _maybe_compress_tool_output
+No mesmo arquivo (por enquanto), adicionar:
+
+python
+TOKEN_THRESHOLD = 800  # heurístico baseado no V1
+
+def _maybe_compress_tool_output(tool_data: dict, tool_name: str) -> dict:
+    """
+    Comprime tool outputs grandes automaticamente antes de injetar no prompt.
+    Usado inicialmente no vault-pilot como PoC.
+    """
+    import json
+
+    try:
+        estimated_tokens = len(json.dumps(tool_data)) // 4
+    except TypeError:
+        # Se não for serializável por algum motivo, não tenta comprimir
+        return tool_data
+
+    if estimated_tokens <= TOKEN_THRESHOLD:
+        return tool_data  # pequeno o suficiente, não comprime
+
+    # scan_directory: usar summary como formato padrão
+    if tool_name == "scan_directory":
+        return _summarize_scan_output(tool_data, mode="summary")
+
+    # outras tools com listas grandes: heurística simples
+    if any(k in tool_data for k in ("files", "items", "results")):
+        return _summarize_scan_output(tool_data, mode="top_n", max_items=20)
+
+    # tool desconhecida: por enquanto, injeta como está (futuro: logar warning)
+    return tool_data
+1.3. Integrar na construção do prompt de tool
+Hoje, _build_input_with_tool_results deve estar algo próximo de:
+
+python
+def _build_input_with_tool_results(self, input_text: str, tool_data: dict) -> str:
+    tool_json = json.dumps(tool_data, indent=2, default=str)
+    return f"{_TOOL_PREVIEW_PREFIX}{tool_json}\n\n{input_text}"
+Você quer:
+
+Não quebrar call sites existentes.
+
+Passar tool_name quando souber (ex.: para scan_directory).
+
+Uma forma segura é:
+
+Criar uma nova função que recebe tool_name e usar essa nos novos pontos (por exemplo, no vault-pilot):
+
+python
+def _build_input_with_tool_results_with_name(
+    self, input_text: str, tool_data: dict, tool_name: str = ""
+) -> str:
+    tool_data = _maybe_compress_tool_output(tool_data, tool_name)
+
+    if "_text" in tool_data:
+        tool_content = tool_data["_text"]
+    else:
+        tool_json = json.dumps(tool_data, indent=2, default=str)
+        tool_content = tool_json
+
+    return f"{_TOOL_PREVIEW_PREFIX}{tool_content}\n\n{input_text}"
+E manter a versão “antiga” para compatibilidade:
+
+python
+def _build_input_with_tool_results(self, input_text: str, tool_data: dict) -> str:
+    # Caminho legacy: sem tool_name, sem compressão
+    tool_json = json.dumps(tool_data, indent=2, default=str)
+    return f"{_TOOL_PREVIEW_PREFIX}{tool_json}\n\n{input_text}"
+Em seguida, em pontos específicos do engine usados pelo vault-pilot, ajustar para chamar a versão nova, passando tool_name="scan_directory" ou o nome real vindo da execução da tool (onde hoje você já sabe qual tool foi chamada).
+
+Se você quiser aplicar compressão também para outras tools do vault-pilot, pode usar o mesmo caminho e passar tool_name adequado.
+
+1.4. Usar _run_with_tool_data / script V1 para revalidar
+Com essas mudanças:
+
+Reutilizar scripts/run_v1_benchmark.py para ver se:
+
+n5_full, n20_full, n50_full, n342_full, etc. agora passam pela compressão automática,
+
+o comportamento de faithfulness continua consistente com o V1 (mais, você deve ver que os outputs “full” acima do limiar já estão comprimidos por _maybe_compress_tool_output e praticamente viram casos “summary/top_n”).
+
+Depois, fazer os testes manuais via CLI com o vault-pilot como descrito na etapa 2 anterior.
+

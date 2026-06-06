@@ -47,6 +47,8 @@ class RuntimeConfig(BaseModel):
     output_mode: str
     output_format: str | None = None
     conversation_multi_turn: bool = False
+    max_tool_cycles: int = 3
+    reflection_rounds: int = 0
 
     @model_validator(mode="before")
     @classmethod
@@ -74,6 +76,8 @@ class RuntimeConfig(BaseModel):
             "output_mode": output.get("mode", ""),
             "output_format": output.get("format"),
             "conversation_multi_turn": conversation.get("multi_turn", False),
+            "max_tool_cycles": workflow.get("max_tool_cycles", 3),
+            "reflection_rounds": workflow.get("reflection_rounds", 0),
         }
 
 
@@ -173,59 +177,118 @@ class AgentRuntime:
         history: list[dict],
     ) -> tuple[str, list[dict]]:
         """
-        Ciclo de tool calling: primeira inferência → executa tools → segunda inferência.
-        Retorna (output_text, tool_results_log).
-        Limita a 1 rodada de tool calling para evitar loops.
+        Ciclo de tool calling com loop guard.
+
+        Itera até max_tool_cycles rodadas. Cada rodada:
+          1. Inferência com tools disponíveis
+          2. Se modelo pede tools → executa → injeta resultados → próxima rodada
+          3. Se modelo responde direto → retorna
+
+        Loop guard: para se o mesmo (tool, args_hash) se repetir numa rodada.
         """
         provider = self._get_provider()
         tools_schema = self._build_tools_schema()
-
-        request = ProviderRequest(
-            agent_id=self.runtime_config.agent_id,
-            input_text=input_text,
-            system_prompt=system_prompt,
-            model=self.runtime_config.model_default,
-            history=history,
-            tools_schema=tools_schema if tools_schema else None,
-        )
-        response = provider.generate(request)
-
+        max_cycles = self.runtime_config.max_tool_cycles
         tool_results_log: list[dict] = []
 
-        if not response.tool_calls:
-            return response.output_text, tool_results_log
+        messages = list(history)
+        messages.append({"role": "user", "content": input_text})
 
-        # Modelo pediu tools — executar e fazer segunda inferência.
-        new_history = list(history)
-        new_history.append({"role": "user", "content": input_text})
-        if response.output_text:
-            new_history.append({"role": "assistant", "content": response.output_text})
+        seen_calls: set[str] = set()
 
-        for tc in response.tool_calls:
-            tool_name = tc.get("name", "")
-            tool_args = tc.get("arguments") or {}
-            self.logger.info("tool_call: %s args=%s", tool_name, tool_args)
+        for cycle in range(max_cycles):
+            request = ProviderRequest(
+                agent_id=self.runtime_config.agent_id,
+                input_text="" if cycle > 0 else input_text,
+                system_prompt=system_prompt,
+                model=self.runtime_config.model_default,
+                history=messages[:-1] if cycle == 0 else messages,
+                tools_schema=tools_schema if tools_schema else None,
+            )
+            response = provider.generate(request)
 
-            result = self._execute_tool(tool_name, **tool_args)
-            tool_results_log.append({"tool": tool_name, "args": tool_args, "result": result})
+            if not response.tool_calls:
+                return response.output_text, tool_results_log
 
-            result_text = json.dumps(result, ensure_ascii=False, default=str) if result else "null"
-            new_history.append({
-                "role": "tool",
-                "content": result_text,
-                "name": tool_name,
-            })
+            if response.output_text:
+                messages.append({"role": "assistant", "content": response.output_text})
 
-        # Segunda inferência com resultados das tools.
-        follow_up = ProviderRequest(
+            loop_detected = False
+            for tc in response.tool_calls:
+                tool_name = tc.get("name", "")
+                tool_args = tc.get("arguments") or {}
+                call_key = f"{tool_name}:{json.dumps(tool_args, sort_keys=True)}"
+
+                if call_key in seen_calls:
+                    self.logger.warning(
+                        "loop_guard: tool '%s' com args idênticos detectado no ciclo %d — abortando",
+                        tool_name, cycle,
+                    )
+                    loop_detected = True
+                    break
+                seen_calls.add(call_key)
+
+                self.logger.info("tool_call[%d]: %s args=%s", cycle, tool_name, tool_args)
+                result = self._execute_tool(tool_name, **tool_args)
+                tool_results_log.append({
+                    "tool": tool_name, "args": tool_args,
+                    "result": result, "cycle": cycle,
+                })
+                result_text = json.dumps(result, ensure_ascii=False, default=str) if result else "null"
+                messages.append({"role": "tool", "content": result_text, "name": tool_name})
+
+            if loop_detected:
+                break
+
+        # Ciclos esgotados ou loop detectado — última inferência sem tools.
+        self.logger.warning("tool_cycle: max_cycles=%d atingido ou loop detectado — inferência final", max_cycles)
+        final_req = ProviderRequest(
             agent_id=self.runtime_config.agent_id,
             input_text="",
             system_prompt=system_prompt,
             model=self.runtime_config.model_default,
-            history=new_history,
+            history=messages,
         )
-        final_response = provider.generate(follow_up)
+        final_response = provider.generate(final_req)
         return final_response.output_text, tool_results_log
+
+    def _reflect(
+        self,
+        original_input: str,
+        output_text: str,
+        system_prompt: str | None,
+        rounds: int,
+    ) -> str:
+        """
+        Auto-crítica iterativa: o modelo revisa o próprio output N vezes.
+        Retorna o output refinado após todos os rounds.
+        """
+        provider = self._get_provider()
+        current = output_text
+
+        _REFLECT_PROMPT = (
+            "Revise sua resposta anterior considerando:\n"
+            "1. Está completa e precisa em relação à pergunta original?\n"
+            "2. Respeita todas as restrições do seu papel?\n"
+            "3. Pode ser mais objetiva ou útil?\n\n"
+            "Se estiver adequada, responda igual. Se não, melhore.\n\n"
+            f"Pergunta original: {original_input}\n\n"
+            f"Sua resposta anterior:\n{current}"
+        )
+
+        for r in range(rounds):
+            req = ProviderRequest(
+                agent_id=self.runtime_config.agent_id,
+                input_text=_REFLECT_PROMPT.replace(f"Sua resposta anterior:\n{current}", f"Sua resposta anterior:\n{current}"),
+                system_prompt=system_prompt,
+                model=self.runtime_config.model_default,
+                history=[],
+            )
+            resp = provider.generate(req)
+            self.logger.info("reflection[%d]: %d → %d chars", r, len(current), len(resp.output_text))
+            current = resp.output_text
+
+        return current
 
     def _build_input_with_tool_results(self, input_text: str, tool_data: dict) -> str:
         tool_json = json.dumps(tool_data, indent=2, default=str)
@@ -401,6 +464,11 @@ class AgentRuntime:
             raw_response = response.raw_response
             if not self.runtime_config.conversation_multi_turn and raw_response and "context" in raw_response:
                 raw_response = {k: v for k, v in raw_response.items() if k != "context"}
+
+        # Reflexão autônoma — refina o output N vezes antes de retornar.
+        reflection_rounds = self.runtime_config.reflection_rounds
+        if reflection_rounds > 0:
+            output_text = self._reflect(input_text, output_text, system_prompt, reflection_rounds)
 
         # Update in-memory history for multi-turn sessions.
         if self.runtime_config.conversation_multi_turn:
