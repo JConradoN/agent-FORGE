@@ -215,5 +215,37 @@ def eval(
     console.print(f"[green]Salvo em:[/green] {out_path}")
 
 
+@app.command()
+def serve(
+    agent_dir: Path = typer.Option(..., "--agent-dir", help="Diretório do agente"),
+    host: str = typer.Option("0.0.0.0", "--host", help="Host de escuta"),
+    port: int = typer.Option(8080, "--port", help="Porta HTTP"),
+    reload: bool = typer.Option(False, "--reload", help="Auto-reload em desenvolvimento"),
+) -> None:
+    """Sobe o agente como servidor HTTP (compatível com n8n, Telegram, etc)."""
+    import uvicorn
+
+    from agentforge.channels.http import create_app
+    from agentforge.runtime.engine import AgentRuntime
+
+    try:
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+    except (FileNotFoundError, ValueError) as exc:
+        console.print(f"[red]ERRO ao carregar agente[/red] — {exc}")
+        raise typer.Exit(code=1)
+
+    fast_app = create_app(runtime)
+
+    console.print(f"[bold]AgentForge HTTP[/bold] — {runtime.agent_spec.agent.name}")
+    console.print(f"  Modelo:    {runtime.runtime_config.model_default}")
+    console.print(f"  Provider:  {runtime.runtime_config.provider}")
+    console.print(f"  Endpoint:  http://{host}:{port}")
+    console.print(f"  POST /run  {{\"input\": \"...\"}}")
+    console.print(f"  GET  /health")
+    console.print("")
+
+    uvicorn.run(fast_app, host=host, port=port, reload=reload)
+
+
 if __name__ == "__main__":
     app()
