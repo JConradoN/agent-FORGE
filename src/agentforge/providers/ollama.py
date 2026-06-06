@@ -24,7 +24,7 @@ class OllamaProvider(BaseProvider):
     name = "ollama"
 
     def generate(self, request: ProviderRequest) -> ProviderResponse:
-        if request.history:
+        if request.history or request.tools_schema:
             return self._generate_chat(request)
         return self._generate_simple(request)
 
