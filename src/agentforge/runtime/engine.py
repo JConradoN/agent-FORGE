@@ -514,6 +514,7 @@ class AgentRuntime:
         original_input: str,
         output_text: str,
         system_prompt: str | None,
+        history: list[dict],
         rounds: int,
     ) -> str:
         """
@@ -538,7 +539,7 @@ class AgentRuntime:
                 input_text=reflect_prompt,
                 system_prompt=system_prompt,
                 model=self.runtime_config.model_default,
-                history=[],
+                history=history,
             )
             resp = provider.generate(req)
             self.logger.info("reflection[%d]: %d → %d chars", r, len(current), len(resp.output_text))
@@ -724,7 +725,9 @@ class AgentRuntime:
         # Reflexão autônoma — refina o output N vezes antes de retornar.
         reflection_rounds = self.runtime_config.reflection_rounds
         if reflection_rounds > 0:
-            output_text = self._reflect(input_text, output_text, system_prompt, reflection_rounds)
+            output_text = self._reflect(
+                input_text, output_text, system_prompt, history, reflection_rounds
+            )
 
         # Remove XML tool_use tags que vazam no output do qwen3.5:27b.
         output_text = self._strip_xml_tool_tags(output_text)
