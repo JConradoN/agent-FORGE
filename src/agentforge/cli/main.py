@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 
 import typer
@@ -9,6 +10,13 @@ from rich.console import Console
 from rich.table import Table
 
 from agentforge.core.validation import validate_all_specs, validate_agent_spec
+
+# Configure logging to output to stderr for real-time monitoring
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%H:%M:%S",
+)
 
 app = typer.Typer(help="agents-framework CLI")
 console = Console()

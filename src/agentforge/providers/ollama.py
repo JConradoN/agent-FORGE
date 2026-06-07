@@ -33,6 +33,10 @@ class OllamaProvider(BaseProvider):
             "model": request.model,
             "prompt": self._build_prompt(request),
             "stream": False,
+            "options": {
+                "temperature": 0,
+                "num_predict": -1,
+            },
         }
 
         try:
@@ -91,6 +95,10 @@ class OllamaProvider(BaseProvider):
             "messages": messages,
             "stream": False,
             "think": False,  # disables Qwen3 thinking mode — avoids empty message.content
+            "options": {
+                "temperature": 0,
+                "num_predict": -1,
+            },
         }
         if request.tools_schema:
             payload["tools"] = request.tools_schema
@@ -131,11 +139,6 @@ class OllamaProvider(BaseProvider):
             thinking = message.get("thinking") or ""
             if thinking:
                 output_text = thinking
-            else:
-                raise OllamaResponseError(
-                    f"Ollama response (chat) does not contain message.content or tool_calls. "
-                    f"Received fields: {list(data.keys())}"
-                )
 
         tool_calls: list[dict] | None = None
         if tool_calls_raw:
@@ -146,7 +149,35 @@ class OllamaProvider(BaseProvider):
                 }
                 for tc in tool_calls_raw
                 if tc.get("function", {}).get("name")
-            ] or None
+            ]
+        
+        # Regex Fallback: Captura chamadas de ferramentas escritas em texto (Markdown/JSON)
+        # se o campo oficial da API estiver vazio.
+        if not tool_calls:
+            import re
+            import json
+            # Busca padrões como tool_name({"arg": "val"}) ou apenas o JSON se estiver isolado
+            # Foca em capturar write_file, read_file e run_bash que são os mais comuns.
+            pattern = r"(\w+)\s*\(\s*(\{.*?\})\s*\)"
+            matches = re.finditer(pattern, output_text, re.DOTALL)
+            extracted = []
+            for match in matches:
+                name = match.group(1)
+                args_str = match.group(2)
+                try:
+                    args = json.loads(args_str)
+                    extracted.append({"name": name, "arguments": args})
+                except json.JSONDecodeError:
+                    continue
+            
+            if extracted:
+                tool_calls = extracted
+
+        if not output_text and not tool_calls:
+            raise OllamaResponseError(
+                f"Ollama response (chat) does not contain message.content or tool_calls. "
+                f"Received fields: {list(data.keys())}"
+            )
 
         return ProviderResponse(
             provider="ollama",

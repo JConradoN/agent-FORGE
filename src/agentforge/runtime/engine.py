@@ -649,12 +649,25 @@ class AgentRuntime:
         with open(runs_dir / "runs.jsonl", "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
+    def _inject_rules_to_input(self, input_text: str) -> str:
+        """Appends mandatory guardrails to user input for better grounding."""
+        must_rules = self.agent_spec.guardrails.must
+        if not must_rules:
+            return input_text
+        
+        rules_block = "\n\n### MANDATORY RULES FOR THIS TASK:\n"
+        for rule in must_rules:
+            rules_block += f"- {rule}\n"
+        
+        return input_text + rules_block
+
     def run(self, input_text: str, *, metadata: dict | None = None) -> dict:
         provider = self._get_provider()
         _t0 = time.perf_counter()
 
         tool_data = None
-        final_input = input_text
+        # Injeta regras no prompt de usuário para paridade com REAL framework
+        final_input = self._inject_rules_to_input(input_text)
 
         required_tool = next((t for t in self.tools if t.required), None)
         if required_tool:
