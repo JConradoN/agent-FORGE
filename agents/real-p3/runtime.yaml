@@ -2,12 +2,12 @@ runtime_version: '0.1'
 agent_id: real-p3
 provider: ollama
 model:
-  default: qwen3.5:27b
+  default: qwen3.5:9b
   fallback: null
 workflow:
   mode: respond_or_tool
   max_tool_cycles: 15
-  reflection_rounds: 0
+  reflection_rounds: 2
 channel:
   type: cli
 memory:

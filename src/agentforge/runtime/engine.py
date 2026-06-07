@@ -231,7 +231,10 @@ class AgentRuntime:
         messages = list(history)
         messages.append({"role": "user", "content": input_text})
 
-        seen_calls: set[str] = set()
+        # Sliding window of recent call keys — abort only when the last STUCK_WINDOW
+        # entries are all identical (matches native runner behaviour).
+        _STUCK_WINDOW = 5
+        recent_calls: list[str] = []
 
         for cycle in range(max_cycles):
             request = ProviderRequest(
@@ -256,14 +259,20 @@ class AgentRuntime:
                 tool_args = tc.get("arguments") or {}
                 call_key = f"{tool_name}:{json.dumps(tool_args, sort_keys=True)}"
 
-                if call_key in seen_calls:
+                recent_calls.append(call_key)
+                if len(recent_calls) > _STUCK_WINDOW:
+                    recent_calls.pop(0)
+
+                if (
+                    len(recent_calls) == _STUCK_WINDOW
+                    and len(set(recent_calls)) == 1
+                ):
                     self.logger.warning(
-                        "loop_guard: tool '%s' with identical args detected in cycle %d — aborting",
-                        tool_name, cycle,
+                        "loop_guard: tool '%s' called %d consecutive times — aborting",
+                        tool_name, _STUCK_WINDOW,
                     )
                     loop_detected = True
                     break
-                seen_calls.add(call_key)
 
                 self.logger.info("tool_call[%d]: %s args=%s", cycle, tool_name, tool_args)
                 result = self._execute_tool(tool_name, **tool_args)
@@ -280,17 +289,32 @@ class AgentRuntime:
         # Ciclos esgotados ou loop detectado — última inferência sem tools.
         self.logger.warning("tool_cycle: max_cycles=%d reached or loop detected — final inference", max_cycles)
 
-        # Injeta lembrete de conclusão: re-ancora o modelo no formato de saída esperado.
+        # Injeta lembrete de conclusão com resumo do que foi executado,
+        # para que o modelo produza uma resposta final baseada em evidências reais.
         must_rules = self.agent_spec.guardrails.must
-        completion_hint = "Produce your final response based on the tools executed above."
+        import re as _re
+
+        # Resumo das ferramentas executadas
+        if tool_results_log:
+            exec_lines = []
+            for entry in tool_results_log:
+                args_preview = json.dumps(entry.get("args", {}), ensure_ascii=False)[:80]
+                exec_lines.append(f"  - {entry['tool']}({args_preview})")
+            exec_summary = "Tools already executed:\n" + "\n".join(exec_lines)
+        else:
+            exec_summary = "No tools were executed."
+
+        completion_hint = (
+            f"Produce your final response based on the tools executed above.\n\n"
+            f"{exec_summary}"
+        )
         if must_rules:
             phrases = []
-            import re as _re
             for rule in must_rules:
                 quoted = _re.findall(r"'([^']+)'", rule)
                 phrases.extend(quoted)
             if phrases:
-                completion_hint += " Your response MUST include: " + ", ".join(f"'{p}'" for p in phrases[:3])
+                completion_hint += "\n\nYour response MUST include: " + ", ".join(f"'{p}'" for p in phrases[:3])
 
         messages.append({"role": "user", "content": completion_hint})
 
@@ -311,37 +335,66 @@ class AgentRuntime:
         cleaned = re.sub(r"<tool_use>.*?</tool_use>", "", text, flags=re.DOTALL)
         return re.sub(r"\n{3,}", "\n\n", cleaned).strip()
 
-    def _check_must_compliance(self, output_text: str) -> list[str]:
+    def _check_must_compliance(
+        self,
+        output_text: str,
+        tool_results_log: list[dict] | None = None,
+    ) -> list[str]:
         """
-        Checks which 'must' rules were NOT met in the output.
-        Uses deterministic checking for quoted phrases, LLM judge for open rules.
+        Checks which 'must' rules were NOT met.
+
+        For quoted-phrase rules: checks output_text first, then tool execution
+        evidence (a rule is satisfied if the quoted phrase appears in any tool
+        result or if a matching tool was called).
+        For open rules: LLM judge receives both the output text and a summary
+        of all tools executed, so it can reason from real evidence.
         """
         must_rules = self.agent_spec.guardrails.must
         if not must_rules:
             return []
 
         import re
+        tool_results_log = tool_results_log or []
+
+        # Build flat evidence string from tool execution log
+        evidence_parts = []
+        for entry in tool_results_log:
+            args_str = json.dumps(entry.get("args", {}), ensure_ascii=False)
+            result_str = json.dumps(entry.get("result", ""), ensure_ascii=False)[:300]
+            evidence_parts.append(f"tool={entry['tool']} args={args_str} result={result_str}")
+        evidence_text = "\n".join(evidence_parts) if evidence_parts else "(no tools executed)"
+
+        # Called tool names for quick lookup
+        called_tools = {e["tool"] for e in tool_results_log}
+
         missing = []
         open_rules = []
+
         for rule in must_rules:
-            # Regras com frases entre aspas simples → checagem determinística
+            # Rules with quoted phrases → deterministic check against output + evidence
             quoted = re.findall(r"'([^']+)'", rule)
             if quoted:
-                if not any(q.lower() in output_text.lower() for q in quoted):
+                satisfied = any(q.lower() in output_text.lower() for q in quoted)
+                if not satisfied:
+                    # Check evidence: phrase in any tool result
+                    satisfied = any(q.lower() in evidence_text.lower() for q in quoted)
+                if not satisfied:
                     missing.append(rule)
             else:
                 open_rules.append(rule)
 
-        # Regras abertas → LLM judge
+        # Open rules → LLM judge with full evidence context
         if open_rules:
             rules_text = "\n".join(f"- {r}" for r in open_rules)
             prompt = (
-                "Analyze the text below and identify WHICH of the following MANDATORY rules "
-                "were NOT met.\n"
+                "Determine which of the following MANDATORY rules were NOT met.\n"
+                "Consider BOTH the final response text AND the tool execution evidence.\n"
+                "A rule about executing a tool is satisfied if that tool appears in the evidence.\n"
                 "Respond ONLY with the unmet rules, one per line.\n"
                 "If all were met, respond exactly: NONE\n\n"
                 f"Mandatory rules:\n{rules_text}\n\n"
-                f"Text to analyze:\n{output_text[:2000]}"
+                f"Tool execution evidence:\n{evidence_text[:1500]}\n\n"
+                f"Final response text:\n{output_text[:1500]}"
             )
             provider = self._get_provider()
             req = ProviderRequest(
@@ -443,20 +496,19 @@ class AgentRuntime:
         provider = self._get_provider()
         current = output_text
 
-        _REFLECT_PROMPT = (
-            "Review your previous response considering:\n"
-            "1. Is it complete and accurate relative to the original question?\n"
-            "2. Does it respect all role restrictions?\n"
-            "3. Can it be more objective or useful?\n\n"
-            "If it is appropriate, respond the same. If not, improve it.\n\n"
-            f"Original question: {original_input}\n\n"
-            f"Your previous response:\n{current}"
-        )
-
         for r in range(rounds):
+            reflect_prompt = (
+                "Review your previous response considering:\n"
+                "1. Is it complete and accurate relative to the original question?\n"
+                "2. Does it respect all role restrictions?\n"
+                "3. Can it be more objective or useful?\n\n"
+                "If it is appropriate, respond the same. If not, improve it.\n\n"
+                f"Original question: {original_input}\n\n"
+                f"Your previous response:\n{current}"
+            )
             req = ProviderRequest(
                 agent_id=self.runtime_config.agent_id,
-                input_text=_REFLECT_PROMPT.replace(f"Your previous response:\n{current}", f"Your previous response:\n{current}"),
+                input_text=reflect_prompt,
                 system_prompt=system_prompt,
                 model=self.runtime_config.model_default,
                 history=[],
@@ -663,7 +715,7 @@ class AgentRuntime:
 
         # Must compliance — verifica regras obrigatórias e corrige se necessário.
         if self.agent_spec.guardrails.must:
-            must_missing = self._check_must_compliance(output_text)
+            must_missing = self._check_must_compliance(output_text, tool_results_log)
             if must_missing:
                 self.logger.warning("must_compliance: rules not met: %s", must_missing)
                 provider = self._get_provider()
