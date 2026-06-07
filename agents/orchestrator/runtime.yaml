@@ -2,7 +2,7 @@ runtime_version: '0.1'
 agent_id: orchestrator
 provider: ollama
 model:
-  default: qwen3.5:9b
+  default: qwen3.5:27b
   fallback: null
 workflow:
   mode: respond_or_tool

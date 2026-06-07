@@ -33,7 +33,7 @@ eval:
 deployment:
   provider: ollama
 model_policy:
-  default_model: qwen3.5:9b
+  default_model: qwen3.5:27b
   fallback_model: null
 workflow:
   mode: respond_or_tool

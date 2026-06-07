@@ -156,19 +156,28 @@ class OllamaProvider(BaseProvider):
         if not tool_calls:
             import re
             import json
-            # Busca padrões como tool_name({"arg": "val"}) ou apenas o JSON se estiver isolado
-            # Foca em capturar write_file, read_file e run_bash que são os mais comuns.
-            pattern = r"(\w+)\s*\(\s*(\{.*?\})\s*\)"
-            matches = re.finditer(pattern, output_text, re.DOTALL)
             extracted = []
-            for match in matches:
-                name = match.group(1)
-                args_str = match.group(2)
+            
+            # Padrão 1: tool_name({"arg": "val"}) - Formato de função
+            fn_pattern = r"(\w+)\s*\(\s*(\{.*?\})\s*\)"
+            for match in re.finditer(fn_pattern, output_text, re.DOTALL):
                 try:
-                    args = json.loads(args_str)
+                    name = match.group(1)
+                    args = json.loads(match.group(2))
                     extracted.append({"name": name, "arguments": args})
-                except json.JSONDecodeError:
-                    continue
+                except json.JSONDecodeError: continue
+
+            # Padrão 2: {"name": "...", "arguments": {...}} ou {"tool": "...", "args": {...}}
+            # Busca por blocos JSON que pareçam chamadas de ferramenta.
+            json_pattern = r"(\{[\s\n]*\"(?:name|tool|tool_name)\"[\s\n]*:.*?\})"
+            for match in re.finditer(json_pattern, output_text, re.DOTALL):
+                try:
+                    raw_json = json.loads(match.group(1))
+                    name = raw_json.get("name") or raw_json.get("tool") or raw_json.get("tool_name")
+                    args = raw_json.get("arguments") or raw_json.get("args") or {}
+                    if name:
+                        extracted.append({"name": name, "arguments": args})
+                except json.JSONDecodeError: continue
             
             if extracted:
                 tool_calls = extracted
