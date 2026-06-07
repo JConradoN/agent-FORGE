@@ -236,6 +236,11 @@ class AgentRuntime:
         _STUCK_WINDOW = 5
         recent_calls: list[str] = []
 
+        # Tracks how many times we redirected the model back to tool use.
+        # Mirrors the native runner's MAX_REFLECTION pushback behaviour.
+        _MAX_TOOL_REDIRECTS = 2
+        no_tool_redirects = 0
+
         for cycle in range(max_cycles):
             request = ProviderRequest(
                 agent_id=self.runtime_config.agent_id,
@@ -248,6 +253,28 @@ class AgentRuntime:
             response = provider.generate(request)
 
             if not response.tool_calls:
+                # If tools are available and none have been executed yet, push back
+                # exactly like the native runner does with REFLECTION_PROMPT.
+                if (
+                    tools_schema
+                    and not tool_results_log
+                    and no_tool_redirects < _MAX_TOOL_REDIRECTS
+                ):
+                    no_tool_redirects += 1
+                    self.logger.info(
+                        "no_tool_redirect[%d/%d]: model responded without tools — redirecting",
+                        no_tool_redirects, _MAX_TOOL_REDIRECTS,
+                    )
+                    messages.append({"role": "assistant", "content": response.output_text})
+                    messages.append({
+                        "role": "user",
+                        "content": (
+                            "You have not used any tools yet. "
+                            "Do NOT output code or text directly — use the available tools to complete the task. "
+                            "Call the appropriate tool now to proceed."
+                        ),
+                    })
+                    continue
                 return response.output_text, tool_results_log
 
             if response.output_text:

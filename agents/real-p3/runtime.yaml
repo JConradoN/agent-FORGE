@@ -7,7 +7,7 @@ model:
 workflow:
   mode: respond_or_tool
   max_tool_cycles: 15
-  reflection_rounds: 2
+  reflection_rounds: 0
 channel:
   type: cli
 memory:
