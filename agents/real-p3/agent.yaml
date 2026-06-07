@@ -39,17 +39,13 @@ guardrails:
   - include type hints in all functions
   - include descriptive docstrings
   - handle file not found error without throwing an exception
-  - execute pytest to verify that tests pass before responding
-  - name the public function exactly search_memory (no underscore, no private prefix)
-  - use raise ValueError("query cannot be empty") with all lowercase words for empty query
-  - in tests use exactly from memory_search import search_memory
-  - use read_file to re-read memory_search.py before writing test_memory_search.py
-  - finish the response with the exact phrase 'TOOL CREATED'
+  - call run_bash to execute pytest and verify tests pass before responding
+  - name the public function exactly search_memory
+  - "in tests use: from memory_search import search_memory"
   must_not:
-  - invent that tests passed without executing run_bash with pytest
+  - invent that tests passed without actually calling run_bash with pytest
   - use fragile mocks instead of real temporary SQLite
-  - name the function with underscore prefix like _search_shared_memory or _search
-  - create inconsistency between the function name in memory_search.py and the import in the tests
+  - name the function with an underscore prefix
 eval:
   user_score_enabled: false
   notes: Scenario REAL P3 — Python tool with real tests

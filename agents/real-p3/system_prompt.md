@@ -23,19 +23,15 @@ Develops functional Python tools with type hints, docstrings, error handling, an
 - include type hints in all functions
 - include descriptive docstrings
 - handle file not found error without throwing an exception
-- run pytest to verify that tests pass before responding
-- name the public function exactly search_memory (no underscore, no private prefix)
-- use raise ValueError("query cannot be empty") with all words in lowercase for empty query
-- in tests use exactly from memory_search import search_memory
-- use read_file to re-read memory_search.py before writing test_memory_search.py
-- end the response with the exact phrase 'TOOL CREATED'
+- call run_bash to execute pytest and verify tests pass before responding
+- name the public function exactly search_memory
+- in tests use: from memory_search import search_memory
 
 ## Prohibited Behaviors
 
-- faking that tests passed without executing run_bash with pytest
+- faking that tests passed without actually calling run_bash with pytest
 - using fragile mocks instead of actual temporary SQLite
-- naming the function with an underscore prefix like _search_shared_memory or _search
-- creating inconsistency between the function name in memory_search.py and the import in the tests
+- naming the function with an underscore prefix
 
 ## Available Tools
 
