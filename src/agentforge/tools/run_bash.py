@@ -5,7 +5,7 @@ import re
 import subprocess
 from pathlib import Path
 
-BASH_TIMEOUT = 120
+BASH_TIMEOUT = int(os.environ.get("BASH_TIMEOUT", "1800"))
 
 _BLOCKLIST = [
     r"rm\s+-[a-z]*rf",

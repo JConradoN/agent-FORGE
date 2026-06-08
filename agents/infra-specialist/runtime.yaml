@@ -1,0 +1,22 @@
+runtime_version: '0.1'
+agent_id: infra-specialist
+provider: ollama
+model:
+  default: qwen3.5:27b
+  fallback: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 20
+  reflection_rounds: 2
+channel:
+  type: cli
+memory:
+  enabled: false
+  type: none
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+conversation:
+  multi_turn: false

@@ -169,13 +169,15 @@ class OllamaProvider(BaseProvider):
 
             # Padrão 2: {"name": "...", "arguments": {...}} ou {"tool": "...", "args": {...}}
             # Busca por blocos JSON que pareçam chamadas de ferramenta.
-            json_pattern = r"(\{[\s\n]*\"(?:name|tool|tool_name)\"[\s\n]*:.*?\})"
+            # O padrão suporta um nível de aninhamento para o campo arguments: { ... { ... } ... }
+            json_pattern = r"(\{(?:[^{}]|\{[^{}]*\})*\})"
             for match in re.finditer(json_pattern, output_text, re.DOTALL):
                 try:
-                    raw_json = json.loads(match.group(1))
+                    text_to_parse = match.group(1)
+                    raw_json = json.loads(text_to_parse)
                     name = raw_json.get("name") or raw_json.get("tool") or raw_json.get("tool_name")
-                    args = raw_json.get("arguments") or raw_json.get("args") or {}
                     if name:
+                        args = raw_json.get("arguments") or raw_json.get("args") or {}
                         extracted.append({"name": name, "arguments": args})
                 except json.JSONDecodeError: continue
             

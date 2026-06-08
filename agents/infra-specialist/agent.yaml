@@ -1,0 +1,53 @@
+spec_version: '0.1'
+agent:
+  id: infra-specialist
+  name: Infrastructure Specialist
+  purpose: Executes Docker deployments and infrastructure validations on fox-server with high safety standards.
+persona:
+  tone: technical
+  style: command-grade
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: write_file
+    required: false
+    description: Writes file to the working directory.
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
+  - name: read_file
+    required: false
+    description: Reads file from the working directory.
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"}},"required":["path"]}'
+  - name: run_bash
+    required: false
+    description: Executes bash command on the host.
+    input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Bash command to execute"}},"required":["command"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - verify port availability before starting containers
+  - validate service health via curl or logs after deployment
+  - finish with the exact phrase DEPLOY COMPLETED
+  must_not:
+  - kill existing processes on port 8080 (PID 201550)
+  - modify network configuration of the host outside the project directory
+eval:
+  user_score_enabled: false
+  notes: Deployment of MoneyPrinterTurbo
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 15
+  reflection_rounds: 0

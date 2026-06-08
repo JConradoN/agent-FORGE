@@ -761,21 +761,19 @@ class AgentRuntime:
             must_missing = self._check_must_compliance(output_text, tool_results_log)
             if must_missing:
                 self.logger.warning("must_compliance: rules not met: %s", must_missing)
-                provider = self._get_provider()
                 correction = (
                     "Your response is incomplete. The following mandatory rules were not met:\n"
                     + "\n".join(f"- {r}" for r in must_missing)
-                    + "\n\nComplete your response by including the missing items."
+                    + "\n\nComplete your response by including the missing items. Use tools if necessary."
                 )
-                req = ProviderRequest(
-                    agent_id=self.runtime_config.agent_id,
-                    input_text=correction,
-                    system_prompt=system_prompt,
-                    model=self.runtime_config.model_default,
-                    history=history + [{"role": "assistant", "content": output_text}],
+                # Reinicia um ciclo de ferramentas focado na correção.
+                # Passa o histórico atual para manter o contexto do que já foi feito.
+                output_text, correction_tools = self._run_tool_calling_cycle(
+                    correction,
+                    system_prompt,
+                    history + [{"role": "assistant", "content": output_text}],
                 )
-                resp = provider.generate(req)
-                output_text = self._strip_xml_tool_tags(resp.output_text)
+                tool_results_log.extend(correction_tools)
 
         # Update in-memory history for multi-turn sessions.
         if self.runtime_config.conversation_multi_turn:
