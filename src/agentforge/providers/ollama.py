@@ -88,7 +88,10 @@ class OllamaProvider(BaseProvider):
         if request.system_prompt:
             messages.append({"role": "system", "content": request.system_prompt})
         messages.extend(request.history)
-        messages.append({"role": "user", "content": request.input_text})
+        # Only append user message if it has content — an empty string after tool
+        # results confuses qwen3.5:9b (think:False) and produces empty responses.
+        if request.input_text:
+            messages.append({"role": "user", "content": request.input_text})
 
         payload: dict = {
             "model": request.model,

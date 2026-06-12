@@ -62,6 +62,24 @@ def _register_builtin_tools() -> None:
     from agentforge.tools.register_tool_file import register_tool_file
     register_tool("register_tool_file", register_tool_file)
 
+    from agentforge.tools.tts_omnivoice import tts_omnivoice
+    register_tool("tts_omnivoice", tts_omnivoice)
+
+    from agentforge.tools.heygen_mcp import (
+        heygen_credits,
+        heygen_video_creator,
+        heygen_upload_audio,
+        heygen_list_avatars,
+        heygen_get_video,
+    )
+    from agentforge.tools.heygen_wallet import heygen_wallet_report
+    register_tool("heygen_credits", heygen_credits)
+    register_tool("heygen_video_creator", heygen_video_creator)
+    register_tool("heygen_upload_audio", heygen_upload_audio)
+    register_tool("heygen_list_avatars", heygen_list_avatars)
+    register_tool("heygen_get_video", heygen_get_video)
+    register_tool("heygen_wallet_report", heygen_wallet_report)
+
     # Loads agent-generated tools (persists between sessions via tool_registry/)
     from agentforge.tools.dynamic_loader import load_dynamic_tools
     load_dynamic_tools()
