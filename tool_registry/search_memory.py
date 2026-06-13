@@ -11,8 +11,8 @@ import os
 import sqlite3
 from typing import Optional
 
-MEM0_THRESHOLD = 0.50
-MEM0_TOP_K = 5
+MEM0_THRESHOLD = 0.60
+MEM0_TOP_K = 3
 MEM0_COLLECTION = "mem0_experiment_01"
 OLLAMA_URL = "http://localhost:11434"
 
