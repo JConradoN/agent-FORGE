@@ -44,6 +44,7 @@ class RuntimeConfig(BaseModel):
     memory_type: str | None = None
     memory_max_turns: int = 0
     memory_policy: str = "truncate"
+    memory_feed_mem0: bool = False
     output_mode: str
     output_format: str | None = None
     conversation_multi_turn: bool = False
@@ -73,6 +74,7 @@ class RuntimeConfig(BaseModel):
             "memory_type": memory.get("type"),
             "memory_max_turns": memory.get("max_turns", 0),
             "memory_policy": memory.get("policy", "truncate"),
+            "memory_feed_mem0": memory.get("feed_mem0", False),
             "output_mode": output.get("mode", ""),
             "output_format": output.get("format"),
             "conversation_multi_turn": conversation.get("multi_turn", False),
@@ -814,6 +816,16 @@ class AgentRuntime:
             },
         }
         self._log_run(result, latency_ms)
+
+        if self.runtime_config.memory_feed_mem0:
+            from agentforge.runtime.mem0_hook import feed_async  # noqa: PLC0415
+            feed_async(
+                self.runtime_config.agent_id,
+                input_text,
+                output_text,
+                tool_results_log,
+            )
+
         return result
 
     def _run_with_tool_data(self, input_text: str, tool_data: dict) -> str:
