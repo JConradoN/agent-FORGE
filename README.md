@@ -4,7 +4,21 @@
 
 Python framework **spec-first** and **local-first** for creating, experimenting with, and running LLM agents on-premise.
 
-AgentForge encapsulates the central thesis empirically validated through 4 months of benchmarks (ABS → LOP → FORGE → REAL):
+AgentForge is the **production destination** of a 4-stage model certification funnel.
+
+19 models entered the funnel. Each stage was a gate — not a comparison, but an elimination filter:
+
+| Stage | Gate question | Filter |
+|-------|--------------|--------|
+| **ABS** | Can it call tools at all? | 19 entered |
+| **LOP** | Does it hold under real operational pressure? | — |
+| **FORGE** | Can it function as an agent? Multi-turn, chained, autonomous? | 7 entered |
+| **REAL** | Does it work in production? Real browser, real tests, no shortcuts? | 4 proven |
+| **agent-FORGE** | *Deploy* | Runtime for models that earned it |
+
+The models running in agent-FORGE are not "the best on a leaderboard" — they are the ones that proved they can do the actual job, end to end, on real hardware, with real tasks.
+
+This shaped the framework's central thesis, validated empirically across 4 months of benchmarks:
 
 > **20% is the model, 80% is the runtime.**
 
