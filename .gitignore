@@ -12,6 +12,7 @@ htmlcov/
 .DS_Store
 benchmark_results/
 agents/*/runs/
+agents/*/workdir/
 debug/
 reports/
 results/
