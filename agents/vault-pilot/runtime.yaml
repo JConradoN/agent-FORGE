@@ -9,6 +9,7 @@ workflow:
 channel:
   type: cli
 memory:
+  feed_mem0: true
   enabled: true
   type: session_summary
   max_turns: 10

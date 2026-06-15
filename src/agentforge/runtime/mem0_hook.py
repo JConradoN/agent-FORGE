@@ -35,7 +35,7 @@ _MEM0_CONFIG = {
         "config": {
             "host": "localhost",
             "port": 6333,
-            "collection_name": "mem0_experiment_01",
+            "collection_name": "claudio_v2",
             "embedding_model_dims": 768,
         },
     },

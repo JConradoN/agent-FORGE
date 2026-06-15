@@ -11,6 +11,7 @@ workflow:
 channel:
   type: cli
 memory:
+  feed_mem0: true
   enabled: false
   type: none
   max_turns: 0
