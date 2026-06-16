@@ -353,19 +353,19 @@ def heygen_video_creator(
             args["voiceId"] = voice_id
         logger.info("heygen_video_creator: avatar=%s mode=tts", avatar_id)
 
-    # Snapshot credits before creation for wallet tracking
+    # Snapshot credits before creation for wallet tracking.
+    # Always fetch even in test_mode — test videos are NOT free (they consume credits).
     credits_before: int | None = None
-    if not test_mode:
-        try:
-            user_data = json.loads(heygen_credits())
-            credits_before = (
-                user_data.get("subscription", {})
-                .get("credits", {})
-                .get("premium_credits", {})
-                .get("remaining")
-            )
-        except Exception:
-            pass
+    try:
+        user_data = json.loads(heygen_credits())
+        credits_before = (
+            user_data.get("subscription", {})
+            .get("credits", {})
+            .get("premium_credits", {})
+            .get("remaining")
+        )
+    except Exception:
+        pass
 
     result = _mcp("create_video_from_avatar", args)
 
