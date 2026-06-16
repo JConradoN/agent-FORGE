@@ -190,7 +190,13 @@ class OllamaProvider(BaseProvider):
         if not output_text and not tool_calls:
             raise OllamaResponseError(
                 f"Ollama response (chat) does not contain message.content or tool_calls. "
-                f"Received fields: {list(data.keys())}"
+                f"Top-level fields: {list(data.keys())}. "
+                f"message keys: {list(message.keys())}. "
+                f"message.content={message.get('content')!r}, "
+                f"message.thinking={str(message.get('thinking') or '')[:100]!r}, "
+                f"message.tool_calls={message.get('tool_calls')!r}. "
+                f"Hint: this usually means the conversation history sent to Ollama was "
+                f"malformed (e.g. tool results without a preceding assistant+tool_calls message)."
             )
 
         return ProviderResponse(

@@ -13,7 +13,7 @@ class ProviderRequest(BaseModel):
     input_text: str
     system_prompt: str | None = None
     model: str | None = None
-    history: list[dict[str, str]] = Field(default_factory=list)
+    history: list[dict[str, Any]] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
     tools_schema: list[dict[str, Any]] | None = None  # OpenAI function format
 

@@ -67,15 +67,25 @@ def _register_builtin_tools() -> None:
 
     from agentforge.tools.heygen_mcp import (
         heygen_credits,
+        heygen_video_agent,
+        heygen_get_agent_session,
         heygen_video_creator,
         heygen_upload_audio,
+        heygen_upload_image,
+        heygen_create_photo_avatar,
+        heygen_poll_avatar_ready,
         heygen_list_avatars,
         heygen_get_video,
     )
     from agentforge.tools.heygen_wallet import heygen_wallet_report
     register_tool("heygen_credits", heygen_credits)
+    register_tool("heygen_video_agent", heygen_video_agent)
+    register_tool("heygen_get_agent_session", heygen_get_agent_session)
     register_tool("heygen_video_creator", heygen_video_creator)
     register_tool("heygen_upload_audio", heygen_upload_audio)
+    register_tool("heygen_upload_image", heygen_upload_image)
+    register_tool("heygen_create_photo_avatar", heygen_create_photo_avatar)
+    register_tool("heygen_poll_avatar_ready", heygen_poll_avatar_ready)
     register_tool("heygen_list_avatars", heygen_list_avatars)
     register_tool("heygen_get_video", heygen_get_video)
     register_tool("heygen_wallet_report", heygen_wallet_report)

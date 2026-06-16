@@ -734,6 +734,50 @@ class TestLoopGuard:
         log = result["metadata"]["tool_calls_log"]
         assert log[0]["cycle"] == 0
 
+    def test_assistant_tool_call_message_included_in_next_cycle_history(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Cycle > 0 MUST send [user, assistant(tool_calls), tool(result)] to Ollama.
+        Without the assistant message, Ollama receives tool results with no preceding
+        request and returns empty responses (OllamaResponseError in production)."""
+        import requests
+
+        captured: list[dict] = []
+
+        def capture(url: str, json: dict, **kwargs) -> object:
+            captured.append(json)
+            if len(captured) == 1:
+                return _mock_chat_tool_call_resp("collect_system_health")
+            return _mock_chat_text_resp("CPU 10%.")
+
+        monkeypatch.setattr(requests, "post", capture)
+
+        tools = [ToolSpec(name="collect_system_health", description="Coleta métricas")]
+        agent_dir = _make_agent_dir_with_tools(tmp_path, tools)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        runtime.run("Como está o servidor?")
+
+        assert len(captured) == 2, "Expected exactly 2 Ollama calls"
+
+        msgs = captured[1]["messages"]
+        roles = [m["role"] for m in msgs]
+
+        # assistant message must precede every tool message
+        for i, role in enumerate(roles):
+            if role == "tool":
+                assert i > 0 and roles[i - 1] == "assistant", (
+                    f"tool message at index {i} not preceded by assistant "
+                    f"(roles={roles})"
+                )
+
+        # the assistant message must carry tool_calls (not just empty content)
+        assistant_msgs = [m for m in msgs if m.get("role") == "assistant"]
+        assert assistant_msgs, "No assistant message in cycle-1 payload"
+        assert any("tool_calls" in m for m in assistant_msgs), (
+            "Assistant message missing 'tool_calls' field — "
+            "causes Ollama to return empty responses on real hardware"
+        )
+
 
 # ---------------------------------------------------------------------------
 # Reflexão autônoma

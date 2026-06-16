@@ -233,8 +233,12 @@ class AgentRuntime:
         messages = list(history)
         messages.append({"role": "user", "content": input_text})
 
-        # Sliding window of recent call keys — abort only when the last STUCK_WINDOW
-        # entries are all identical (matches native runner behaviour).
+        # Sliding window of recent (call, result) pairs — abort only when the last
+        # STUCK_WINDOW entries are all identical, INCLUDING the result. Comparing the
+        # result (not just tool+args) lets legitimate polling of an async job survive:
+        # e.g. heygen_get_agent_session repeated with the same session_id is expected,
+        # but its result changes as the job progresses (status, messages, video_id).
+        # A true stuck loop (same call, same unchanged result) is still caught.
         _STUCK_WINDOW = 5
         recent_calls: list[str] = []
 
@@ -279,29 +283,24 @@ class AgentRuntime:
                     continue
                 return response.output_text, tool_results_log
 
-            if response.output_text:
-                messages.append({"role": "assistant", "content": response.output_text})
+            # Always append the assistant turn that requested tool_calls, even when
+            # output_text is empty.  Without this, cycles > 0 send [user, tool(result)]
+            # to Ollama with no preceding assistant message — which is invalid and causes
+            # qwen3.5 to return empty responses (OllamaResponseError in production).
+            messages.append({
+                "role": "assistant",
+                "content": response.output_text or "",
+                "tool_calls": [
+                    {"function": {"name": tc["name"], "arguments": tc["arguments"]}}
+                    for tc in response.tool_calls
+                ],
+            })
 
             loop_detected = False
             for tc in response.tool_calls:
                 tool_name = tc.get("name", "")
                 tool_args = tc.get("arguments") or {}
                 call_key = f"{tool_name}:{json.dumps(tool_args, sort_keys=True)}"
-
-                recent_calls.append(call_key)
-                if len(recent_calls) > _STUCK_WINDOW:
-                    recent_calls.pop(0)
-
-                if (
-                    len(recent_calls) == _STUCK_WINDOW
-                    and len(set(recent_calls)) == 1
-                ):
-                    self.logger.warning(
-                        "loop_guard: tool '%s' called %d consecutive times — aborting",
-                        tool_name, _STUCK_WINDOW,
-                    )
-                    loop_detected = True
-                    break
 
                 self.logger.info("tool_call[%d]: %s args=%s", cycle, tool_name, tool_args)
                 result = self._execute_tool(tool_name, **tool_args)
@@ -311,6 +310,25 @@ class AgentRuntime:
                 })
                 result_text = json.dumps(result, ensure_ascii=False, default=str) if result else "null"
                 messages.append({"role": "tool", "content": result_text, "name": tool_name})
+
+                # Compare call + result so legitimate polling (same call, evolving
+                # result) doesn't trip the guard — only a truly stuck loop (same call,
+                # same unchanged result) does.
+                call_result_key = f"{call_key}::{result_text}"
+                recent_calls.append(call_result_key)
+                if len(recent_calls) > _STUCK_WINDOW:
+                    recent_calls.pop(0)
+
+                if (
+                    len(recent_calls) == _STUCK_WINDOW
+                    and len(set(recent_calls)) == 1
+                ):
+                    self.logger.warning(
+                        "loop_guard: tool '%s' called %d consecutive times with unchanged result — aborting",
+                        tool_name, _STUCK_WINDOW,
+                    )
+                    loop_detected = True
+                    break
 
             if loop_detected:
                 break
@@ -474,17 +492,35 @@ class AgentRuntime:
         output_text: str,
         system_prompt: str | None,
         history: list[dict],
+        tool_results_log: list[dict] | None = None,
         max_retries: int = 2,
     ) -> tuple[str, list[str]]:
         """
         Checks must_not and re-executes with a correction prompt up to max_retries times.
+
+        If the agent's actual deliverable was persisted via a write_file tool call,
+        the violation check and correction run against that FILE CONTENT instead of
+        the chat-level output_text — and the corrected text is re-written to disk via
+        write_file. Without this, a write_file-based agent (e.g. linkedin-writer)
+        never re-emits the file after correction: the engine would "fix" only the
+        in-memory response while the file on disk keeps the original violation.
+
         Returns (final_output_text, remaining_violations).
         """
-        violations = self._check_guardrail_violations(output_text)
+        last_write = None
+        if tool_results_log:
+            for entry in reversed(tool_results_log):
+                if entry.get("tool") == "write_file":
+                    last_write = entry
+                    break
+
+        content_to_check = last_write["args"].get("content") if last_write else output_text
+        violations = self._check_guardrail_violations(content_to_check)
         if not violations:
             return output_text, []
 
         provider = self._get_provider()
+        corrected = content_to_check
         for attempt in range(max_retries):
             self.logger.warning(
                 "guardrail[%d/%d]: violations detected: %s",
@@ -494,7 +530,8 @@ class AgentRuntime:
                 "Your previous response violated the following restrictions:\n"
                 + "\n".join(f"- {v}" for v in violations)
                 + "\n\nRewrite your response without violating these restrictions.\n\n"
-                f"Original question: {input_text}"
+                f"Original question: {input_text}\n\n"
+                f"Content to rewrite:\n{corrected}"
             )
             req = ProviderRequest(
                 agent_id=self.runtime_config.agent_id,
@@ -504,12 +541,24 @@ class AgentRuntime:
                 history=history,
             )
             resp = provider.generate(req)
-            output_text = resp.output_text
-            violations = self._check_guardrail_violations(output_text)
+            corrected = resp.output_text
+            violations = self._check_guardrail_violations(corrected)
             if not violations:
                 break
 
-        return output_text, violations
+        if last_write:
+            write_path = last_write["args"].get("path")
+            result = self._execute_tool("write_file", path=write_path, content=corrected)
+            tool_results_log.append({
+                "tool": "write_file",
+                "args": {"path": write_path, "content": corrected},
+                "result": result,
+                "cycle": "guardrail_correction",
+            })
+            self.logger.info("guardrail: re-wrote %s with corrected content", write_path)
+            return output_text, violations
+
+        return corrected, violations
 
     def _reflect(
         self,
@@ -751,7 +800,7 @@ class AgentRuntime:
         guardrail_violations: list[str] = []
         if self.agent_spec.guardrails.must_not:
             output_text, guardrail_violations = self._apply_guardrails(
-                input_text, output_text, system_prompt, history
+                input_text, output_text, system_prompt, history, tool_results_log
             )
             if guardrail_violations:
                 self.logger.error(
@@ -776,6 +825,19 @@ class AgentRuntime:
                     history + [{"role": "assistant", "content": output_text}],
                 )
                 tool_results_log.extend(correction_tools)
+
+                # A correção de must roda um ciclo de ferramentas livre, sem
+                # restrição de must_not — pode reintroduzir violações já corrigidas
+                # (ex.: emojis) na nova chamada de write_file. Revalida.
+                if self.agent_spec.guardrails.must_not:
+                    output_text, guardrail_violations = self._apply_guardrails(
+                        input_text, output_text, system_prompt, history, tool_results_log
+                    )
+                    if guardrail_violations:
+                        self.logger.error(
+                            "guardrail: persistent violations after must_compliance retry: %s",
+                            guardrail_violations,
+                        )
 
         # Update in-memory history for multi-turn sessions.
         if self.runtime_config.conversation_multi_turn:
