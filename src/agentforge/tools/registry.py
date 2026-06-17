@@ -59,6 +59,9 @@ def _register_builtin_tools() -> None:
     register_tool("run_bash", run_bash)
     register_tool("send_claudio", send_claudio)
 
+    from agentforge.tools.fetch_social import fetch_social_url
+    register_tool("fetch_social_url", fetch_social_url)
+
     from agentforge.tools.register_tool_file import register_tool_file
     register_tool("register_tool_file", register_tool_file)
 
