@@ -1,0 +1,6 @@
+tools_version: '0.1'
+agent_id: link-reader
+tools:
+- name: fetch_social_url
+  required: true
+  description: Fetches a URL via Scrapling with authenticated cookies and analyzes content with local LLM

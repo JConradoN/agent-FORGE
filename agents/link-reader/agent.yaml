@@ -1,0 +1,40 @@
+spec_version: '0.1'
+agent:
+  id: link-reader
+  name: Link Reader
+  purpose: Fetches and analyzes URLs (LinkedIn posts, articles, social media) using an authenticated browser with local LLM analysis
+persona:
+  tone: technical
+  style: objective
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: fetch_social_url
+    required: true
+    description: Fetches a URL via Scrapling with authenticated cookies and analyzes content with local LLM
+memory:
+  type: none
+  enabled: false
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - always call fetch_social_url with the provided URL before responding
+  - report real content from the page
+  must_not:
+  - invent or summarize without fetching first
+  - follow redirects without fetching the actual URL
+  optional: []
+eval:
+  user_score_enabled: false
+  notes: null
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
