@@ -301,22 +301,49 @@ def build_meta_prompt(category: str, subcategory: str, difficulty: str) -> str:
 # LLM call
 # ---------------------------------------------------------------------------
 
+def wait_for_ollama_idle(timeout_s: int = 60) -> bool:
+    """Aguarda até o slot do Ollama estar livre antes de enviar request."""
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        try:
+            req = urllib.request.Request(
+                "http://localhost:11434/api/ps",
+                headers={"Content-Type": "application/json"},
+            )
+            with urllib.request.urlopen(req, timeout=5) as r:
+                data = json.loads(r.read())
+                models = data.get("models", [])
+                # Se nenhum modelo está em "processing", o slot está livre
+                busy = any(m.get("processing_count", 0) > 0 for m in models)
+                if not busy:
+                    return True
+        except Exception:
+            pass
+        time.sleep(10)
+    return False  # nunca ficou livre dentro do timeout
+
+
 def call_llm(prompt: str, temperature: float = 0.85) -> str | None:
     payload = json.dumps({
         "model": GEN_MODEL,
         "messages": [{"role": "user", "content": prompt}],
         "temperature": temperature,
     }).encode()
-    try:
-        req = urllib.request.Request(
-            OLLAMA_URL, data=payload,
-            headers={"Content-Type": "application/json"},
-        )
-        with urllib.request.urlopen(req, timeout=180) as r:
-            result = json.loads(r.read())
-            return result["choices"][0]["message"]["content"].strip()
-    except Exception as e:
-        return None
+    for attempt in range(3):
+        try:
+            req = urllib.request.Request(
+                OLLAMA_URL, data=payload,
+                headers={"Content-Type": "application/json"},
+            )
+            with urllib.request.urlopen(req, timeout=300) as r:
+                result = json.loads(r.read())
+                return result["choices"][0]["message"]["content"].strip()
+        except Exception:
+            # Backoff exponencial: 30s, 60s, 120s
+            wait = 30 * (2 ** attempt)
+            print(f"  [retry {attempt+1}/3] aguardando {wait}s...", flush=True)
+            time.sleep(wait)
+    return None
 
 
 # ---------------------------------------------------------------------------
