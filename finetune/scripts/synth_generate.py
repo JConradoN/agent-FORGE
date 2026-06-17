@@ -148,7 +148,7 @@ def _json_schema_read_link() -> str:
     return (
         '{\n'
         '  "messages": [\n'
-        '    {"role": "system", "content": "<system_prompt>"},\n'
+        '    {"role": "system", "content": "<SYSTEM_PROMPT>"},\n'
         '    {"role": "user", "content": "<mensagem do usuário com URL ou pedido>"},\n'
         '    {"role": "assistant", "content": null, '
         '"tool_calls": [{"type": "function", "function": '
@@ -164,7 +164,7 @@ def _json_schema_run_bash() -> str:
     return (
         '{\n'
         '  "messages": [\n'
-        '    {"role": "system", "content": "<system_prompt>"},\n'
+        '    {"role": "system", "content": "<SYSTEM_PROMPT>"},\n'
         '    {"role": "user", "content": "<pedido do usuário>"},\n'
         '    {"role": "assistant", "content": null, '
         '"tool_calls": [{"type": "function", "function": '
@@ -180,7 +180,7 @@ def _json_schema_chat() -> str:
     return (
         '{\n'
         '  "messages": [\n'
-        '    {"role": "system", "content": "<system_prompt>"},\n'
+        '    {"role": "system", "content": "<SYSTEM_PROMPT>"},\n'
         '    {"role": "user", "content": "<mensagem do usuário>"},\n'
         '    {"role": "assistant", "content": "<resposta do Cláudio, texto puro>"}\n'
         '  ]\n'
@@ -189,10 +189,12 @@ def _json_schema_chat() -> str:
 
 
 def build_meta_prompt(category: str, subcategory: str, difficulty: str) -> str:
+    # Placeholder para o system prompt — substituído em pós-processamento após parse do JSON.
+    # Isso evita incluir ~600 tokens do system prompt em cada prompt de geração.
     sys_note = (
-        "IMPORTANTE: O campo 'content' do role 'system' deve conter EXATAMENTE este texto "
-        "(copie literalmente, não resuma):\n\n"
-        + SYSTEM_PROMPT
+        'IMPORTANTE: O campo \'content\' do role \'system\' deve ser EXATAMENTE a string '
+        '"<SYSTEM_PROMPT>" (literalmente essa string, sem alterar). '
+        'O conteúdo real será injetado automaticamente no pós-processamento.'
     )
 
     diff_desc = {
@@ -219,7 +221,8 @@ def build_meta_prompt(category: str, subcategory: str, difficulty: str) -> str:
             "",
             sys_note,
             "",
-            "Retorne SOMENTE o JSON válido no formato abaixo (substitua <system_prompt> pelo texto copiado):",
+            "CRÍTICO: strings JSON NÃO podem conter newlines literais — use \\n (dois chars: barra+n).",
+            "Retorne SOMENTE o JSON válido no formato abaixo:",
             "",
             schema,
         ])
@@ -246,6 +249,7 @@ def build_meta_prompt(category: str, subcategory: str, difficulty: str) -> str:
             "",
             sys_note,
             "",
+            "CRÍTICO: strings JSON NÃO podem conter newlines literais — use \\n (dois chars: barra+n).",
             "Retorne SOMENTE o JSON válido no formato abaixo:",
             "",
             schema,
@@ -269,6 +273,7 @@ def build_meta_prompt(category: str, subcategory: str, difficulty: str) -> str:
             "",
             sys_note,
             "",
+            "CRÍTICO: strings JSON NÃO podem conter newlines literais — use \\n (dois chars: barra+n).",
             "Retorne SOMENTE o JSON válido no formato abaixo:",
             "",
             schema,
@@ -291,6 +296,7 @@ def build_meta_prompt(category: str, subcategory: str, difficulty: str) -> str:
             "",
             sys_note,
             "",
+            "CRÍTICO: strings JSON NÃO podem conter newlines literais — use \\n (dois chars: barra+n).",
             "Retorne SOMENTE o JSON válido no formato abaixo:",
             "",
             schema,
@@ -323,10 +329,48 @@ def wait_for_ollama_idle(timeout_s: int = 60) -> bool:
     return False  # nunca ficou livre dentro do timeout
 
 
+def _strip_think(text: str) -> str:
+    """Remove blocos <think>...</think> gerados pelo qwen3.5 em modo thinking."""
+    import re as _re
+    return _re.sub(r"<think>[\s\S]*?</think>", "", text, flags=_re.IGNORECASE).strip()
+
+
+def fix_json_newlines(s: str) -> str:
+    """Escapa newlines e tabs literais dentro de strings JSON (o modelo frequentemente
+    gera newlines reais em vez de \\n, tornando o JSON inválido)."""
+    result = []
+    in_string = False
+    i = 0
+    while i < len(s):
+        c = s[i]
+        if c == "\\" and in_string:
+            # Caractere de escape — copia o próximo char sem interpretar
+            result.append(c)
+            i += 1
+            if i < len(s):
+                result.append(s[i])
+            i += 1
+            continue
+        if c == '"':
+            in_string = not in_string
+        if in_string and c == "\n":
+            result.append("\\n")
+        elif in_string and c == "\t":
+            result.append("\\t")
+        elif in_string and c == "\r":
+            result.append("\\r")
+        else:
+            result.append(c)
+        i += 1
+    return "".join(result)
+
+
 def call_llm(prompt: str, temperature: float = 0.85) -> str | None:
+    # /no_think desativa o modo thinking do qwen3.5 (mais rápido, sem tokens desperdiçados)
+    no_think_prompt = "/no_think\n\n" + prompt
     payload = json.dumps({
         "model": GEN_MODEL,
-        "messages": [{"role": "user", "content": prompt}],
+        "messages": [{"role": "user", "content": no_think_prompt}],
         "temperature": temperature,
     }).encode()
     for attempt in range(3):
@@ -337,7 +381,8 @@ def call_llm(prompt: str, temperature: float = 0.85) -> str | None:
             )
             with urllib.request.urlopen(req, timeout=300) as r:
                 result = json.loads(r.read())
-                return result["choices"][0]["message"]["content"].strip()
+                content = result["choices"][0]["message"].get("content") or ""
+                return _strip_think(content)
         except Exception:
             # Backoff exponencial: 30s, 60s, 120s
             wait = 30 * (2 ** attempt)
@@ -458,6 +503,24 @@ def main():
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
+    # Pre-warm: garante que o modelo está carregado antes de começar
+    print(f"Pre-warming {GEN_MODEL}...", flush=True)
+    warmup_payload = json.dumps({
+        "model": GEN_MODEL,
+        "messages": [{"role": "user", "content": "/no_think\nOlá"}],
+        "max_tokens": 5,
+    }).encode()
+    try:
+        warmup_req = urllib.request.Request(
+            OLLAMA_URL, data=warmup_payload,
+            headers={"Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(warmup_req, timeout=120) as r:
+            r.read()
+        print("Modelo aquecido.", flush=True)
+    except Exception as e:
+        print(f"Pre-warm falhou (ignorando): {e}", flush=True)
+
     existing_ids = load_existing_ids()
     nums = [int(i.split("-")[-1]) for i in existing_ids
             if i.startswith("claudio-") and i.split("-")[-1].isdigit()]
@@ -499,6 +562,9 @@ def main():
             if brace > 0:
                 json_str = json_str[brace:]
 
+            # Corrige newlines literais dentro de strings JSON (erro comum do modelo)
+            json_str = fix_json_newlines(json_str)
+
             try:
                 obj = json.loads(json_str)
             except json.JSONDecodeError as e:
@@ -510,6 +576,13 @@ def main():
                 if attempt < args.retries:
                     continue
                 break
+
+            # Substitui placeholder pelo system prompt real
+            for msg_obj in obj.get("messages", []):
+                if msg_obj.get("role") == "system":
+                    content = msg_obj.get("content", "")
+                    if "<SYSTEM_PROMPT>" in str(content):
+                        msg_obj["content"] = SYSTEM_PROMPT
 
             valid, reason = validate(obj, category, subcategory)
             if not valid:
