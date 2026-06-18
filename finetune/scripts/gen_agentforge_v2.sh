@@ -12,7 +12,7 @@ OUTPUT="$REPO_ROOT/finetune/dataset/synth_agentforge_v2.jsonl"
 LOG="$REPO_ROOT/finetune/logs/gen_v2_$(date +%Y%m%d_%H%M%S).log"
 
 BATCH_SIZE=30
-TOTAL_TARGET=1350
+TOTAL_TARGET=1450
 START_LOTE=${1:-2}   # lote 1 já foi gerado manualmente
 PAUSE_SECS=75        # 75s entre lotes para não queimar rate limit
 
@@ -22,7 +22,7 @@ mkdir -p "$(dirname "$LOG")"
 echo "[$(date)] Iniciando geração a partir do lote $START_LOTE" | tee -a "$LOG"
 echo "[$(date)] Alvo: $TOTAL_TARGET exemplos | Lotes de $BATCH_SIZE | Pausa: ${PAUSE_SECS}s" | tee -a "$LOG"
 
-for ((lote=START_LOTE; lote<=45; lote++)); do
+for ((lote=START_LOTE; lote<=49; lote++)); do
     START_ID=$(( (lote-1)*BATCH_SIZE + 1 ))
     END_ID=$(( lote*BATCH_SIZE ))
 
@@ -47,7 +47,8 @@ for ((lote=START_LOTE; lote<=45; lote++)); do
     elif [ $lote -le 37 ]; then CAT="memory_usage (memory_read_before_answer, memory_write_after_learning, memory_multi_turn)"
     elif [ $lote -le 40 ]; then CAT="context_compaction"
     elif [ $lote -le 43 ]; then CAT="delegation"
-    else                        CAT="no_tool_redirect"
+    elif [ $lote -le 46 ]; then CAT="no_tool_redirect"
+    else                        CAT="formatting_correct (format_telegram, format_markdown_file, format_plain_no_leak)"
     fi
 
     PROMPT="Gere exatamente 30 exemplos de dataset para fine-tuning de LLM agentico (IDs $START_ID_FMT a $END_ID_FMT).

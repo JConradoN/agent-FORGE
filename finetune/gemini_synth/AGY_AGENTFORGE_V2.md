@@ -511,6 +511,121 @@ systemctl:      n8n.service: active, aurelia.service: active, claudio-api.servic
 
 ---
 
+## CATEGORIA 11 — formatting_correct (100 exemplos)
+
+**Subcategorias:**
+- `format_telegram` (send_claudio com emojis + bold corretos): 40 exemplos
+- `format_markdown_file` (write_file com markdown bem estruturado): 30 exemplos
+- `format_plain_no_leak` (resposta em texto puro sem vazar `*`, `_`, `\`): 30 exemplos
+
+**O que treina:** usar markdown e emojis ONDE é correto, e NÃO usar onde não é. O 9b vazava `*`, `\`, `_` fora do contexto em respostas plain text, quebrando a renderização. O 27b formata corretamente.
+
+---
+
+### format_telegram — mensagens send_claudio com formatação Telegram correta
+
+O Telegram suporta Markdown: `*bold*`, `_italic_`, emojis, listas com `-`. Use sempre que enviar via send_claudio.
+
+**Padrão correto:**
+```
+assistant(tool_calls): [send_claudio message="📊 *Análise de Mercado — 18/06/2026*\n\n💵 *USD/BRL:* R$ 5,17 (+0,94%) 🔺\n🇪🇺 *EUR/BRL:* R$ 5,92 (+0,65%) 🔺\n₿ *BTC/BRL:* R$ 329.388 (-0,33%) 🔻\n\n📈 *Tendência:* Dólar em ALTA consolidada (4 sessões consecutivas)\n⚠️ *Cripto:* Leve correção técnica no BTC — aguardar confirmação\n\n✅ Relatório completo salvo em analise-mercado.md"]
+tool/send_claudio: '{"sent":true,"message_id":3440}'
+```
+
+**Variações de mensagem a gerar (misture temas):**
+- Resumo de cotações cambiais (USD, EUR, BTC, ETH) com variação % e emoji direcional (🔺🔻)
+- Status de containers Docker (✅ UP / ❌ DOWN por container)
+- Resultado de deploy (✅ container reiniciado, versão atualizada)
+- Relatório de saúde do servidor (CPU, RAM, GPU em negrito)
+- Alerta de uso de disco (⚠️ quando > 80%)
+- Resumo de análise de logs (erros encontrados com ❌, OK com ✅)
+- Notificação de backup concluído
+- Resultado de benchmark com tabela simples
+
+**Regras de formatação Telegram:**
+- `*texto*` = bold (não `**texto**`)
+- `_texto_` = italic
+- Emojis no início de cada linha de dado importante
+- Separar seções com `\n\n`
+- Listas com `-` ou numeradas
+- Nunca usar `#`, `##`, `###` — não renderiza no Telegram
+
+---
+
+### format_markdown_file — write_file com markdown bem estruturado
+
+Quando o agente grava um relatório em .md, o conteúdo deve usar markdown correto e consistente.
+
+**Padrão correto:**
+```python
+write_file(path="analise-mercado.md", content="""# Análise de Mercado — 18/06/2026
+
+## COTAÇÕES ATUAIS
+
+| Ativo | Compra | Venda | Variação |
+|-------|--------|-------|----------|
+| USD/BRL | R$ 5,1628 | R$ 5,1645 | +0,94% |
+| EUR/BRL | R$ 5,9200 | R$ 5,9225 | +0,65% |
+| BTC/BRL | R$ 329.388 | R$ 329.500 | -0,33% |
+| ETH/BRL | R$ 8.949 | R$ 8.960 | +0,63% |
+
+## TENDÊNCIA DO DÓLAR
+
+Alta consolidada. Nos últimos 7 dias: 5,09 → 5,17 (+1,6%).
+Tendência de curto prazo: **alta**.
+
+## ANÁLISE DE VOLATILIDADE
+
+- **Cripto** apresenta volatilidade 3x maior que fiat
+- BTC/BRL: variação intraday de 2,1%
+- USD/BRL: variação intraday de 0,8%
+
+## RECOMENDAÇÃO
+
+- **USD:** Aguardar consolidação acima de R$ 5,20 antes de nova posição
+- **BTC:** Manter posição, stop-loss em R$ 320.000
+""")
+```
+
+**Estrutura obrigatória em todos os write_file .md:**
+- `#` para título principal com data
+- `##` para seções (COTAÇÕES ATUAIS, TENDÊNCIA, etc.)
+- Tabela markdown para dados tabulares
+- **bold** para destacar valores-chave e palavras de ação
+- Listas com `-` para itens
+
+---
+
+### format_plain_no_leak — resposta em texto puro SEM vazar markdown
+
+Quando o formato do agente é `text` (não markdown), a resposta final não deve conter `*`, `**`, `_`, `\`, `#` fora de contexto.
+
+**Padrão ERRADO (o que o 9b fazia):**
+```
+assistant: "O servidor está funcionando. **CPU**: 35%... *RAM*: 14GB \usado de 128GB... /"
+```
+Os `**`, `*`, `\`, `/` aparecem literalmente no texto — quebram a renderização.
+
+**Padrão CORRETO:**
+```
+assistant: "O servidor está funcionando. CPU: 35%. RAM: 14GB usada de 128GB (11%). Disco: 127GB usados de 920GB (14%). Todos os 6 containers ativos. TASK COMPLETED"
+```
+Texto limpo, sem markdown fora de contexto.
+
+**Quando usar plain text (sem markdown):**
+- Resposta final de agentes com `output.format: text`
+- Resumos curtos em resposta a queries de status
+- Confirmações de ação concluída
+
+**Quando usar markdown (com formatação):**
+- Conteúdo de write_file (.md)
+- Mensagens de send_claudio (Telegram Markdown)
+- Respostas de agentes com `output.format: markdown`
+
+**Gere 30 exemplos** que mostram agente com formato `text` executando tool e respondendo em texto limpo, sem nenhum caractere markdown fora de contexto.
+
+---
+
 ## Instrução de execução
 
 **IMPORTANTE — rate limit:** Gere em lotes de 30 exemplos. Após cada lote, faça append ao arquivo e aguarde 60 segundos antes de continuar. Não force geração contínua — um strike de rate limit trava 3 horas.
