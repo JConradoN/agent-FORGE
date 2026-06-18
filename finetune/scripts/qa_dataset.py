@@ -39,15 +39,19 @@ MAX_ASSISTANT_LEN = 3000  # resposta muito longa suspeita
 MIN_TOOL_RESULT   = 20   # tool result muito curto = simulação ruim
 
 REQUIRED_FIELDS = {"id", "category", "subcategory", "difficulty", "source", "messages"}
-VALID_CATEGORIES = {"tool_calling", "chat", "refusal", "multi_turn", "agentic"}
+VALID_CATEGORIES = {"tool_calling", "chat", "refusal", "multi_turn", "agentic", "compliance"}
 VALID_SUBCATS = {
-    "tool_calling": {"read_link", "run_bash", "multi_tool"},
-    "chat":         {"persona", "mixed"},
+    "tool_calling": {"read_link", "run_bash", "multi_tool",
+                     "invocação_correta", "campo_correto"},
+    "chat":         {"persona", "mixed", "formato_saida", "identidade"},
     "refusal":      {"mixed", "no_hallucination", "destructive", "no_tool_invention",
-                     "external_api"},
-    "multi_turn":   {"read_link", "run_bash", "mixed"},
+                     "external_api", "destructive_action"},
+    "multi_turn":   {"read_link", "run_bash", "mixed", "turno_claro", "chat"},
     "agentic":      {"mixed"},
+    "compliance":   {"falsa_conclusao", "conclusao_correta", "restricoes"},
 }
+# Subcategorias onde tool_call é opcional (o exemplo pode treinar "não chamar tool")
+TOOL_OPTIONAL_SUBCATS = {"invocação_correta"}
 VALID_DIFFICULTIES = {"easy", "medium", "hard"}
 
 
@@ -103,7 +107,8 @@ def validate_example(obj: dict) -> list[Issue]:
         return issues
 
     # 5. Tool_calling: tool_call + tool_result obrigatórios
-    if cat == "tool_calling":
+    # (exceto subcategorias que treinam "quando NÃO chamar tool")
+    if cat == "tool_calling" and sub not in TOOL_OPTIONAL_SUBCATS:
         has_tool_call   = any("tool_calls" in m and m.get("tool_calls") for m in msgs)
         has_tool_result = any(m.get("role") == "tool" for m in msgs)
 

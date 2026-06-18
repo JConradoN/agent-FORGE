@@ -48,13 +48,16 @@ WEIGHT_DECAY  = 0.01
 # ---------------------------------------------------------------------------
 
 def load_dataset_files(mode: str) -> list[dict]:
-    files = {
-        "gold":  [DATASET_DIR / "gold_seed.jsonl"],
-        "synth": [DATASET_DIR / "synth.jsonl"],
-        "all":   [DATASET_DIR / "gold_seed.jsonl", DATASET_DIR / "synth.jsonl"],
-    }
+    if mode == "gold":
+        files = [DATASET_DIR / "gold_seed.jsonl", DATASET_DIR / "gold_batch2.jsonl"]
+    elif mode == "synth":
+        files = [f for f in sorted(DATASET_DIR.glob("synth*.jsonl"))]
+    else:  # all
+        files = sorted(DATASET_DIR.glob("*.jsonl"))
+
+    skipped = 0
     examples = []
-    for fpath in files.get(mode, files["all"]):
+    for fpath in files:
         if not fpath.exists():
             print(f"[WARN] Dataset não encontrado: {fpath}")
             continue
@@ -63,9 +66,32 @@ def load_dataset_files(mode: str) -> list[dict]:
             if not line:
                 continue
             try:
-                examples.append(json.loads(line))
+                obj = json.loads(line)
             except json.JSONDecodeError:
-                pass
+                skipped += 1
+                continue
+
+            # Valida args de tool_calls — pula se JSON inválido dentro do arguments
+            valid = True
+            for msg in obj.get("messages", []):
+                for tc in msg.get("tool_calls") or []:
+                    args = tc.get("function", {}).get("arguments", "")
+                    if isinstance(args, str):
+                        try:
+                            json.loads(args)
+                        except json.JSONDecodeError:
+                            valid = False
+                            break
+                if not valid:
+                    break
+            if not valid:
+                skipped += 1
+                continue
+
+            examples.append(obj)
+
+    if skipped:
+        print(f"[dataset] {skipped} exemplos pulados (JSON inválido ou args malformados)")
     print(f"[dataset] {len(examples)} exemplos carregados (modo={mode})")
     return examples
 
@@ -78,8 +104,24 @@ def format_for_training(examples: list[dict], tokenizer) -> list[str]:
         if not msgs:
             continue
         try:
+            # Qwen chat_template espera arguments como dict, não JSON string
+            normalized = []
+            for m in msgs:
+                m = dict(m)
+                if m.get("tool_calls"):
+                    tcs = []
+                    for tc in m["tool_calls"]:
+                        tc = dict(tc)
+                        fn = dict(tc.get("function", {}))
+                        if isinstance(fn.get("arguments"), str):
+                            fn["arguments"] = json.loads(fn["arguments"])
+                        tc["function"] = fn
+                        tcs.append(tc)
+                    m["tool_calls"] = tcs
+                normalized.append(m)
+
             text = tokenizer.apply_chat_template(
-                msgs,
+                normalized,
                 tokenize=False,
                 add_generation_prompt=False,
             )
