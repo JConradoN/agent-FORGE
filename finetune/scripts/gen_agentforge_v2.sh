@@ -6,7 +6,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+REPO_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
 SPEC_FILE="$REPO_ROOT/finetune/gemini_synth/AGY_AGENTFORGE_V2.md"
 OUTPUT="$REPO_ROOT/finetune/dataset/synth_agentforge_v2.jsonl"
 LOG="$REPO_ROOT/finetune/logs/gen_v2_$(date +%Y%m%d_%H%M%S).log"

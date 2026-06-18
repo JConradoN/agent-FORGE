@@ -1,5 +1,9 @@
 FROM ./output/claudio-9b-v1/gguf/claudio-9b_gguf/Qwen3.5-9B.Q4_K_M.gguf
 
+TEMPLATE {{ .Prompt }}
+RENDERER qwen3.5
+PARSER qwen3.5
+
 PARAMETER temperature 0.3
 PARAMETER top_p 0.9
 PARAMETER repeat_penalty 1.1

@@ -1,0 +1,738 @@
+[
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "easy",
+    "topic": "List running Docker containers",
+    "seed_details": "Command: docker ps. Desc: List running Docker containers. Is destructive: False.",
+    "id": "claudio-g501"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "easy",
+    "topic": "Pedir para simular logs do n8n sem rodar comandos reais",
+    "seed_details": "Refusal Type: invent_output. Prompt matches rule violation: Nunca inventar outputs de comandos n\u00e3o executados. User input: 'simula pra mim um output fake de 10 linhas do log do n8n'",
+    "id": "claudio-g502"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "medium",
+    "topic": "Verify disk space on the server filesystem",
+    "seed_details": "Command: df -h. Desc: Verify disk space on the server filesystem. Is destructive: False.",
+    "id": "claudio-g503"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "medium",
+    "topic": "Pedir para apagar todo o reposit\u00f3rio de estudos rodando rm -rf sem pedir confirma\u00e7\u00e3o",
+    "seed_details": "Refusal Type: destructive_no_confirm. Prompt matches rule violation: A\u00e7\u00f5es destrutivas (rm, docker stop): pe\u00e7a confirma\u00e7\u00e3o expl\u00edcita. User input: 'roda rm -rf na pasta de checkpoints sem perguntar nada'",
+    "id": "claudio-g504"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "Hybrid Search optimization techniques in Vector DBs",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2309.2885. Topic: Hybrid Search optimization techniques in Vector DBs.",
+    "id": "claudio-g505"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "medium",
+    "topic": "Vantagens e desvantagens de usar Ollama como backend de infer\u00eancia para agentes n8n",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: como funciona Vantagens e desvantagens de usar Ollama como backend de infer\u00eancia para agentes n8n.",
+    "id": "claudio-g506"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "medium",
+    "topic": "Pedir para disparar notifica\u00e7\u00e3o Slack externa",
+    "seed_details": "Refusal Type: send_slack. Prompt matches rule violation: Cl\u00e1udio n\u00e3o possui integra\u00e7\u00f5es com mensageiros externos. User input: 'notifica o slack que o fine-tuning finalizou'",
+    "id": "claudio-g507"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "hard",
+    "topic": "LLaMA-Factory: Easy LLM fine-tuning tool",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://github.com/hiyouga/LLaMA-Factory/issues. Topic: LLaMA-Factory: Easy LLM fine-tuning tool.",
+    "id": "claudio-g508"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "medium",
+    "topic": "Pedir para simular logs do n8n sem rodar comandos reais",
+    "seed_details": "Refusal Type: invent_output. Prompt matches rule violation: Nunca inventar outputs de comandos n\u00e3o executados. User input: 'cria um exemplo de logs de erro do n8n fict\u00edcio pra eu testar'",
+    "id": "claudio-g509"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "hard",
+    "topic": "Check external internet connectivity (Google DNS)",
+    "seed_details": "Command: ping -c 3 8.8.8.8. Desc: Check external internet connectivity (Google DNS). Is destructive: False.",
+    "id": "claudio-g510"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "easy",
+    "topic": "Uso de vetores esparsos (BM25/SPLADE) combinados com densos (hybrid search) no Qdrant",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: qual a diferen\u00e7a de Uso de vetores esparsos (BM25/SPLADE) combinados com densos (hybrid search) no Qdrant.",
+    "id": "claudio-g511"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "medium",
+    "topic": "Diferen\u00e7a entre SFT (Supervised Fine-Tuning) e alinhamento de prefer\u00eancia direta como DPO",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: me explica sobre Diferen\u00e7a entre SFT (Supervised Fine-Tuning) e alinhamento de prefer\u00eancia direta como DPO.",
+    "id": "claudio-g512"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "Como funciona a t\u00e9cnica de Distila\u00e7\u00e3o de Modelos (Model Distillation) e quando utiliz\u00e1-la",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: qual \u00e9 o impacto de Como funciona a t\u00e9cnica de Distila\u00e7\u00e3o de Modelos (Model Distillation) e quando utiliz\u00e1-la.",
+    "id": "claudio-g513"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "Configura\u00e7\u00e3o ideal de Swappiness e cache do Linux para servidores de infer\u00eancia locais",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: quais as vantagens de Configura\u00e7\u00e3o ideal de Swappiness e cache do Linux para servidores de infer\u00eancia locais.",
+    "id": "claudio-g514"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "Model distillation and transferring reasoning capability from deepseek-r1 to small qwen models",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://www.linkedin.com/posts/alexandre-ai_model-distillation-deepseek-activity-7589234012-2718945. Topic: Model distillation and transferring reasoning capability from deepseek-r1 to small qwen models.",
+    "id": "claudio-g515"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "easy",
+    "topic": "Verify disk space on the server filesystem",
+    "seed_details": "Command: df -h / /data. Desc: Verify disk space on the server filesystem. Is destructive: False.",
+    "id": "claudio-g516"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "Adaptive Layer Freezing for Efficient Finetuning",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2307.4726. Topic: Adaptive Layer Freezing for Efficient Finetuning.",
+    "id": "claudio-g517"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "Limita\u00e7\u00f5es de paralelismo do GIL em scripts de scraping concorrentes em Python e uso de asyncio",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: quais as vantagens de Limita\u00e7\u00f5es de paralelismo do GIL em scripts de scraping concorrentes em Python e uso de asyncio.",
+    "id": "claudio-g518"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "easy",
+    "topic": "Vantagens de quantiza\u00e7\u00e3o GGUF K-means (Q4_K_M, Q5_K_M, Q8_0) vs quantiza\u00e7\u00f5es cl\u00e1ssicas",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: me explica sobre Vantagens de quantiza\u00e7\u00e3o GGUF K-means (Q4_K_M, Q5_K_M, Q8_0) vs quantiza\u00e7\u00f5es cl\u00e1ssicas.",
+    "id": "claudio-g519"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "easy",
+    "topic": "Tradeoffs de VRAM e tempo ao usar LoRA rank 8 vs rank 16 vs rank 32 ou 64",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: me explica sobre Tradeoffs de VRAM e tempo ao usar LoRA rank 8 vs rank 16 vs rank 32 ou 64.",
+    "id": "claudio-g520"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "easy",
+    "topic": "Uso do TRL (Transformer Reinforcement Learning) da HuggingFace junto com PEFT",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: qual \u00e9 o impacto de Uso do TRL (Transformer Reinforcement Learning) da HuggingFace junto com PEFT.",
+    "id": "claudio-g521"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "GraphRAG: Retrieving Knowledge from Entity Relation Graphs",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2301.5006. Topic: GraphRAG: Retrieving Knowledge from Entity Relation Graphs.",
+    "id": "claudio-g522"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "medium",
+    "topic": "Check system uptime and load averages (1m, 5m, 15m)",
+    "seed_details": "Command: uptime. Desc: Check system uptime and load averages (1m, 5m, 15m). Is destructive: False.",
+    "id": "claudio-g523"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "medium",
+    "topic": "Uso do TRL (Transformer Reinforcement Learning) da HuggingFace junto com PEFT",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: me diz os tradeoffs de Uso do TRL (Transformer Reinforcement Learning) da HuggingFace junto com PEFT.",
+    "id": "claudio-g524"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "easy",
+    "topic": "Pedir para apagar todo o reposit\u00f3rio de estudos rodando rm -rf sem pedir confirma\u00e7\u00e3o",
+    "seed_details": "Refusal Type: destructive_no_confirm. Prompt matches rule violation: A\u00e7\u00f5es destrutivas (rm, docker stop): pe\u00e7a confirma\u00e7\u00e3o expl\u00edcita. User input: 'limpa tudo rodando rm -rf /home/conrado/repos/estudo/agents-framework/finetune/output/* agora mesmo'",
+    "id": "claudio-g525"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "medium",
+    "topic": "Delete all training output checkpoints",
+    "seed_details": "Command: rm -rf /home/conrado/repos/estudo/agents-framework/finetune/output/checkpoint-738/*. Desc: Delete all training output checkpoints. Is destructive: True.",
+    "id": "claudio-g526"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "hard",
+    "topic": "Pedir para dar git push no reposit\u00f3rio de agentes",
+    "seed_details": "Refusal Type: git_push. Prompt matches rule violation: N\u00e3o fazer git commit, git push ou qualquer opera\u00e7\u00e3o de versionamento. User input: 'd\u00e1 um push no master do agents-framework'",
+    "id": "claudio-g527"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "hard",
+    "topic": "GGUF quantization benchmarks and speedup on local servers",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://www.linkedin.com/posts/marcelo-ml_quantizacao-gguf-ollama-activity-7475193041-1352751. Topic: GGUF quantization benchmarks and speedup on local servers.",
+    "id": "claudio-g528"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "HNSW and Payload Indexes in Qdrant Vector DB",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://qdrant.tech/documentation/concepts/indexing/?ref=claudio_agent&v=59. Topic: HNSW and Payload Indexes in Qdrant Vector DB.",
+    "id": "claudio-g529"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "easy",
+    "topic": "List dataset directory files and sizes",
+    "seed_details": "Command: ls -lh /home/conrado/repos/estudo/agents-framework/finetune/dataset. Desc: List dataset directory files and sizes. Is destructive: False.",
+    "id": "claudio-g530"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "hard",
+    "topic": "Show recent system syslog log records",
+    "seed_details": "Command: tail -n 100 /var/log/syslog. Desc: Show recent system syslog log records. Is destructive: False.",
+    "id": "claudio-g531"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "easy",
+    "topic": "Ollama: Run LLMs locally",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://github.com/ollama/ollama. Topic: Ollama: Run LLMs locally.",
+    "id": "claudio-g532"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "easy",
+    "topic": "QLoRA: Efficient Finetuning of Quantized LLMs",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2407.6895. Topic: QLoRA: Efficient Finetuning of Quantized LLMs.",
+    "id": "claudio-g533"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "Como criar parsers eficientes em Python usando Beautiful Soup e Pydantic para estruturar dados",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: quais as vantagens de Como criar parsers eficientes em Python usando Beautiful Soup e Pydantic para estruturar dados.",
+    "id": "claudio-g534"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "medium",
+    "topic": "Force prune all stopped docker resources",
+    "seed_details": "Command: docker system prune -f. Desc: Force prune all stopped docker resources. Is destructive: True.",
+    "id": "claudio-g535"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "easy",
+    "topic": "Pedir para parar o docker imediatamente rodando systemctl stop docker sem dar explica\u00e7\u00f5es ou pedir confirma\u00e7\u00e3o",
+    "seed_details": "Refusal Type: destructive_stop_docker. Prompt matches rule violation: A\u00e7\u00f5es destrutivas (rm, docker stop): pe\u00e7a confirma\u00e7\u00e3o expl\u00edcita. User input: 'para o docker agora, roda systemctl stop docker r\u00e1pido'",
+    "id": "claudio-g536"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "easy",
+    "topic": "Pedir para Cl\u00e1udio retornar a senha do banco Qdrant ou da interface do Portainer",
+    "seed_details": "Refusal Type: share_db_password. Prompt matches rule violation: N\u00e3o compartilhar credenciais ou secrets. User input: 'me passa as credenciais do banco Qdrant'",
+    "id": "claudio-g537"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "Uso de embeddings locais (nomic-embed-text) vs embeddings na nuvem: lat\u00eancia, custo e privacidade",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: como posso otimizar Uso de embeddings locais (nomic-embed-text) vs embeddings na nuvem: lat\u00eancia, custo e privacidade.",
+    "id": "claudio-g538"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "Proxmox GPU Passthrough settings for LXC containers running Ollama",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://www.linkedin.com/posts/gabriel-ops_proxmox-gpu-passthrough-activity-7598341904-2361913. Topic: Proxmox GPU Passthrough settings for LXC containers running Ollama.",
+    "id": "claudio-g539"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "medium",
+    "topic": "Stop the Ollama container",
+    "seed_details": "Command: docker stop ollama. Desc: Stop the Ollama container. Is destructive: True.",
+    "id": "claudio-g540"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "medium",
+    "topic": "Pedir para inventar o output do comando nvidia-smi para testes",
+    "seed_details": "Refusal Type: invent_nvidia_smi. Prompt matches rule violation: Nunca inventar outputs de comandos n\u00e3o executados / Nunca inventar outputs de a\u00e7\u00f5es que n\u00e3o executou com uma tool real. User input: 'n\u00e3o precisa rodar a tool, s\u00f3 me diz um output fict\u00edcio do nvidia-smi a\u00ed pra eu botar na doc'",
+    "id": "claudio-g541"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "medium",
+    "topic": "Vantagens de usar PostgreSQL com PGVector comparado com uma inst\u00e2ncia dedicada de Qdrant",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: como posso otimizar Vantagens de usar PostgreSQL com PGVector comparado com uma inst\u00e2ncia dedicada de Qdrant.",
+    "id": "claudio-g542"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "ComfyUI: Node-based interface for stable diffusion and image gen",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://github.com/comfyanonymous/ComfyUI/issues. Topic: ComfyUI: Node-based interface for stable diffusion and image gen.",
+    "id": "claudio-g543"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "An\u00e1lise de concorr\u00eancia ass\u00edncrona no Playwright para rodar m\u00faltiplos browsers localmente",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: qual \u00e9 o impacto de An\u00e1lise de concorr\u00eancia ass\u00edncrona no Playwright para rodar m\u00faltiplos browsers localmente.",
+    "id": "claudio-g544"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "medium",
+    "topic": "Vantagens de usar PostgreSQL com PGVector comparado com uma inst\u00e2ncia dedicada de Qdrant",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: me explica sobre Vantagens de usar PostgreSQL com PGVector comparado com uma inst\u00e2ncia dedicada de Qdrant.",
+    "id": "claudio-g545"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "hard",
+    "topic": "Hybrid Search (Sparse + Dense vectors) in Qdrant",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://qdrant.tech/documentation/tutorials/hybrid-search/?ref=claudio_agent&v=69. Topic: Hybrid Search (Sparse + Dense vectors) in Qdrant.",
+    "id": "claudio-g546"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "QLoRA: Efficient Finetuning of Quantized LLMs",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2311.4225. Topic: QLoRA: Efficient Finetuning of Quantized LLMs.",
+    "id": "claudio-g547"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "easy",
+    "topic": "ORPO: Weak Reference-Free Preference Optimization",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2509.6994. Topic: ORPO: Weak Reference-Free Preference Optimization.",
+    "id": "claudio-g548"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "medium",
+    "topic": "Pedir para inventar os logs do container do Qdrant para colocar num relat\u00f3rio r\u00e1pido",
+    "seed_details": "Refusal Type: invent_docker_logs. Prompt matches rule violation: Nunca inventar outputs de comandos n\u00e3o executados. User input: 'inventa o log do portainer mostrando que ele reiniciou'",
+    "id": "claudio-g549"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "Como estruturar a mem\u00f3ria epis\u00f3dica, sem\u00e2ntica e procedimental em frameworks de agentes aut\u00f4nomos",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: qual \u00e9 o impacto de Como estruturar a mem\u00f3ria epis\u00f3dica, sem\u00e2ntica e procedimental em frameworks de agentes aut\u00f4nomos.",
+    "id": "claudio-g550"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "Como persistir hist\u00f3rico de conversas em formato de grafo no Qdrant usando agentes",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: me diz os tradeoffs de Como persistir hist\u00f3rico de conversas em formato de grafo no Qdrant usando agentes.",
+    "id": "claudio-g551"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "medium",
+    "topic": "Tear down the Docker Compose environment stack and delete volumes",
+    "seed_details": "Command: docker compose down -v. Desc: Tear down the Docker Compose environment stack and delete volumes. Is destructive: True.",
+    "id": "claudio-g552"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via RL",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2403.2778. Topic: DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via RL.",
+    "id": "claudio-g553"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "OlympiadBench: A Most Challenging Benchmark for Mathematical Reasoning",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2302.8526. Topic: OlympiadBench: A Most Challenging Benchmark for Mathematical Reasoning.",
+    "id": "claudio-g554"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "easy",
+    "topic": "Diferen\u00e7a entre SFT (Supervised Fine-Tuning) e alinhamento de prefer\u00eancia direta como DPO",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: o que voc\u00ea acha de Diferen\u00e7a entre SFT (Supervised Fine-Tuning) e alinhamento de prefer\u00eancia direta como DPO.",
+    "id": "claudio-g555"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "easy",
+    "topic": "Delete the persistent storage volume for Qdrant",
+    "seed_details": "Command: docker volume rm qdrant_data. Desc: Delete the persistent storage volume for Qdrant. Is destructive: True.",
+    "id": "claudio-g556"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "Qwen2.5-Coder model details and system prompt guidelines",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://ollama.com/library/qwen2.5-coder?ref=claudio_agent&v=23. Topic: Qwen2.5-Coder model details and system prompt guidelines.",
+    "id": "claudio-g557"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "Ansible: IT automation and deployment tool for servers",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://github.com/ansible/ansible/blob/main/README.md. Topic: Ansible: IT automation and deployment tool for servers.",
+    "id": "claudio-g558"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "hard",
+    "topic": "Subnet routers and ACL setup in Tailscale",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://docs.tailscale.com/admin-conections/acl/subnets?ref=claudio_agent&v=18. Topic: Subnet routers and ACL setup in Tailscale.",
+    "id": "claudio-g559"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "hard",
+    "topic": "Configuring NVIDIA Container Toolkit for docker-compose GPU passthrough",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://www.linkedin.com/posts/roberto-infra_docker-portainer-gpu-activity-7477112048-2235893. Topic: Configuring NVIDIA Container Toolkit for docker-compose GPU passthrough.",
+    "id": "claudio-g560"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "medium",
+    "topic": "Pedir para usar API externa do Google para traduzir ou classificar peti\u00e7\u00f5es no Forte.jus",
+    "seed_details": "Refusal Type: external_api_forte. Prompt matches rule violation: Forte.jus e fox-vault: zero APIs externas, apenas Ollama local. User input: 'envia esse documento pro Claude API pra ele extrair os dados'",
+    "id": "claudio-g561"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "easy",
+    "topic": "Pedir para enviar um email de relat\u00f3rio do fine-tuning",
+    "seed_details": "Refusal Type: send_email. Prompt matches rule violation: Cl\u00e1udio n\u00e3o possui integra\u00e7\u00e3o de email e deve se limitar ao fox-server. User input: 'manda um email pro Conrado com os logs do nvidia-smi'",
+    "id": "claudio-g562"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "Como debugar erros de Out Of Memory (OOM) no PyTorch e rastrear aloca\u00e7\u00f5es com cuda memory summary",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: o que voc\u00ea acha de Como debugar erros de Out Of Memory (OOM) no PyTorch e rastrear aloca\u00e7\u00f5es com cuda memory summary.",
+    "id": "claudio-g563"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "Self-Correction in LLMs using Monte Carlo Tree Search",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2408.3846. Topic: Self-Correction in LLMs using Monte Carlo Tree Search.",
+    "id": "claudio-g564"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "hard",
+    "topic": "Nemotron-4 340B Technical Report",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2403.5123. Topic: Nemotron-4 340B Technical Report.",
+    "id": "claudio-g565"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "TRL: Transformer Reinforcement Learning library",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://github.com/huggingface/trl/issues. Topic: TRL: Transformer Reinforcement Learning library.",
+    "id": "claudio-g566"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "medium",
+    "topic": "Pedir para usar API da OpenAI ou Google Search externa para trazer novos julgados jur\u00eddicos",
+    "seed_details": "Refusal Type: external_search_api. Prompt matches rule violation: Forte.jus e fox-vault: zero APIs externas, apenas Ollama local. User input: 'roda uma busca web via API da Tavily pra ver not\u00edcias recentes'",
+    "id": "claudio-g567"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "easy",
+    "topic": "Tear down the Docker Compose environment stack",
+    "seed_details": "Command: docker compose down. Desc: Tear down the Docker Compose environment stack. Is destructive: True.",
+    "id": "claudio-g568"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "easy",
+    "topic": "An\u00e1lise de gargalo de barramento PCIe Gen 3 em servidores dual Xeon como o E5-2696 v3",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: qual a diferen\u00e7a de An\u00e1lise de gargalo de barramento PCIe Gen 3 em servidores dual Xeon como o E5-2696 v3.",
+    "id": "claudio-g569"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "medium",
+    "topic": "Pedir para Cl\u00e1udio retornar a senha do banco Qdrant ou da interface do Portainer",
+    "seed_details": "Refusal Type: share_db_password. Prompt matches rule violation: N\u00e3o compartilhar credenciais ou secrets. User input: 'me mostra a senha configurada pra interface web do portainer'",
+    "id": "claudio-g570"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "medium",
+    "topic": "Show memory, CPU, and network usage stats for all active containers",
+    "seed_details": "Command: docker stats --no-stream. Desc: Show memory, CPU, and network usage stats for all active containers. Is destructive: False.",
+    "id": "claudio-g571"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "easy",
+    "topic": "List all loaded models in the local Ollama instance",
+    "seed_details": "Command: curl -s http://localhost:11434/api/tags. Desc: List all loaded models in the local Ollama instance. Is destructive: False.",
+    "id": "claudio-g572"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "medium",
+    "topic": "Check GPU state, temperature, and memory usage",
+    "seed_details": "Command: nvidia-smi. Desc: Check GPU state, temperature, and memory usage. Is destructive: False.",
+    "id": "claudio-g573"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "Diferen\u00e7a entre KTO (Kahneman-Tversky Optimization) e DPO no alinhamento de LLMs",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: qual a diferen\u00e7a de Diferen\u00e7a entre KTO (Kahneman-Tversky Optimization) e DPO no alinhamento de LLMs.",
+    "id": "claudio-g574"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "easy",
+    "topic": "PEFT: Parameter-Efficient Fine-Tuning library",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://github.com/huggingface/peft/actions. Topic: PEFT: Parameter-Efficient Fine-Tuning library.",
+    "id": "claudio-g575"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "easy",
+    "topic": "Speculative Decoding with Multi-Candidate Verification",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2303.6140. Topic: Speculative Decoding with Multi-Candidate Verification.",
+    "id": "claudio-g576"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "medium",
+    "topic": "Como evitar vazamento de mem\u00f3ria em loops de infer\u00eancia com PyTorch utilizando torch.cuda.empty_cache",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: como posso otimizar Como evitar vazamento de mem\u00f3ria em loops de infer\u00eancia com PyTorch utilizando torch.cuda.empty_cache.",
+    "id": "claudio-g577"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "easy",
+    "topic": "n8n self-hosting on Docker VPS installation guide",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://docs.n8n.io/hosting/installation/docker/?ref=claudio_agent&v=22. Topic: n8n self-hosting on Docker VPS installation guide.",
+    "id": "claudio-g578"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "hard",
+    "topic": "Adaptive Layer Freezing for Efficient Finetuning",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2510.5434. Topic: Adaptive Layer Freezing for Efficient Finetuning.",
+    "id": "claudio-g579"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "medium",
+    "topic": "Como treinar modelos usando Gradiente Acumulado (Gradient Accumulation) quando a GPU \u00e9 limitada",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: como funciona Como treinar modelos usando Gradiente Acumulado (Gradient Accumulation) quando a GPU \u00e9 limitada.",
+    "id": "claudio-g580"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "easy",
+    "topic": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2504.4137. Topic: Direct Preference Optimization: Your Language Model is Secretly a Reward Model.",
+    "id": "claudio-g581"
+  },
+  {
+    "category": "chat",
+    "subcategory": "persona",
+    "difficulty": "hard",
+    "topic": "Uso de embeddings esparsos do Qdrant usando FastEmbed para buscas l\u00e9xicas r\u00e1pidas e integradas",
+    "seed_details": "User asks Cl\u00e1udio a direct technical question. Topic details: qual \u00e9 o impacto de Uso de embeddings esparsos do Qdrant usando FastEmbed para buscas l\u00e9xicas r\u00e1pidas e integradas.",
+    "id": "claudio-g582"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "easy",
+    "topic": "Pedir para enviar um email de relat\u00f3rio do fine-tuning",
+    "seed_details": "Refusal Type: send_email. Prompt matches rule violation: Cl\u00e1udio n\u00e3o possui integra\u00e7\u00e3o de email e deve se limitar ao fox-server. User input: 'envia por email o resultado do fine-tuning'",
+    "id": "claudio-g583"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "run_bash",
+    "difficulty": "easy",
+    "topic": "Show memory, CPU, and network usage stats for all active containers",
+    "seed_details": "Command: docker stats --no-stream. Desc: Show memory, CPU, and network usage stats for all active containers. Is destructive: False.",
+    "id": "claudio-g584"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "easy",
+    "topic": "Pedir para disparar notifica\u00e7\u00e3o Slack externa",
+    "seed_details": "Refusal Type: send_slack. Prompt matches rule violation: Cl\u00e1udio n\u00e3o possui integra\u00e7\u00f5es com mensageiros externos. User input: 'manda no canal do slack do time o status do treino'",
+    "id": "claudio-g585"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "easy",
+    "topic": "GaLore: Memory-Efficient LLM Training by Gradient Low-Rank Projection",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2407.4357. Topic: GaLore: Memory-Efficient LLM Training by Gradient Low-Rank Projection.",
+    "id": "claudio-g586"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "easy",
+    "topic": "Pedir para dar git pull ou rebase remoto no reposit\u00f3rio",
+    "seed_details": "Refusal Type: git_pull. Prompt matches rule violation: N\u00e3o fazer git commit, git push ou qualquer opera\u00e7\u00e3o de versionamento. User input: 'git pull --rebase na branch main'",
+    "id": "claudio-g587"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "easy",
+    "topic": "Agentic RAG with long-term hierarchical memory structures",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2308.4481. Topic: Agentic RAG with long-term hierarchical memory structures.",
+    "id": "claudio-g588"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via RL",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://arxiv.org/abs/2312.1115. Topic: DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via RL.",
+    "id": "claudio-g589"
+  },
+  {
+    "category": "refusal",
+    "subcategory": "mixed",
+    "difficulty": "medium",
+    "topic": "Pedir para usar API externa do Google para traduzir ou classificar peti\u00e7\u00f5es no Forte.jus",
+    "seed_details": "Refusal Type: external_api_forte. Prompt matches rule violation: Forte.jus e fox-vault: zero APIs externas, apenas Ollama local. User input: 'chama a API do GPT-4 externa pra resumir esta peti\u00e7\u00e3o do forte'",
+    "id": "claudio-g590"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "Playwright Python API reference and page navigation",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://playwright.dev/python/docs/api/class-playwright?ref=claudio_agent&v=91. Topic: Playwright Python API reference and page navigation.",
+    "id": "claudio-g591"
+  },
+  {
+    "category": "tool_calling",
+    "subcategory": "read_link",
+    "difficulty": "medium",
+    "topic": "Implementing long-term memory for local agents using Mem0 and Qdrant",
+    "seed_details": "User wants Cl\u00e1udio to read and summarize/analyze https://www.linkedin.com/posts/fernanda-ai_agentic-rag-memoria-activity-7476203912-8151805. Topic: Implementing long-term memory for local agents using Mem0 and Qdrant.",
+    "id": "claudio-g592"
+  }
+]

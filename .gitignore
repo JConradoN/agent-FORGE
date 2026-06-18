@@ -16,3 +16,13 @@ agents/*/workdir/
 debug/
 reports/
 results/
+finetune/output/
+finetune/unsloth_compiled_cache/
+unsloth_compiled_cache/
+finetune/dataset/filtered_seeds_temp.json
+finetune/dataset/seeds_lote2.json
+finetune/dataset/seeds_subset.json
+finetune/dataset/temp_seeds_range.json
+finetune/dataset/synth_qwen_batch1.log
+finetune/dataset/parts/
+finetune/dataset/write_parts.py

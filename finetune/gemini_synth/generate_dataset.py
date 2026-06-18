@@ -11,7 +11,7 @@ import ollama
 # Configuration
 GOLD_SEED_PATH = "/home/conrado/repos/estudo/agents-framework/finetune/dataset/gold_seed.jsonl"
 GOLD_BATCH2_PATH = "/home/conrado/repos/estudo/agents-framework/finetune/dataset/gold_batch2.jsonl"
-OUTPUT_PATH = "/home/conrado/repos/estudo/agents-framework/finetune/dataset/synth_gemini.jsonl"
+OUTPUT_PATH = "/home/conrado/repos/estudo/agents-framework/finetune/dataset/synth_gemini_batch2.jsonl"
 PROGRESS_LOG_PATH = "/home/conrado/repos/estudo/agents-framework/finetune/dataset/synth_progress.log"
 
 SYSTEM_PROMPT = """Você é Cláudio, assistente pessoal do Conrado rodando localmente no fox-server.
@@ -151,8 +151,8 @@ def generate_seeds():
     url_pool = arxiv_papers + github_repos + blogs_docs + linkedin_posts
     random.seed(42)
     
-    # 175 read_link seeds
-    for i in range(175):
+    # 105 read_link seeds
+    for i in range(105):
         url, desc = url_pool[i % len(url_pool)]
         # Add a random query suffix/variation to keep URLs unique and realistic
         if "arxiv.org" in url:
@@ -163,7 +163,7 @@ def generate_seeds():
         elif "linkedin.com" in url:
             url = f"{url[:-5]}{random.randint(10000, 99999)}"
             
-        difficulty = "easy" if i < 70 else ("medium" if i < 140 else "hard")
+        difficulty = "easy" if i < 42 else ("medium" if i < 84 else "hard")
         seeds.append({
             "category": "tool_calling",
             "subcategory": "read_link",
@@ -211,9 +211,9 @@ def generate_seeds():
         ("rm -rf /var/log/nginx/*", "Apagar logs do nginx", True)
     ]
     
-    for i in range(100):
+    for i in range(60):
         cmd, desc, is_destructive = bash_commands[i % len(bash_commands)]
-        difficulty = "easy" if i < 40 else ("medium" if i < 80 else "hard")
+        difficulty = "easy" if i < 24 else ("medium" if i < 48 else "hard")
         seeds.append({
             "category": "tool_calling",
             "subcategory": "run_bash",
@@ -257,9 +257,9 @@ def generate_seeds():
         "Como criar parsers eficientes em Python usando Beautiful Soup e Pydantic para estruturar dados"
     ]
     
-    for i in range(150):
+    for i in range(90):
         topic = persona_topics[i % len(persona_topics)]
-        difficulty = "easy" if i < 60 else ("medium" if i < 120 else "hard")
+        difficulty = "easy" if i < 36 else ("medium" if i < 72 else "hard")
         seeds.append({
             "category": "chat",
             "subcategory": "persona",
@@ -281,9 +281,9 @@ def generate_seeds():
         ("send_slack", "Pedir para disparar notificação Slack externa", "Cláudio não possui integrações com mensageiros externos")
     ]
     
-    for i in range(75):
+    for i in range(45):
         ref_type, desc, rule = refusal_types[i % len(refusal_types)]
-        difficulty = "easy" if i < 30 else ("medium" if i < 60 else "hard")
+        difficulty = "easy" if i < 18 else ("medium" if i < 36 else "hard")
         seeds.append({
             "category": "refusal",
             "subcategory": "mixed",
@@ -319,6 +319,15 @@ def make_ollama_prompt(seed, few_shots):
             few_shot_str += f"Retorno da Tool: null\n"
             few_shot_str += f"Resposta Final Cláudio: {fs['messages'][2]['content']}\n"
             
+    # Specific quality checks
+    quality_instructions = ""
+    if cat == "chat":
+        quality_instructions = "4. NUNCA afirme fatos sobre o estado atual do servidor (modelos, serviços, hardware, versões de software) — chat é só para conceitos técnicos gerais e estáveis. Se o tópico exigir estado da máquina, diga 'use run_bash para verificar'."
+    elif cat == "tool_calling" and subcat == "run_bash":
+        quality_instructions = "4. Tom telegráfico: sem frases introdutórias ('Identifiquei...', 'Analisei...'). Vá direto ao dado. Timestamps no tool_output devem ser de 2026."
+    elif cat == "refusal":
+        quality_instructions = "4. Recusa seca em 1-2 frases. Sem 'Recomendo que você...', sem 'Lamentavelmente...'"
+
     prompt = f"""Você é um gerador de dados de treino para o assistente pessoal Cláudio.
 Gere um exemplo realista em português (PT-BR) de acordo com os seguintes dados:
 
@@ -335,6 +344,7 @@ Regras para a resposta do assistente (assistant_final_response):
 1. Deve ser no tom do Cláudio: expert, direto, sem rodeios, sem emojis.
 2. Não use nenhum caractere de formatação markdown (sem *, **, #, _, ou links [texto](url)).
 3. Use apenas hífen (-) para listas e crases (```) para código.
+{quality_instructions}
 
 Retorne APENAS um objeto JSON com a seguinte estrutura:
 {{
@@ -571,16 +581,16 @@ def main():
         
     batch_size = 50
     total_seeds = len(seeds)
-    max_workers = 8
+    max_workers = 2
     
-    print(f"Generating 500 examples with {max_workers} parallel workers...")
+    print(f"Generating {total_seeds} examples with {max_workers} parallel workers...")
     
     results = [None] * total_seeds
     total_completed = 0
     
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_seed = {
-            executor.submit(generate_one, seed, idx + 1, gold_examples): idx
+            executor.submit(generate_one, seed, 573 + idx, gold_examples): idx
             for idx, seed in enumerate(seeds)
         }
         
@@ -592,7 +602,7 @@ def main():
             except Exception as exc:
                 print(f"Seed {idx+1} generated an exception: {exc}")
                 with open(PROGRESS_LOG_PATH, "a") as f:
-                    f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [claudio-g{idx+1:03d}] Thread exception: {str(exc)}\n")
+                    f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [claudio-g{573+idx:03d}] Thread exception: {str(exc)}\n")
             
             total_completed += 1
             if total_completed % 10 == 0:
@@ -616,7 +626,7 @@ def main():
                     out_file.write(line + "\n")
                 
             with open(PROGRESS_LOG_PATH, "a") as f:
-                f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Written batch from claudio-g{batch_start+1:03d} to claudio-g{batch_end:03d}.\n")
+                f.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Written batch from claudio-g{573+batch_start:03d} to claudio-g{573+batch_end-1:03d}.\n")
                 
     duration = time.time() - start_time
     print(f"Dataset generation complete! Generated {total_seeds} examples in {duration:.1f}s.")

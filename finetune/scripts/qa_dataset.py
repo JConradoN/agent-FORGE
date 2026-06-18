@@ -39,7 +39,16 @@ MAX_ASSISTANT_LEN = 3000  # resposta muito longa suspeita
 MIN_TOOL_RESULT   = 20   # tool result muito curto = simulação ruim
 
 REQUIRED_FIELDS = {"id", "category", "subcategory", "difficulty", "source", "messages"}
+
+# V1 categories (Cláudio conversacional)
 VALID_CATEGORIES = {"tool_calling", "chat", "refusal", "multi_turn", "agentic", "compliance"}
+
+# V2 categories (AgentForge agentic — source == "synthetic_agy_v2")
+VALID_CATEGORIES_V2 = {
+    "agentforge", "completion_signal", "error_recovery",
+    "formatting_correct", "structured_output", "tool_chain",
+}
+
 VALID_SUBCATS = {
     "tool_calling": {"read_link", "run_bash", "multi_tool",
                      "invocação_correta", "campo_correto"},
@@ -49,9 +58,31 @@ VALID_SUBCATS = {
     "multi_turn":   {"read_link", "run_bash", "mixed", "turno_claro", "chat"},
     "agentic":      {"mixed"},
     "compliance":   {"falsa_conclusao", "conclusao_correta", "restricoes"},
+    # V2
+    "agentforge":        {
+        "tool_chain_short", "tool_chain_medium", "tool_chain_dependent",
+        "must_proactive", "must_complex", "must_correction_loop",
+        "must_not_correction_loop", "must_not_proactive", "no_tool_redirect",
+        "completion_from_hint", "completion_from_must_rules", "completion_partial",
+        "context_compaction", "memory_read_before_answer", "memory_write_after_learning",
+        "memory_multi_turn", "delegation_simple", "delegation_conditional",
+        "delegation_decision", "delegation_sequential", "delegation_sequence",
+        "delegation_error_recovery", "delegation_wrong_agent",
+        "bash_fix_loop", "test_fix_loop", "tool_error_retry",
+        "json_output", "yaml_frontmatter", "required_sections",
+    },
+    "completion_signal": {"completion_from_hint", "completion_from_must_rules", "completion_partial"},
+    "error_recovery":    {"bash_fix_loop", "test_fix_loop", "tool_error_retry"},
+    "formatting_correct":{"format_telegram", "format_markdown_file", "format_plain_no_leak"},
+    "structured_output": {"json_output", "yaml_frontmatter", "required_sections"},
+    "tool_chain":        {"tool_chain_short", "tool_chain_medium", "tool_chain_dependent"},
 }
 # Subcategorias onde tool_call é opcional (o exemplo pode treinar "não chamar tool")
 TOOL_OPTIONAL_SUBCATS = {"invocação_correta"}
+
+# V2: subcategorias onde markdown na resposta final é ESPERADO (não é warn)
+MARKDOWN_EXPECTED_SUBCATS = {"format_telegram", "format_markdown_file"}
+
 VALID_DIFFICULTIES = {"easy", "medium", "hard"}
 
 
@@ -78,8 +109,10 @@ def validate_example(obj: dict) -> list[Issue]:
     cat = obj.get("category", "")
     sub = obj.get("subcategory", "")
     dif = obj.get("difficulty", "")
+    is_v2 = obj.get("source", "") == "synthetic_agy_v2"
 
-    if cat not in VALID_CATEGORIES:
+    all_valid_cats = VALID_CATEGORIES | VALID_CATEGORIES_V2
+    if cat not in all_valid_cats:
         issues.append(Issue("ERROR", "INVALID_CATEGORY", cat))
     if cat in VALID_SUBCATS and sub not in VALID_SUBCATS.get(cat, set()):
         issues.append(Issue("WARN", "UNEXPECTED_SUBCAT", f"{cat}/{sub}"))
@@ -91,6 +124,10 @@ def validate_example(obj: dict) -> list[Issue]:
     # 3. System prompt
     if not msgs or msgs[0].get("role") != "system":
         issues.append(Issue("ERROR", "NO_SYSTEM_PROMPT"))
+    elif is_v2:
+        # V2: system prompt por agente — apenas verifica que não está vazio
+        if not msgs[0].get("content", "").strip():
+            issues.append(Issue("ERROR", "EMPTY_SYSTEM_PROMPT"))
     else:
         sys_content = msgs[0].get("content", "")
         if sys_content.strip() != CANONICAL_SYS:
@@ -163,7 +200,7 @@ def validate_example(obj: dict) -> list[Issue]:
             issues.append(Issue("WARN", "LONG_RESPONSE", f"{len(content)} chars"))
 
         # Markdown na resposta final
-        if MARKDOWN_PATTERN.search(content):
+        if MARKDOWN_PATTERN.search(content) and sub not in MARKDOWN_EXPECTED_SUBCATS:
             m = MARKDOWN_PATTERN.search(content)
             issues.append(Issue("WARN", "MARKDOWN_IN_RESPONSE",
                                 repr(content[m.start():m.start()+40])))
