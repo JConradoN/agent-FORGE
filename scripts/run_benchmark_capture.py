@@ -299,15 +299,22 @@ def main():
 
     with open(gold_path, "w") as f:
         for ex in gold_examples:
-            # Salva só os campos necessários para o dataset
             entry = {
                 "id": ex["id"],
                 "source": ex["source"],
                 "category": ex["category"],
                 "subcategory": ex["subcategory"],
                 "messages": ex["messages"],
+                "score_pct": ex["pct"],
             }
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+    # Relatório de checks falhos para orientar ajustes sintéticos
+    print("\nDetalhes dos checks falhos (para orientar o Agy):")
+    for ex in all_examples:
+        for detail in ex.get("details", []):
+            if not detail.get("passed"):
+                print(f"  [{ex['id']}] FALHOU: {detail.get('label','?')}")
 
     print(f"\n{'='*60}")
     print(f"  Total runs: {len(all_examples)}")
