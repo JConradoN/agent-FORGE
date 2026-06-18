@@ -44,7 +44,7 @@ guardrails:
   - use raise ValueError("query cannot be empty") with all lowercase words for empty query
   - in tests use exactly from memory_search import search_memory
   - use read_file to re-read memory_search.py before writing test_memory_search.py
-  - finish the response with the exact phrase 'TOOL CREATED'
+  - finalizar a resposta com a frase exata 'TOOL CRIADO'
   must_not:
   - invent that tests passed without executing run_bash with pytest
   - use fragile mocks instead of real temporary SQLite
