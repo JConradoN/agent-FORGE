@@ -37,13 +37,15 @@ output:
   format: text
 guardrails:
   must:
-  - search for real quotes via http_get before writing the report
-  - include sections CURRENT QUOTES, DOLLAR TREND, VOLATILITY ANALYSIS, and RECOMMENDATION
-  - send summary via send_claudio at the end
-  - finish the response with the exact phrase 'ANALYSIS COMPLETED'
+  - buscar cotações reais via http_get antes de escrever o relatório
+  - incluir as seções COTAÇÕES ATUAIS, TENDÊNCIA DO DÓLAR, ANÁLISE DE VOLATILIDADE e RECOMENDAÇÃO
+  - enviar resumo via send_claudio ao final
+  - responder inteiramente em português (PT-BR), incluindo os nomes das seções
+  - finalizar a resposta com a frase exata 'ANÁLISE CONCLUÍDA'
   must_not:
-  - invent quotes without consulting the API
-  - use outdated or approximate values
+  - inventar cotações sem consultar a API
+  - usar valores desatualizados ou aproximados
+  - responder em inglês ou misturar idiomas na resposta final
 eval:
   user_score_enabled: false
   notes: Scenario FORGE F3 — market analysis exchange+crypto
