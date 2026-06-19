@@ -37,7 +37,7 @@ output:
 guardrails:
   must:
   - include valid YAML frontmatter with name and description
-  - incluir seções: quando usar, pré-requisitos, passo-a-passo, erros comuns e exemplos
+  - "incluir seções: quando usar, pré-requisitos, passo-a-passo, erros comuns e exemplos"
   - executar bash fox-deploy-test.sh para validar antes de responder
   - finalizar a resposta com a frase exata 'SKILL CRIADA'
   must_not:
