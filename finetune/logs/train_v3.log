@@ -1,0 +1,259 @@
+W0619 12:44:39.466000 1314369 torch/distributed/run.py:852] 
+W0619 12:44:39.466000 1314369 torch/distributed/run.py:852] *****************************************
+W0619 12:44:39.466000 1314369 torch/distributed/run.py:852] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0619 12:44:39.466000 1314369 torch/distributed/run.py:852] *****************************************
+============================================================
+Fine-tuning Cláudio 9b v2 — dataset 100% agentic
+============================================================
+Base model  : Qwen/Qwen3.5-9B
+Output dir  : /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3
+LoRA r/α    : 16/32
+Batch efetivo: 16
+Epochs      : 2
+Max seq len : 6144
+
+============================================================
+Fine-tuning Cláudio 9b v2 — dataset 100% agentic
+============================================================
+Base model  : Qwen/Qwen3.5-9B
+Output dir  : /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3
+LoRA r/α    : 16/32
+Batch efetivo: 16
+Epochs      : 2
+Max seq len : 6144
+
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+🦥 Unsloth Zoo will now patch everything to make training faster!
+[setup] CUDA: True | GPUs: 2
+[setup] GPU0: NVIDIA GeForce RTX 3060 (11 GB)
+[setup] GPU1: NVIDIA GeForce RTX 3060 (11 GB)
+[setup] bfloat16: True
+[setup] Carregando Qwen/Qwen3.5-9B...
+[setup] CUDA: True | GPUs: 2
+[setup] GPU0: NVIDIA GeForce RTX 3060 (11 GB)
+[setup] GPU1: NVIDIA GeForce RTX 3060 (11 GB)
+[setup] bfloat16: True
+[setup] Carregando Qwen/Qwen3.5-9B...
+==((====))==  Unsloth 2026.6.7: Fast Qwen3_5 patching. Transformers: 5.5.0.
+   \\   /|    NVIDIA GeForce RTX 3060. Num GPUs = 2. Max memory: 11.633 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.10.0+cu128. CUDA: 8.6. CUDA Toolkit: 12.8. Triton: 3.6.0
+\        /    Bfloat16 = TRUE. FA [Xformers = 0.0.35. FA2 = False]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+==((====))==  Unsloth 2026.6.7: Fast Qwen3_5 patching. Transformers: 5.5.0.
+   \\   /|    NVIDIA GeForce RTX 3060. Num GPUs = 2. Max memory: 11.633 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.10.0+cu128. CUDA: 8.6. CUDA Toolkit: 12.8. Triton: 3.6.0
+\        /    Bfloat16 = TRUE. FA [Xformers = 0.0.35. FA2 = False]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/760 [00:00<?, ?it/s]Loading weights:   0%|          | 1/760 [00:00<03:31,  3.60it/s]Loading weights:   0%|          | 0/760 [00:00<?, ?it/s]Loading weights:   0%|          | 1/760 [00:00<03:45,  3.37it/s]Loading weights:   0%|          | 2/760 [00:00<03:46,  3.34it/s]Loading weights:   2%|▏         | 14/760 [00:00<00:26, 27.94it/s]Loading weights:   4%|▍         | 29/760 [00:00<00:13, 55.86it/s]Loading weights:   0%|          | 2/760 [00:00<03:40,  3.44it/s]Loading weights:   6%|▌         | 46/760 [00:00<00:08, 84.03it/s]Loading weights:   2%|▏         | 14/760 [00:00<00:25, 29.08it/s]Loading weights:   9%|▊         | 66/760 [00:01<00:06, 110.83it/s]Loading weights:   4%|▍         | 29/760 [00:00<00:12, 58.01it/s]Loading weights:  11%|█         | 81/760 [00:01<00:05, 120.82it/s]Loading weights:   6%|▌         | 46/760 [00:00<00:08, 86.00it/s]Loading weights:  13%|█▎        | 96/760 [00:01<00:05, 128.72it/s]Loading weights:   9%|▊         | 66/760 [00:00<00:06, 114.92it/s]Loading weights:  15%|█▌        | 117/760 [00:01<00:04, 151.51it/s]Loading weights:  11%|█         | 81/760 [00:01<00:05, 124.23it/s]Loading weights:  18%|█▊        | 134/760 [00:01<00:04, 146.69it/s]Loading weights:  13%|█▎        | 99/760 [00:01<00:04, 133.65it/s]Loading weights:  20%|█▉        | 150/760 [00:01<00:04, 149.85it/s]Loading weights:  16%|█▌        | 119/760 [00:01<00:04, 148.79it/s]Loading weights:  22%|██▏       | 169/760 [00:01<00:03, 159.39it/s]Loading weights:  18%|█▊        | 135/760 [00:01<00:04, 144.44it/s]Loading weights:  24%|██▍       | 186/760 [00:01<00:03, 158.95it/s]Loading weights:  20%|██        | 152/760 [00:01<00:04, 151.04it/s]Loading weights:  27%|██▋       | 203/760 [00:01<00:03, 153.72it/s]Loading weights:  23%|██▎       | 172/760 [00:01<00:03, 161.42it/s]Loading weights:  29%|██▉       | 222/760 [00:01<00:03, 160.85it/s]Loading weights:  25%|██▍       | 189/760 [00:01<00:03, 156.04it/s]Loading weights:  31%|███▏      | 239/760 [00:02<00:03, 154.30it/s]Loading weights:  27%|██▋       | 205/760 [00:01<00:03, 156.61it/s]Loading weights:  34%|███▎      | 255/760 [00:02<00:03, 142.37it/s]Loading weights:  30%|██▉       | 225/760 [00:01<00:03, 162.72it/s]Loading weights:  36%|███▌      | 274/760 [00:02<00:03, 153.27it/s]Loading weights:  32%|███▏      | 242/760 [00:02<00:03, 153.57it/s]Loading weights:  38%|███▊      | 291/760 [00:02<00:03, 155.96it/s]Loading weights:  34%|███▍      | 258/760 [00:02<00:03, 152.77it/s]Loading weights:  40%|████      | 307/760 [00:02<00:03, 148.54it/s]Loading weights:  37%|███▋      | 278/760 [00:02<00:03, 159.81it/s]Loading weights:  43%|████▎     | 326/760 [00:02<00:02, 159.74it/s]Loading weights:  39%|███▉      | 295/760 [00:02<00:03, 153.14it/s]Loading weights:  45%|████▌     | 343/760 [00:02<00:02, 160.33it/s]Loading weights:  41%|████      | 312/760 [00:02<00:02, 150.70it/s]Loading weights:  47%|████▋     | 360/760 [00:02<00:02, 148.42it/s]Loading weights:  44%|████▎     | 332/760 [00:02<00:02, 160.90it/s]Loading weights:  50%|█████     | 380/760 [00:03<00:02, 157.51it/s]Loading weights:  46%|████▌     | 349/760 [00:02<00:02, 160.60it/s]Loading weights:  52%|█████▏    | 398/760 [00:03<00:02, 156.29it/s]Loading weights:  48%|████▊     | 366/760 [00:02<00:02, 147.11it/s]Loading weights:  54%|█████▍    | 414/760 [00:03<00:02, 149.42it/s]Loading weights:  51%|█████     | 386/760 [00:03<00:02, 158.38it/s]Loading weights:  60%|█████▉    | 453/760 [00:03<00:01, 213.54it/s]Loading weights:  54%|█████▍    | 410/760 [00:03<00:01, 180.41it/s]Loading weights:  75%|███████▌  | 572/760 [00:03<00:00, 483.54it/s]Loading weights:  56%|█████▋    | 429/760 [00:03<00:01, 167.14it/s]Loading weights:  90%|█████████ | 687/760 [00:03<00:00, 670.71it/s]Loading weights: 100%|██████████| 760/760 [00:03<00:00, 209.54it/s]
+Loading weights:  73%|███████▎  | 555/760 [00:03<00:00, 457.33it/s]Loading weights:  90%|█████████ | 687/760 [00:03<00:00, 690.62it/s]Loading weights: 100%|██████████| 760/760 [00:03<00:00, 215.49it/s]
+[setup] Aplicando LoRA...
+[setup] Aplicando LoRA...
+Unsloth: Dropout = 0 is supported for fast patching. You are using dropout = 0.05.
+Unsloth will patch all other layers, except LoRA matrices, causing a performance hit.
+Unsloth: Dropout = 0 is supported for fast patching. You are using dropout = 0.05.
+Unsloth will patch all other layers, except LoRA matrices, causing a performance hit.
+[lora] Parâmetros treináveis: 29,097,984 / 5,774,124,272 (0.50%)
+[lora] Parâmetros treináveis: 29,097,984 / 5,774,124,272 (0.50%)
+[dataset] train_v3_final.jsonl: 4004 exemplos
+[dataset] 16 exemplos pulados (JSON inválido / args malformados)
+[dataset] Total carregado: 4004 exemplos
+[WARN] Exemplo v3-27b-0480 ignorado: Unexpected item type in content.
+[dataset] train_v3_final.jsonl: 4004 exemplos
+[dataset] 16 exemplos pulados (JSON inválido / args malformados)
+[dataset] Total carregado: 4004 exemplos
+[WARN] Exemplo v3-27b-0480 ignorado: Unexpected item type in content.
+[WARN] Exemplo v3-27b-0139 ignorado: Unexpected content type.
+[WARN] Exemplo v3-27b-0139 ignorado: Unexpected content type.
+[WARN] Exemplo v3-27b-0237 ignorado: Unexpected item type in content.
+[WARN] Exemplo v3-27b-0038 ignorado: Unexpected content type.
+[WARN] Exemplo v3-27b-0237 ignorado: Unexpected item type in content.
+[WARN] Exemplo v3-27b-0038 ignorado: Unexpected content type.
+[WARN] Exemplo v3-27b-0453 ignorado: Unexpected content type.
+[WARN] Exemplo v3-27b-0203 ignorado: Can only get item pairs from a mapping.
+[WARN] Exemplo v3-27b-0453 ignorado: Unexpected content type.
+[WARN] Exemplo v3-27b-0203 ignorado: Can only get item pairs from a mapping.
+[WARN] Exemplo v3-27b-0087 ignorado: Unexpected message role.
+[WARN] Exemplo v3-27b-0215 ignorado: Unexpected message role.
+[dataset] 3996 exemplos formatados (8 ignorados)
+[dataset] Dataset final: 3996 exemplos
+[train] Estimativa: 249 steps/epoch × 2 epochs = ~498 steps
+warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
+[WARN] Exemplo v3-27b-0087 ignorado: Unexpected message role.
+[WARN] Exemplo v3-27b-0215 ignorado: Unexpected message role.
+[dataset] 3996 exemplos formatados (8 ignorados)
+[dataset] Dataset final: 3996 exemplos
+[train] Estimativa: 249 steps/epoch × 2 epochs = ~498 steps
+warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
+Unsloth: Sample packing skipped (processor-based model detected).
+Unsloth: Sample packing skipped (processor-based model detected).
+Unsloth: Tokenizing ["text"] (num_proc=40):   0%|          | 0/3996 [00:00<?, ? examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):   0%|          | 0/3996 [00:00<?, ? examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):   3%|▎         | 100/3996 [00:03<02:08, 30.35 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):   3%|▎         | 100/3996 [00:03<02:10, 29.89 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):   5%|▌         | 200/3996 [00:03<00:59, 63.49 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):   5%|▌         | 200/3996 [00:03<01:00, 63.02 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):   8%|▊         | 300/3996 [00:04<00:37, 97.82 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):   8%|▊         | 300/3996 [00:04<00:37, 97.83 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  10%|█         | 400/3996 [00:04<00:27, 130.88 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  10%|█         | 400/3996 [00:04<00:27, 132.04 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  13%|█▎        | 500/3996 [00:04<00:21, 161.25 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  13%|█▎        | 500/3996 [00:04<00:21, 163.81 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  15%|█▌        | 600/3996 [00:05<00:18, 187.89 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  15%|█▌        | 600/3996 [00:05<00:17, 191.78 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  18%|█▊        | 700/3996 [00:05<00:15, 209.43 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  18%|█▊        | 700/3996 [00:05<00:15, 214.87 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  20%|██        | 800/3996 [00:05<00:14, 225.73 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  20%|██        | 800/3996 [00:05<00:13, 234.91 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  23%|██▎       | 900/3996 [00:06<00:12, 240.65 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  23%|██▎       | 900/3996 [00:06<00:12, 250.35 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  25%|██▌       | 1000/3996 [00:06<00:11, 250.86 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  25%|██▌       | 1000/3996 [00:06<00:11, 261.41 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  28%|██▊       | 1100/3996 [00:06<00:11, 257.52 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  28%|██▊       | 1100/3996 [00:06<00:10, 265.43 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  30%|███       | 1200/3996 [00:07<00:10, 268.02 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  30%|███       | 1200/3996 [00:07<00:10, 261.33 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  33%|███▎      | 1300/3996 [00:07<00:09, 277.24 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  33%|███▎      | 1300/3996 [00:07<00:10, 256.69 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  35%|███▌      | 1400/3996 [00:07<00:09, 280.81 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  35%|███▌      | 1400/3996 [00:08<00:09, 260.79 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  38%|███▊      | 1500/3996 [00:08<00:08, 279.48 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  38%|███▊      | 1500/3996 [00:08<00:09, 262.64 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  40%|████      | 1600/3996 [00:08<00:08, 273.56 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  40%|████      | 1600/3996 [00:08<00:09, 251.60 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  43%|████▎     | 1700/3996 [00:08<00:08, 276.09 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  45%|████▌     | 1800/3996 [00:09<00:07, 277.99 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  45%|████▌     | 1800/3996 [00:09<00:08, 269.89 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  48%|████▊     | 1900/3996 [00:09<00:07, 282.80 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  48%|████▊     | 1900/3996 [00:09<00:07, 273.78 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  50%|█████     | 2000/3996 [00:10<00:07, 282.97 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  50%|█████     | 2000/3996 [00:10<00:07, 275.76 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  53%|█████▎    | 2100/3996 [00:10<00:06, 280.20 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  53%|█████▎    | 2100/3996 [00:10<00:06, 280.27 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  55%|█████▌    | 2200/3996 [00:10<00:06, 281.23 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  55%|█████▌    | 2200/3996 [00:11<00:06, 273.92 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  58%|█████▊    | 2300/3996 [00:11<00:06, 281.47 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  58%|█████▊    | 2300/3996 [00:11<00:06, 276.18 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  60%|██████    | 2400/3996 [00:11<00:05, 284.74 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  60%|██████    | 2400/3996 [00:11<00:05, 277.88 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  63%|██████▎   | 2500/3996 [00:11<00:05, 284.37 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  63%|██████▎   | 2500/3996 [00:12<00:05, 277.30 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  65%|██████▌   | 2600/3996 [00:12<00:04, 284.05 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  65%|██████▌   | 2600/3996 [00:12<00:04, 284.96 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  68%|██████▊   | 2700/3996 [00:12<00:04, 282.16 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  68%|██████▊   | 2700/3996 [00:12<00:04, 280.67 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  70%|███████   | 2800/3996 [00:12<00:04, 281.08 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  70%|███████   | 2800/3996 [00:13<00:04, 274.94 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  73%|███████▎  | 2900/3996 [00:13<00:03, 286.98 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  73%|███████▎  | 2900/3996 [00:13<00:03, 275.70 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  75%|███████▌  | 3000/3996 [00:13<00:03, 278.07 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  75%|███████▌  | 3000/3996 [00:13<00:03, 271.26 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  78%|███████▊  | 3100/3996 [00:13<00:03, 287.66 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  78%|███████▊  | 3100/3996 [00:14<00:03, 271.89 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  80%|████████  | 3200/3996 [00:14<00:02, 293.17 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  80%|████████  | 3200/3996 [00:14<00:02, 271.16 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  83%|████████▎ | 3300/3996 [00:14<00:02, 295.37 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  83%|████████▎ | 3300/3996 [00:14<00:02, 272.27 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  85%|████████▌ | 3400/3996 [00:14<00:02, 290.91 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  85%|████████▌ | 3400/3996 [00:15<00:01, 339.79 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  88%|████████▊ | 3500/3996 [00:15<00:01, 299.46 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  88%|████████▊ | 3500/3996 [00:15<00:01, 318.99 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  90%|█████████ | 3600/3996 [00:15<00:01, 300.80 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  93%|█████████▎| 3699/3996 [00:15<00:00, 309.82 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  90%|█████████ | 3600/3996 [00:16<00:01, 239.07 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  95%|█████████▌| 3798/3996 [00:16<00:00, 309.21 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  93%|█████████▎| 3699/3996 [00:16<00:01, 290.61 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  98%|█████████▊| 3897/3996 [00:16<00:00, 330.05 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  95%|█████████▌| 3798/3996 [00:16<00:00, 299.70 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40): 100%|██████████| 3996/3996 [00:16<00:00, 342.15 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40):  98%|█████████▊| 3897/3996 [00:16<00:00, 308.77 examples/s]Unsloth: Tokenizing ["text"] (num_proc=40): 100%|██████████| 3996/3996 [00:17<00:00, 231.26 examples/s]
+Unsloth: Tokenizing ["text"] (num_proc=40): 100%|██████████| 3996/3996 [00:17<00:00, 263.71 examples/s][train] Iniciando treino...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046}.
+Unsloth: Tokenizing ["text"] (num_proc=40): 100%|██████████| 3996/3996 [00:18<00:00, 221.74 examples/s]
+[train] Iniciando treino...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046}.
+Unsloth is running with multi GPUs - the effective batch size is multiplied by 2
+Unsloth is running with multi GPUs - the effective batch size is multiplied by 2
+==((====))==  Unsloth - 2x faster free finetuning | Num GPUs used = 1
+   \\   /|    Num examples = 3,996 | Num Epochs = 2 | Total steps = 250
+O^O/ \_/ \    Batch size per device = 1 | Gradient accumulation steps = 16
+\        /    Data Parallel GPUs = 2 | Total batch size (1 x 16 x 2) = 32
+ "-____-"     Trainable parameters = 29,097,984 of 5,774,124,272 (0.50% trained)
+==((====))==  Unsloth - 2x faster free finetuning | Num GPUs used = 1
+   \\   /|    Num examples = 3,996 | Num Epochs = 2 | Total steps = 250
+O^O/ \_/ \    Batch size per device = 1 | Gradient accumulation steps = 16
+\        /    Data Parallel GPUs = 2 | Total batch size (1 x 16 x 2) = 32
+ "-____-"     Trainable parameters = 29,097,984 of 5,774,124,272 (0.50% trained)
+  0%|          | 0/250 [00:00<?, ?it/s][rank0]:[W619 12:47:02.687818593 reducer.cpp:1500] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+[rank1]:[W619 12:47:12.386851507 reducer.cpp:1500] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+  0%|          | 1/250 [01:26<5:58:03, 86.28s/it]  1%|          | 2/250 [02:31<5:05:44, 73.97s/it]  1%|          | 3/250 [03:31<4:37:08, 67.32s/it]  2%|▏         | 4/250 [04:34<4:29:28, 65.73s/it]  2%|▏         | 5/250 [05:41<4:30:19, 66.20s/it]  2%|▏         | 6/250 [06:38<4:16:15, 63.01s/it]  3%|▎         | 7/250 [07:40<4:14:23, 62.81s/it]  3%|▎         | 8/250 [08:42<4:12:17, 62.55s/it]  4%|▎         | 9/250 [09:37<4:01:24, 60.10s/it]  4%|▍         | 10/250 [10:35<3:58:13, 59.56s/it]                                                  {'loss': '1.71', 'grad_norm': '1.361', 'learning_rate': '3.6e-05', 'epoch': '0.08008'}
+  4%|▍         | 10/250 [10:35<3:58:13, 59.56s/it]  4%|▍         | 11/250 [11:40<4:03:37, 61.16s/it]  5%|▍         | 12/250 [12:40<4:01:03, 60.77s/it]  5%|▌         | 13/250 [13:45<4:05:53, 62.25s/it]  6%|▌         | 14/250 [14:47<4:04:10, 62.08s/it]  6%|▌         | 15/250 [15:47<4:00:05, 61.30s/it]  6%|▋         | 16/250 [16:51<4:02:57, 62.30s/it]  7%|▋         | 17/250 [17:55<4:03:57, 62.82s/it]  7%|▋         | 18/250 [19:02<4:07:29, 64.01s/it]  8%|▊         | 19/250 [20:03<4:03:01, 63.12s/it]  8%|▊         | 20/250 [20:59<3:53:07, 60.81s/it]                                                  {'loss': '1.394', 'grad_norm': '0.473', 'learning_rate': '7.6e-05', 'epoch': '0.1602'}
+  8%|▊         | 20/250 [20:59<3:53:07, 60.81s/it]  8%|▊         | 21/250 [21:55<3:47:37, 59.64s/it]  9%|▉         | 22/250 [23:00<3:51:50, 61.01s/it]  9%|▉         | 23/250 [23:56<3:46:03, 59.75s/it] 10%|▉         | 24/250 [25:00<3:49:36, 60.96s/it] 10%|█         | 25/250 [26:03<3:51:01, 61.61s/it] 10%|█         | 26/250 [27:09<3:54:09, 62.72s/it] 11%|█         | 27/250 [28:12<3:53:33, 62.84s/it] 11%|█         | 28/250 [29:09<3:46:28, 61.21s/it] 12%|█▏        | 29/250 [30:11<3:45:48, 61.31s/it] 12%|█▏        | 30/250 [31:17<3:50:41, 62.92s/it]                                                  {'loss': '0.9371', 'grad_norm': '0.5043', 'learning_rate': '9.992e-05', 'epoch': '0.2402'}
+ 12%|█▏        | 30/250 [31:17<3:50:41, 62.92s/it] 12%|█▏        | 31/250 [32:16<3:44:21, 61.47s/it] 13%|█▎        | 32/250 [33:21<3:47:52, 62.72s/it] 13%|█▎        | 33/250 [34:19<3:41:19, 61.20s/it] 14%|█▎        | 34/250 [35:12<3:31:28, 58.74s/it] 14%|█▍        | 35/250 [36:08<3:28:02, 58.06s/it] 14%|█▍        | 36/250 [37:05<3:25:13, 57.54s/it] 15%|█▍        | 37/250 [38:02<3:24:17, 57.55s/it] 15%|█▌        | 38/250 [39:00<3:23:41, 57.65s/it] 16%|█▌        | 39/250 [40:00<3:24:54, 58.27s/it] 16%|█▌        | 40/250 [40:54<3:20:10, 57.19s/it]                                                  {'loss': '0.7108', 'grad_norm': '0.3199', 'learning_rate': '9.905e-05', 'epoch': '0.3203'}
+ 16%|█▌        | 40/250 [40:54<3:20:10, 57.19s/it] 16%|█▋        | 41/250 [41:52<3:19:48, 57.36s/it] 17%|█▋        | 42/250 [42:49<3:17:50, 57.07s/it] 17%|█▋        | 43/250 [43:49<3:20:24, 58.09s/it] 18%|█▊        | 44/250 [44:49<3:20:52, 58.51s/it] 18%|█▊        | 45/250 [45:51<3:24:25, 59.83s/it] 18%|█▊        | 46/250 [46:51<3:22:56, 59.69s/it] 19%|█▉        | 47/250 [47:52<3:23:32, 60.16s/it] 19%|█▉        | 48/250 [48:55<3:25:00, 60.89s/it] 20%|█▉        | 49/250 [49:54<3:22:12, 60.36s/it] 20%|██        | 50/250 [50:49<3:15:53, 58.77s/it]                                                  {'loss': '0.6436', 'grad_norm': '0.2533', 'learning_rate': '9.722e-05', 'epoch': '0.4004'}
+ 20%|██        | 50/250 [50:49<3:15:53, 58.77s/it] 20%|██        | 51/250 [51:45<3:12:27, 58.03s/it] 21%|██        | 52/250 [52:46<3:14:42, 59.00s/it] 21%|██        | 53/250 [53:47<3:14:48, 59.33s/it] 22%|██▏       | 54/250 [54:46<3:14:14, 59.46s/it] 22%|██▏       | 55/250 [55:43<3:10:05, 58.49s/it] 22%|██▏       | 56/250 [56:40<3:07:43, 58.06s/it] 23%|██▎       | 57/250 [57:41<3:09:33, 58.93s/it] 23%|██▎       | 58/250 [58:39<3:08:00, 58.75s/it] 24%|██▎       | 59/250 [59:34<3:03:48, 57.74s/it] 24%|██▍       | 60/250 [1:00:35<3:05:23, 58.54s/it]                                                    {'loss': '0.615', 'grad_norm': '0.2342', 'learning_rate': '9.447e-05', 'epoch': '0.4805'}
+ 24%|██▍       | 60/250 [1:00:35<3:05:23, 58.54s/it] 24%|██▍       | 61/250 [1:01:35<3:05:52, 59.01s/it] 25%|██▍       | 62/250 [1:02:34<3:04:45, 58.97s/it] 25%|██▌       | 63/250 [1:03:31<3:02:19, 58.50s/it] 26%|██▌       | 64/250 [1:04:27<2:58:36, 57.62s/it] 26%|██▌       | 65/250 [1:05:28<3:00:44, 58.62s/it] 26%|██▋       | 66/250 [1:06:28<3:01:05, 59.05s/it] 27%|██▋       | 67/250 [1:07:23<2:57:04, 58.06s/it] 27%|██▋       | 68/250 [1:08:21<2:55:48, 57.96s/it] 28%|██▊       | 69/250 [1:09:14<2:50:20, 56.47s/it] 28%|██▊       | 70/250 [1:10:17<2:54:55, 58.31s/it]                                                    {'loss': '0.6093', 'grad_norm': '0.2403', 'learning_rate': '9.086e-05', 'epoch': '0.5606'}
+ 28%|██▊       | 70/250 [1:10:17<2:54:55, 58.31s/it] 28%|██▊       | 71/250 [1:11:13<2:51:45, 57.57s/it] 29%|██▉       | 72/250 [1:12:08<2:48:57, 56.95s/it] 29%|██▉       | 73/250 [1:13:12<2:54:21, 59.10s/it] 30%|██▉       | 74/250 [1:14:11<2:53:13, 59.05s/it] 30%|███       | 75/250 [1:15:09<2:51:03, 58.65s/it] 30%|███       | 76/250 [1:16:09<2:51:15, 59.05s/it] 31%|███       | 77/250 [1:17:04<2:47:03, 57.94s/it] 31%|███       | 78/250 [1:18:03<2:46:56, 58.23s/it] 32%|███▏      | 79/250 [1:19:01<2:45:52, 58.20s/it] 32%|███▏      | 80/250 [1:20:01<2:46:29, 58.76s/it]                                                    {'loss': '0.5733', 'grad_norm': '0.276', 'learning_rate': '8.645e-05', 'epoch': '0.6406'}
+ 32%|███▏      | 80/250 [1:20:01<2:46:29, 58.76s/it] 32%|███▏      | 81/250 [1:20:59<2:44:57, 58.56s/it] 33%|███▎      | 82/250 [1:21:56<2:42:25, 58.01s/it] 33%|███▎      | 83/250 [1:23:01<2:47:04, 60.03s/it] 34%|███▎      | 84/250 [1:23:56<2:41:44, 58.46s/it] 34%|███▍      | 85/250 [1:24:54<2:40:28, 58.35s/it] 34%|███▍      | 86/250 [1:25:57<2:43:13, 59.71s/it] 35%|███▍      | 87/250 [1:26:54<2:39:56, 58.87s/it] 35%|███▌      | 88/250 [1:27:58<2:43:47, 60.66s/it] 36%|███▌      | 89/250 [1:28:53<2:37:57, 58.87s/it] 36%|███▌      | 90/250 [1:29:52<2:37:15, 58.97s/it]                                                    {'loss': '0.5489', 'grad_norm': '0.2562', 'learning_rate': '8.133e-05', 'epoch': '0.7207'}
+ 36%|███▌      | 90/250 [1:29:52<2:37:15, 58.97s/it] 36%|███▋      | 91/250 [1:30:50<2:35:30, 58.68s/it] 37%|███▋      | 92/250 [1:31:50<2:35:37, 59.10s/it] 37%|███▋      | 93/250 [1:32:53<2:37:20, 60.13s/it] 38%|███▊      | 94/250 [1:33:52<2:35:11, 59.69s/it] 38%|███▊      | 95/250 [1:34:54<2:36:13, 60.48s/it] 38%|███▊      | 96/250 [1:35:51<2:33:01, 59.62s/it] 39%|███▉      | 97/250 [1:36:54<2:34:09, 60.45s/it] 39%|███▉      | 98/250 [1:37:50<2:30:07, 59.26s/it] 40%|███▉      | 99/250 [1:38:47<2:26:59, 58.41s/it] 40%|████      | 100/250 [1:39:52<2:31:21, 60.54s/it]                                                     {'loss': '0.5288', 'grad_norm': '0.2617', 'learning_rate': '7.56e-05', 'epoch': '0.8008'}
+ 40%|████      | 100/250 [1:39:52<2:31:21, 60.54s/it] 40%|████      | 101/250 [1:40:55<2:32:20, 61.34s/it] 41%|████      | 102/250 [1:41:56<2:30:35, 61.05s/it] 41%|████      | 103/250 [1:42:54<2:27:07, 60.05s/it] 42%|████▏     | 104/250 [1:43:48<2:22:13, 58.45s/it] 42%|████▏     | 105/250 [1:44:48<2:22:00, 58.76s/it] 42%|████▏     | 106/250 [1:45:45<2:20:11, 58.42s/it] 43%|████▎     | 107/250 [1:46:45<2:20:12, 58.83s/it] 43%|████▎     | 108/250 [1:47:41<2:17:11, 57.97s/it] 44%|████▎     | 109/250 [1:48:42<2:18:26, 58.91s/it] 44%|████▍     | 110/250 [1:49:38<2:15:28, 58.06s/it]                                                     {'loss': '0.5435', 'grad_norm': '0.3086', 'learning_rate': '6.938e-05', 'epoch': '0.8809'}
+ 44%|████▍     | 110/250 [1:49:38<2:15:28, 58.06s/it] 44%|████▍     | 111/250 [1:50:35<2:13:44, 57.73s/it] 45%|████▍     | 112/250 [1:51:38<2:16:00, 59.13s/it] 45%|████▌     | 113/250 [1:52:38<2:15:49, 59.49s/it] 46%|████▌     | 114/250 [1:53:36<2:14:04, 59.15s/it] 46%|████▌     | 115/250 [1:54:33<2:11:13, 58.32s/it] 46%|████▋     | 116/250 [1:55:34<2:11:57, 59.08s/it] 47%|████▋     | 117/250 [1:56:32<2:10:43, 58.97s/it] 47%|████▋     | 118/250 [1:57:36<2:12:30, 60.23s/it] 48%|████▊     | 119/250 [1:58:35<2:10:59, 59.99s/it] 48%|████▊     | 120/250 [1:59:36<2:10:42, 60.33s/it]                                                     {'loss': '0.5416', 'grad_norm': '0.3054', 'learning_rate': '6.277e-05', 'epoch': '0.961'}
+ 48%|████▊     | 120/250 [1:59:36<2:10:42, 60.33s/it] 48%|████▊     | 121/250 [2:00:36<2:09:11, 60.09s/it] 49%|████▉     | 122/250 [2:01:31<2:05:27, 58.81s/it] 49%|████▉     | 123/250 [2:02:29<2:03:57, 58.56s/it] 50%|████▉     | 124/250 [2:03:27<2:02:34, 58.37s/it] 50%|█████     | 125/250 [2:04:17<1:56:05, 55.73s/it]Unsloth: Restored added_tokens_decoder metadata in /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/checkpoint-125/tokenizer_config.json.
+ 50%|█████     | 126/250 [2:05:20<1:59:34, 57.86s/it] 51%|█████     | 127/250 [2:06:20<2:00:15, 58.66s/it] 51%|█████     | 128/250 [2:07:19<1:59:18, 58.67s/it] 52%|█████▏    | 129/250 [2:08:17<1:57:55, 58.48s/it] 52%|█████▏    | 130/250 [2:09:18<1:58:34, 59.29s/it]                                                     {'loss': '0.5168', 'grad_norm': '0.3022', 'learning_rate': '5.592e-05', 'epoch': '1.04'}
+ 52%|█████▏    | 130/250 [2:09:18<1:58:34, 59.29s/it] 52%|█████▏    | 131/250 [2:10:18<1:58:01, 59.51s/it] 53%|█████▎    | 132/250 [2:11:13<1:54:12, 58.07s/it] 53%|█████▎    | 133/250 [2:12:13<1:54:35, 58.76s/it] 54%|█████▎    | 134/250 [2:13:14<1:54:39, 59.30s/it] 54%|█████▍    | 135/250 [2:14:14<1:54:12, 59.59s/it] 54%|█████▍    | 136/250 [2:15:12<1:52:00, 58.95s/it] 55%|█████▍    | 137/250 [2:16:10<1:50:52, 58.87s/it] 55%|█████▌    | 138/250 [2:17:08<1:49:11, 58.50s/it] 56%|█████▌    | 139/250 [2:18:05<1:47:11, 57.94s/it] 56%|█████▌    | 140/250 [2:19:06<1:47:55, 58.87s/it]                                                     {'loss': '0.4976', 'grad_norm': '0.2977', 'learning_rate': '4.895e-05', 'epoch': '1.12'}
+ 56%|█████▌    | 140/250 [2:19:06<1:47:55, 58.87s/it] 56%|█████▋    | 141/250 [2:20:10<1:49:57, 60.53s/it] 57%|█████▋    | 142/250 [2:21:08<1:47:31, 59.73s/it] 57%|█████▋    | 143/250 [2:22:04<1:44:49, 58.78s/it] 58%|█████▊    | 144/250 [2:23:10<1:47:37, 60.92s/it] 58%|█████▊    | 145/250 [2:24:13<1:47:33, 61.46s/it] 58%|█████▊    | 146/250 [2:25:13<1:45:32, 60.89s/it] 59%|█████▉    | 147/250 [2:26:12<1:43:34, 60.33s/it] 59%|█████▉    | 148/250 [2:27:05<1:39:01, 58.25s/it] 60%|█████▉    | 149/250 [2:28:04<1:38:14, 58.36s/it] 60%|██████    | 150/250 [2:29:03<1:37:37, 58.58s/it]                                                     {'loss': '0.4852', 'grad_norm': '0.3348', 'learning_rate': '4.201e-05', 'epoch': '1.2'}
+ 60%|██████    | 150/250 [2:29:03<1:37:37, 58.58s/it] 60%|██████    | 151/250 [2:29:58<1:34:56, 57.54s/it] 61%|██████    | 152/250 [2:30:54<1:33:26, 57.21s/it] 61%|██████    | 153/250 [2:31:55<1:34:14, 58.30s/it] 62%|██████▏   | 154/250 [2:33:00<1:36:26, 60.27s/it] 62%|██████▏   | 155/250 [2:33:59<1:35:04, 60.05s/it] 62%|██████▏   | 156/250 [2:35:05<1:36:27, 61.57s/it] 63%|██████▎   | 157/250 [2:36:00<1:32:28, 59.66s/it] 63%|██████▎   | 158/250 [2:36:55<1:29:14, 58.20s/it] 64%|██████▎   | 159/250 [2:37:55<1:29:12, 58.82s/it] 64%|██████▍   | 160/250 [2:38:58<1:30:21, 60.24s/it]                                                     {'loss': '0.4947', 'grad_norm': '0.324', 'learning_rate': '3.521e-05', 'epoch': '1.28'}
+ 64%|██████▍   | 160/250 [2:38:58<1:30:21, 60.24s/it] 64%|██████▍   | 161/250 [2:40:05<1:32:13, 62.18s/it] 65%|██████▍   | 162/250 [2:41:08<1:31:41, 62.52s/it] 65%|██████▌   | 163/250 [2:42:06<1:28:40, 61.16s/it] 66%|██████▌   | 164/250 [2:43:01<1:24:53, 59.22s/it] 66%|██████▌   | 165/250 [2:44:03<1:24:52, 59.91s/it] 66%|██████▋   | 166/250 [2:45:01<1:23:07, 59.37s/it] 67%|██████▋   | 167/250 [2:46:04<1:23:54, 60.66s/it] 67%|██████▋   | 168/250 [2:47:03<1:22:09, 60.12s/it] 68%|██████▊   | 169/250 [2:47:58<1:18:49, 58.39s/it] 68%|██████▊   | 170/250 [2:48:55<1:17:28, 58.11s/it]                                                     {'loss': '0.4816', 'grad_norm': '0.3597', 'learning_rate': '2.871e-05', 'epoch': '1.36'}
+ 68%|██████▊   | 170/250 [2:48:55<1:17:28, 58.11s/it] 68%|██████▊   | 171/250 [2:49:56<1:17:27, 58.83s/it] 69%|██████▉   | 172/250 [2:50:57<1:17:37, 59.72s/it] 69%|██████▉   | 173/250 [2:51:59<1:17:12, 60.16s/it] 70%|██████▉   | 174/250 [2:53:00<1:16:30, 60.40s/it] 70%|███████   | 175/250 [2:54:02<1:16:06, 60.89s/it] 70%|███████   | 176/250 [2:55:00<1:14:21, 60.29s/it] 71%|███████   | 177/250 [2:56:00<1:13:07, 60.10s/it] 71%|███████   | 178/250 [2:57:03<1:13:03, 60.89s/it] 72%|███████▏  | 179/250 [2:58:02<1:11:28, 60.40s/it] 72%|███████▏  | 180/250 [2:58:59<1:09:24, 59.49s/it]                                                     {'loss': '0.4839', 'grad_norm': '0.3719', 'learning_rate': '2.262e-05', 'epoch': '1.44'}
+ 72%|███████▏  | 180/250 [2:59:00<1:09:24, 59.49s/it] 72%|███████▏  | 181/250 [3:00:00<1:08:40, 59.72s/it] 73%|███████▎  | 182/250 [3:00:58<1:07:08, 59.24s/it] 73%|███████▎  | 183/250 [3:02:01<1:07:33, 60.51s/it] 74%|███████▎  | 184/250 [3:02:57<1:05:06, 59.20s/it] 74%|███████▍  | 185/250 [3:03:55<1:03:32, 58.65s/it] 74%|███████▍  | 186/250 [3:04:55<1:03:05, 59.15s/it] 75%|███████▍  | 187/250 [3:05:56<1:02:35, 59.60s/it] 75%|███████▌  | 188/250 [3:07:03<1:03:48, 61.75s/it] 76%|███████▌  | 189/250 [3:07:58<1:00:58, 59.97s/it] 76%|███████▌  | 190/250 [3:08:57<59:25, 59.43s/it]                                                     {'loss': '0.4791', 'grad_norm': '0.3485', 'learning_rate': '1.707e-05', 'epoch': '1.521'}
+ 76%|███████▌  | 190/250 [3:08:57<59:25, 59.43s/it] 76%|███████▋  | 191/250 [3:09:56<58:19, 59.31s/it] 77%|███████▋  | 192/250 [3:10:52<56:38, 58.59s/it] 77%|███████▋  | 193/250 [3:11:49<55:04, 57.97s/it] 78%|███████▊  | 194/250 [3:12:49<54:32, 58.44s/it] 78%|███████▊  | 195/250 [3:13:47<53:39, 58.54s/it] 78%|███████▊  | 196/250 [3:14:40<51:06, 56.79s/it] 79%|███████▉  | 197/250 [3:15:37<50:14, 56.87s/it] 79%|███████▉  | 198/250 [3:16:34<49:15, 56.84s/it] 80%|███████▉  | 199/250 [3:17:32<48:42, 57.31s/it] 80%|████████  | 200/250 [3:18:28<47:22, 56.85s/it]                                                   {'loss': '0.4961', 'grad_norm': '0.3629', 'learning_rate': '1.215e-05', 'epoch': '1.601'}
+ 80%|████████  | 200/250 [3:18:28<47:22, 56.85s/it] 80%|████████  | 201/250 [3:19:26<46:42, 57.19s/it] 81%|████████  | 202/250 [3:20:22<45:25, 56.79s/it] 81%|████████  | 203/250 [3:21:21<44:55, 57.35s/it] 82%|████████▏ | 204/250 [3:22:18<43:55, 57.29s/it] 82%|████████▏ | 205/250 [3:23:11<42:09, 56.22s/it] 82%|████████▏ | 206/250 [3:24:09<41:37, 56.75s/it] 83%|████████▎ | 207/250 [3:25:08<41:03, 57.29s/it] 83%|████████▎ | 208/250 [3:26:09<40:55, 58.47s/it] 84%|████████▎ | 209/250 [3:27:10<40:28, 59.24s/it] 84%|████████▍ | 210/250 [3:28:11<39:47, 59.68s/it]                                                   {'loss': '0.4649', 'grad_norm': '0.3735', 'learning_rate': '7.972e-06', 'epoch': '1.681'}
+ 84%|████████▍ | 210/250 [3:28:11<39:47, 59.68s/it] 84%|████████▍ | 211/250 [3:29:09<38:28, 59.18s/it] 85%|████████▍ | 212/250 [3:30:06<37:10, 58.69s/it] 85%|████████▌ | 213/250 [3:31:06<36:24, 59.05s/it] 86%|████████▌ | 214/250 [3:32:05<35:19, 58.87s/it] 86%|████████▌ | 215/250 [3:33:02<33:58, 58.24s/it] 86%|████████▋ | 216/250 [3:33:56<32:21, 57.09s/it] 87%|████████▋ | 217/250 [3:34:55<31:44, 57.71s/it] 87%|████████▋ | 218/250 [3:35:54<30:55, 57.99s/it] 88%|████████▊ | 219/250 [3:36:47<29:14, 56.59s/it] 88%|████████▊ | 220/250 [3:37:43<28:13, 56.44s/it]                                                   {'loss': '0.4814', 'grad_norm': '0.4275', 'learning_rate': '4.611e-06', 'epoch': '1.761'}
+ 88%|████████▊ | 220/250 [3:37:43<28:13, 56.44s/it] 88%|████████▊ | 221/250 [3:38:37<26:56, 55.73s/it] 89%|████████▉ | 222/250 [3:39:29<25:23, 54.42s/it] 89%|████████▉ | 223/250 [3:40:26<24:51, 55.24s/it] 90%|████████▉ | 224/250 [3:41:23<24:13, 55.89s/it] 90%|█████████ | 225/250 [3:42:19<23:19, 55.97s/it] 90%|█████████ | 226/250 [3:43:16<22:31, 56.32s/it] 91%|█████████ | 227/250 [3:44:15<21:51, 57.02s/it] 91%|█████████ | 228/250 [3:45:12<20:50, 56.83s/it] 92%|█████████▏| 229/250 [3:46:06<19:39, 56.19s/it] 92%|█████████▏| 230/250 [3:47:02<18:38, 55.95s/it]                                                   {'loss': '0.4574', 'grad_norm': '0.3743', 'learning_rate': '2.134e-06', 'epoch': '1.841'}
+ 92%|█████████▏| 230/250 [3:47:02<18:38, 55.95s/it] 92%|█████████▏| 231/250 [3:47:59<17:51, 56.39s/it] 93%|█████████▎| 232/250 [3:48:54<16:48, 56.00s/it] 93%|█████████▎| 233/250 [3:49:54<16:11, 57.15s/it] 94%|█████████▎| 234/250 [3:50:50<15:09, 56.82s/it] 94%|█████████▍| 235/250 [3:51:48<14:18, 57.26s/it] 94%|█████████▍| 236/250 [3:52:46<13:24, 57.47s/it] 95%|█████████▍| 237/250 [3:53:46<12:36, 58.21s/it] 95%|█████████▌| 238/250 [3:54:42<11:30, 57.53s/it] 96%|█████████▌| 239/250 [3:55:42<10:39, 58.15s/it] 96%|█████████▌| 240/250 [3:56:42<09:48, 58.87s/it]                                                   {'loss': '0.4694', 'grad_norm': '0.3298', 'learning_rate': '5.886e-07', 'epoch': '1.921'}
+ 96%|█████████▌| 240/250 [3:56:42<09:48, 58.87s/it] 96%|█████████▋| 241/250 [3:57:39<08:42, 58.10s/it] 97%|█████████▋| 242/250 [3:58:35<07:40, 57.59s/it] 97%|█████████▋| 243/250 [3:59:35<06:47, 58.19s/it] 98%|█████████▊| 244/250 [4:00:33<05:50, 58.34s/it] 98%|█████████▊| 245/250 [4:01:27<04:44, 56.87s/it] 98%|█████████▊| 246/250 [4:02:28<03:53, 58.33s/it] 99%|█████████▉| 247/250 [4:03:25<02:53, 57.91s/it] 99%|█████████▉| 248/250 [4:04:20<01:53, 56.90s/it]100%|█████████▉| 249/250 [4:05:16<00:56, 56.65s/it]100%|██████████| 250/250 [4:06:06<00:00, 54.65s/it]                                                   {'loss': '0.4773', 'grad_norm': '0.3827', 'learning_rate': '4.874e-09', 'epoch': '2'}
+100%|██████████| 250/250 [4:06:06<00:00, 54.65s/it]Unsloth: Restored added_tokens_decoder metadata in /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/checkpoint-250/tokenizer_config.json.
+                                                   {'train_runtime': '1.477e+04', 'train_samples_per_second': '0.541', 'train_steps_per_second': '0.017', 'train_loss': '0.6256', 'epoch': '2'}
+100%|██████████| 250/250 [4:06:08<00:00, 54.65s/it]100%|██████████| 250/250 [4:06:08<00:00, 59.07s/it]
+[save] Salvando LoRA adapter em /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3...
+[save] Salvando LoRA adapter em /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3...
+Unsloth: Restored added_tokens_decoder metadata in /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/tokenizer_config.json.
+Unsloth: Restored added_tokens_decoder metadata in /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/tokenizer_config.json.
+[export] Exportando GGUF Q4_K_M para /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf...
+Unsloth: Merging model weights to 16-bit format...
+[export] Exportando GGUF Q4_K_M para /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf...
+Unsloth: Merging model weights to 16-bit format...
+Unsloth: Restored added_tokens_decoder metadata in /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3/tokenizer_config.json.
+Unsloth: Restored added_tokens_decoder metadata in /home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3/tokenizer_config.json.
+Found HuggingFace hub cache directory: /home/conrado/.cache/huggingface/hub
+Fetching 1 files:   0%|          | 0/1 [00:00<?, ?it/s]Found HuggingFace hub cache directory: /home/conrado/.cache/huggingface/hub
+Fetching 1 files: 100%|██████████| 1/1 [00:00<00:00,  3.71it/s]Fetching 1 files: 100%|██████████| 1/1 [00:00<00:00,  3.71it/s]
+Checking cache directory for required files...
+Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 1 files:   0%|          | 0/1 [00:00<?, ?it/s]Fetching 1 files: 100%|██████████| 1/1 [00:00<00:00, 557.46it/s]
+Checking cache directory for required files...
+Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`:   0%|          | 0/4 [00:00<?, ?it/s]Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`:  25%|██▌       | 1/4 [00:04<00:14,  4.73s/it]Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`:  25%|██▌       | 1/4 [00:04<00:14,  4.84s/it]Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`:  50%|█████     | 2/4 [00:09<00:09,  4.82s/it]Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`:  50%|█████     | 2/4 [00:09<00:09,  4.87s/it]Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`:  75%|███████▌  | 3/4 [00:14<00:04,  4.75s/it]Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`:  75%|███████▌  | 3/4 [00:14<00:04,  4.73s/it]Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`: 100%|██████████| 4/4 [00:17<00:00,  3.98s/it]Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`: 100%|██████████| 4/4 [00:17<00:00,  3.97s/it]Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`: 100%|██████████| 4/4 [00:17<00:00,  4.29s/it]
+Successfully copied all 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`
+Checking cache directory for required files...
+Unsloth: Copying 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`: 100%|██████████| 4/4 [00:17<00:00,  4.26s/it]
+Successfully copied all 4 files from cache to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`
+Checking cache directory for required files...
+Cache check failed: tokenizer.model not found in local cache.
+Not all required files found in cache. Will proceed with downloading.
+Cache check failed: tokenizer.model not found in local cache.
+Not all required files found in cache. Will proceed with downloading.
+Unsloth: Preparing safetensor model files:   0%|          | 0/4 [00:00<?, ?it/s]Unsloth: Preparing safetensor model files:   0%|          | 0/4 [00:00<?, ?it/s]Unsloth: Preparing safetensor model files: 100%|██████████| 4/4 [00:00<00:00, 53092.46it/s]
+Unsloth: Preparing safetensor model files: 100%|██████████| 4/4 [00:00<00:00, 41221.66it/s]
+Unsloth: Merging weights into 16bit:   0%|          | 0/4 [00:00<?, ?it/s]Unsloth: Merging weights into 16bit:   0%|          | 0/4 [00:00<?, ?it/s]Unsloth: Merging weights into 16bit:  25%|██▌       | 1/4 [00:07<00:22,  7.46s/it]Unsloth: Merging weights into 16bit:  25%|██▌       | 1/4 [00:07<00:22,  7.46s/it]Unsloth: Merging weights into 16bit:  50%|█████     | 2/4 [00:17<00:18,  9.17s/it]Unsloth: Merging weights into 16bit:  50%|█████     | 2/4 [00:17<00:18,  9.17s/it]Unsloth: Merging weights into 16bit:  75%|███████▌  | 3/4 [00:27<00:09,  9.31s/it]Unsloth: Merging weights into 16bit:  75%|███████▌  | 3/4 [00:27<00:09,  9.32s/it]Unsloth: Merging weights into 16bit: 100%|██████████| 4/4 [00:29<00:00,  6.64s/it]Unsloth: Merging weights into 16bit: 100%|██████████| 4/4 [00:29<00:00,  7.47s/it]
+Unsloth: Merge process complete. Saved to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`
+Unsloth: Merging weights into 16bit: 100%|██████████| 4/4 [00:29<00:00,  6.65s/it]Unsloth: Merging weights into 16bit: 100%|██████████| 4/4 [00:29<00:00,  7.47s/it]
+Unsloth: Merge process complete. Saved to `/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3`
+Unsloth: Converting to GGUF format...
+==((====))==  Unsloth: Conversion from HF to GGUF information
+   \\   /|    [0] Installing llama.cpp might take 3 minutes.
+O^O/ \_/ \    [1] Converting HF to GGUF bf16 might take 3 minutes.
+\        /    [2] Converting GGUF bf16 to ['q4_k_m'] might take 10 minutes each.
+ "-____-"     In total, you will have to wait at least 16 minutes.
+
+Unsloth: llama.cpp found in the system. Skipping installation.
+Unsloth: Preparing converter script...
+Unsloth: Converting to GGUF format...
+==((====))==  Unsloth: Conversion from HF to GGUF information
+   \\   /|    [0] Installing llama.cpp might take 3 minutes.
+O^O/ \_/ \    [1] Converting HF to GGUF bf16 might take 3 minutes.
+\        /    [2] Converting GGUF bf16 to ['q4_k_m'] might take 10 minutes each.
+ "-____-"     In total, you will have to wait at least 16 minutes.
+
+Unsloth: llama.cpp found in the system. Skipping installation.
+Unsloth: Preparing converter script...
+Unsloth: [1] Converting model into bf16 GGUF format.
+This might take 3 minutes...
+Unsloth: [1] Converting model into bf16 GGUF format.
+This might take 3 minutes...
+Unsloth: Initial conversion completed! Files: ['/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3_gguf/Qwen3.5-9B.BF16.gguf', '/home/conrado/repos/estudo/agents-framework/finetune/output/claudio-9b-v3/gguf/claudio-9b-v3_gguf/Qwen3.5-9B.BF16-mmproj.gguf']
+Unsloth: [2] Converting GGUF bf16 into q4_k_m. This might take 10 minutes...
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/conrado/repos/estudo/agents-framework/finetune/.venv/lib/python3.11/site-packages/unsloth/save.py", line 2329, in unsloth_save_pretrained_gguf
+[rank1]:     all_file_locations, want_full_precision, is_vlm_update = save_to_gguf(
+[rank1]:                                                              ^^^^^^^^^^^^^
+[rank1]:   File "/home/conrado/repos/estudo/agents-framework/finetune/.venv/lib/python3.11/site-packages/unsloth/save.py", line 1498, in save_to_gguf
+[rank1]:     raise RuntimeError(
+[rank1]: RuntimeError: Unsloth: Conversion failed for Qwen3.5-9B.BF16.gguf
+[rank1]: Please check disk space and try again.
+
+[rank1]: During handling of the above exception, another exception occurred:
+
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/conrado/repos/estudo/agents-framework/finetune/scripts/train_v3.py", line 332, in <module>
+[rank1]:     main()
+[rank1]:   File "/home/conrado/repos/estudo/agents-framework/finetune/scripts/train_v3.py", line 308, in main
+[rank1]:     model.save_pretrained_gguf(
+[rank1]:   File "/home/conrado/repos/estudo/agents-framework/finetune/.venv/lib/python3.11/site-packages/unsloth/save.py", line 2349, in unsloth_save_pretrained_gguf
+[rank1]:     raise RuntimeError(f"Unsloth: GGUF conversion failed: {e}")
+[rank1]: RuntimeError: Unsloth: GGUF conversion failed: Unsloth: Conversion failed for Qwen3.5-9B.BF16.gguf
+[rank1]: Please check disk space and try again.
+W0619 16:55:17.251000 1314369 torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 1314424 closing signal SIGTERM
+E0619 16:55:17.752000 1314369 torch/distributed/elastic/multiprocessing/api.py:984] failed (exitcode: 1) local_rank: 1 (pid: 1314425) of binary: /home/conrado/repos/estudo/agents-framework/finetune/.venv/bin/python
+Traceback (most recent call last):
+  File "/home/conrado/repos/estudo/agents-framework/finetune/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/conrado/repos/estudo/agents-framework/finetune/.venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/conrado/repos/estudo/agents-framework/finetune/.venv/lib/python3.11/site-packages/torch/distributed/run.py", line 991, in main
+    run(args)
+  File "/home/conrado/repos/estudo/agents-framework/finetune/.venv/lib/python3.11/site-packages/torch/distributed/run.py", line 982, in run
+    elastic_launch(
+  File "/home/conrado/repos/estudo/agents-framework/finetune/.venv/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/conrado/repos/estudo/agents-framework/finetune/.venv/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 317, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+finetune/scripts/train_v3.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2026-06-19_16:55:17
+  host      : fox-server
+  rank      : 0 (local_rank: 0)
+  exitcode  : -15 (pid: 1314424)
+  error_file: <N/A>
+  traceback : Signal 15 (SIGTERM) received by PID 1314424
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-06-19_16:55:17
+  host      : fox-server
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 1314425)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================

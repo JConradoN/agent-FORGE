@@ -61,8 +61,8 @@ TARGET_MODULES = [
 ]
 
 MAX_SEQ_LEN  = 6144        # era 4096 — F5 precisa de contexto longo
-BATCH_SIZE   = 2           # por GPU (limitado pela VRAM)
-GRAD_ACCUM   = 8           # batch efetivo = 16
+BATCH_SIZE   = 1           # por GPU — reduzido para DDP+seq_len=6144 caber nos 11.6 GB
+GRAD_ACCUM   = 16          # batch efetivo = 1×16×2GPUs = 32 (mesmo de antes com torchrun)
 EPOCHS       = 2           # era 4 — previne over-fitting / catastrophic forgetting
 LR           = 1e-4        # era 2e-4 — mais conservador
 WARMUP_RATIO = 0.10        # era 0.05 — ramp-up mais suave com LR menor
