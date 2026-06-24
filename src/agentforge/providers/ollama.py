@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import os
+
 import requests
 
 from agentforge.providers.base import BaseProvider, ProviderError, ProviderRequest, ProviderResponse
 
-_BASE_URL = "http://localhost:11434"
-_TIMEOUT = int(__import__("os").environ.get("OLLAMA_TIMEOUT", "900"))  # default 900s, overridable
+_BASE_URL = os.environ.get("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
+_TIMEOUT = int(os.environ.get("OLLAMA_TIMEOUT", "900"))  # default 900s, overridable
 
 
 class OllamaProviderError(ProviderError):
