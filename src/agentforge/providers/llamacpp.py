@@ -99,18 +99,23 @@ class LlamaCppProvider(BaseProvider):
         if request.input_text:
             messages.append({"role": "user", "content": request.input_text})
 
+        # LLAMACPP_THINKING_BUDGET=0 (default): disable Qwen3 thinking entirely.
+        # LLAMACPP_THINKING_BUDGET=N (N>0): allow up to N thinking tokens before response.
+        # /no_think in user messages does NOT work on llama.cpp — use chat_template_kwargs.
+        thinking_budget = int(os.environ.get("LLAMACPP_THINKING_BUDGET", "0"))
+
         payload: dict = {
             "model": request.model,
             "messages": messages,
             "stream": False,
             "temperature": 0,
-            "max_tokens": 8192,
-            # Disable Qwen3 thinking mode via the chat template variable.
-            # Setting enable_thinking=False makes the template emit an empty
-            # <think></think> block, suppressing the reasoning budget entirely.
-            # Passing /no_think in user messages does NOT work on llama.cpp.
-            "chat_template_kwargs": {"enable_thinking": False},
         }
+        if thinking_budget > 0:
+            payload["chat_template_kwargs"] = {"enable_thinking": True}
+            payload["max_tokens"] = thinking_budget + 8192
+        else:
+            payload["chat_template_kwargs"] = {"enable_thinking": False}
+            payload["max_tokens"] = 8192
         if request.tools_schema:
             payload["tools"] = request.tools_schema
 

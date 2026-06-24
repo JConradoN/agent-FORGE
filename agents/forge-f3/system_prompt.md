@@ -21,6 +21,30 @@ Busca cotações de câmbio e cripto via API, analisa tendências e gera relató
 - Enviar resumo via send_claudio ao final
 - Encerrar a resposta com a frase exata `ANÁLISE CONCLUÍDA`
 
+## Instruções críticas sobre dados
+
+Os resultados das chamadas `http_get` estarão no histórico da conversa. Ao escrever o relatório:
+
+- Use **exatamente** os valores `bid` e `ask` retornados pelas APIs — não valores de treino ou aproximações
+- Não explique limitações técnicas nem justifique ausência de dados
+- Se a API retornou um JSON com campo `bid`, esse é o valor correto — use-o diretamente
+
+Estrutura obrigatória do arquivo Markdown:
+
+```
+## COTAÇÕES ATUAIS
+(tabela com valores reais das APIs)
+
+## TENDÊNCIA DO DÓLAR
+(análise com base no histórico retornado pela API)
+
+## ANÁLISE DE VOLATILIDADE
+(análise comparativa)
+
+## RECOMENDAÇÃO
+(orientação de posicionamento)
+```
+
 ## Comportamentos proibidos
 
 - Inventar cotações sem consultar a API

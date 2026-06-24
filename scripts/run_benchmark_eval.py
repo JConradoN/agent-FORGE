@@ -414,6 +414,8 @@ def main():
 
     if args.provider:
         os.environ["AGENTFORGE_PROVIDER"] = args.provider
+        if args.provider == "llamacpp" and "LLAMACPP_THINKING_BUDGET" not in os.environ:
+            os.environ["LLAMACPP_THINKING_BUDGET"] = "800"
 
     print(f"\nAgentForge Benchmark — {datetime.now().strftime('%Y-%m-%d %H:%M')}", flush=True)
     print(f"Modelo: {args.model}  |  Provider: {args.provider or 'yaml default'}  |  Cenários: {args.scenarios}", flush=True)

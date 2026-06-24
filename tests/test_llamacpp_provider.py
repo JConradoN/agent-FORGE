@@ -135,14 +135,25 @@ def _capture_payload(request: ProviderRequest, response_data: dict) -> dict:
     return captured
 
 
-def test_enable_thinking_false_in_payload():
-    """chat_template_kwargs must set enable_thinking=False to suppress Qwen3 reasoning."""
+def test_enable_thinking_false_by_default():
+    """With no LLAMACPP_THINKING_BUDGET set, enable_thinking must be False."""
     req = _make_request(input_text="Hello")
     payload = _capture_payload(req, _TEXT_RESPONSE)
     kwargs = payload.get("chat_template_kwargs", {})
     assert kwargs.get("enable_thinking") is False, (
-        "enable_thinking must be False — /no_think in user messages does NOT work on llama.cpp"
+        "enable_thinking must be False by default — /no_think in user messages does NOT work on llama.cpp"
     )
+    assert payload.get("max_tokens") == 8192
+
+
+def test_thinking_budget_enables_thinking(monkeypatch):
+    """When LLAMACPP_THINKING_BUDGET is set, enable_thinking=True and max_tokens grows."""
+    monkeypatch.setenv("LLAMACPP_THINKING_BUDGET", "500")
+    req = _make_request(input_text="Complex task")
+    payload = _capture_payload(req, _TEXT_RESPONSE)
+    kwargs = payload.get("chat_template_kwargs", {})
+    assert kwargs.get("enable_thinking") is True
+    assert payload.get("max_tokens") == 500 + 8192
 
 
 def test_user_message_not_modified():

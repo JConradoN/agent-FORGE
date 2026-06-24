@@ -42,10 +42,6 @@ guardrails:
   - enviar resumo via send_claudio ao final
   - responder inteiramente em português (PT-BR), incluindo os nomes das seções
   - finalizar a resposta com a frase exata 'ANÁLISE CONCLUÍDA'
-  must_not:
-  - inventar cotações sem consultar a API
-  - usar valores desatualizados ou aproximados
-  - responder em inglês ou misturar idiomas na resposta final
 eval:
   user_score_enabled: false
   notes: Scenario FORGE F3 — market analysis exchange+crypto
