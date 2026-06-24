@@ -399,6 +399,26 @@ def build_telegram_summary(results: list[dict]) -> str:
     return "\n".join(lines)
 
 
+# ── docker helpers ────────────────────────────────────────────────────────────
+
+def _docker_running(name: str) -> bool:
+    result = subprocess.run(
+        ["docker", "inspect", "--format", "{{.State.Running}}", name],
+        capture_output=True, text=True,
+    )
+    return result.stdout.strip() == "true"
+
+def _docker_stop(name: str) -> None:
+    if _docker_running(name):
+        print(f"[infra] parando {name} para liberar VRAM...", flush=True)
+        subprocess.run(["docker", "stop", name], capture_output=True)
+
+def _docker_start(name: str) -> None:
+    if not _docker_running(name):
+        print(f"[infra] subindo {name}...", flush=True)
+        subprocess.run(["docker", "start", name], capture_output=True)
+
+
 # ── main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -416,6 +436,13 @@ def main():
         os.environ["AGENTFORGE_PROVIDER"] = args.provider
         if args.provider == "llamacpp" and "LLAMACPP_THINKING_BUDGET" not in os.environ:
             os.environ["LLAMACPP_THINKING_BUDGET"] = "800"
+        # TurboQuant (21GB VRAM) e Ollama com modelos grandes são mutuamente exclusivos.
+        # --provider llamacpp → para Ollama antes de iniciar; ao final sobe de volta.
+        if args.provider == "llamacpp":
+            _docker_stop("ollama")
+    else:
+        # Ollama provider → para TurboQuant antes de iniciar; ao final sobe de volta.
+        _docker_stop("turboquant")
 
     print(f"\nAgentForge Benchmark — {datetime.now().strftime('%Y-%m-%d %H:%M')}", flush=True)
     print(f"Modelo: {args.model}  |  Provider: {args.provider or 'yaml default'}  |  Cenários: {args.scenarios}", flush=True)
@@ -456,6 +483,12 @@ def main():
         "results": results,
     }, ensure_ascii=False, indent=2, default=str))
     print(f"\nSumário salvo em: {summary_path}")
+
+    # Restaura o container que foi parado antes do benchmark
+    if args.provider == "llamacpp":
+        _docker_start("ollama")
+    else:
+        _docker_start("turboquant")
 
 
 if __name__ == "__main__":
