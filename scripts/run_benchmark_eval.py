@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 -u
 """
 Benchmark AgentForge — roda agentes nos cenários FORGE F3, REAL P3 e REAL P4.
 
@@ -298,10 +298,8 @@ def run_agent_on_scenario(scenario_id: str, model: str) -> dict:
     # Define workdir para os tools via env var
     os.environ["AGENT_WORKDIR"] = str(workdir)
 
-    # Sobrescreve o modelo padrão do agent
-    # AgentRuntime respeita model_policy.default_model do YAML
-    # Aqui passamos por variável de ambiente para override
-    os.environ["AGENTFORGE_MODEL_OVERRIDE"] = model
+    # Sobrescreve o modelo padrão do agent via env var lida pelo engine
+    os.environ["AGENTFORGE_MODEL"] = model
 
     # Importa após setar env
     sys.path.insert(0, str(REPO_ROOT / "src"))
@@ -310,24 +308,32 @@ def run_agent_on_scenario(scenario_id: str, model: str) -> dict:
     t0 = time.perf_counter()
     try:
         runtime = AgentRuntime.from_agent_dir(str(agent_dir))
-        # Sobrescreve modelo se diferente
         if model and runtime.runtime_config.model_default != model:
             runtime.runtime_config.model_default = model
+        print(f"[{scenario_id}] runtime.run() iniciado...", flush=True)
         result = runtime.run(prompt)
     except Exception as e:
-        return {
+        latency_ms = round((time.perf_counter() - t0) * 1000)
+        max_score = sum(c.get("weight", 1) for c in checks)
+        err_result = {
             "scenario": scenario_id,
             "model": model,
             "error": str(e),
             "score": 0,
-            "max_score": sum(c.get("weight", 1) for c in checks),
+            "max_score": max_score,
             "pct": 0.0,
             "details": [],
             "output": "",
-            "latency_ms": round((time.perf_counter() - t0) * 1000),
+            "latency_ms": latency_ms,
         }
+        ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        err_file = workdir / f"agentforge_{scenario_id}_{model_slug}_{ts}_ERROR.json"
+        err_file.write_text(json.dumps(err_result, ensure_ascii=False, indent=2))
+        print(f"[{scenario_id}] ERRO após {latency_ms/1000:.1f}s: {e}", flush=True)
+        return err_result
 
     latency_ms = round((time.perf_counter() - t0) * 1000)
+    print(f"[{scenario_id}] concluído em {latency_ms/1000:.1f}s — avaliando...", flush=True)
     output         = result.get("output", "")
     tool_calls_log = result.get("metadata", {}).get("tool_calls_log") or []
 
@@ -400,20 +406,25 @@ def main():
     parser.add_argument("--scenarios", nargs="+", default=DEFAULT_SCENARIOS,
                         choices=list(SCENARIO_MAP.keys()))
     parser.add_argument("--model",    default="qwen3.5:9b")
+    parser.add_argument("--provider", default=None,
+                        help="Override provider (e.g. llamacpp). Sets AGENTFORGE_PROVIDER env var.")
     parser.add_argument("--no-notify", action="store_true",
                         help="Não envia resultado pelo Claudio")
     args = parser.parse_args()
 
-    print(f"\nAgentForge Benchmark — {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    print(f"Modelo: {args.model}  |  Cenários: {args.scenarios}")
-    print("=" * 60)
+    if args.provider:
+        os.environ["AGENTFORGE_PROVIDER"] = args.provider
+
+    print(f"\nAgentForge Benchmark — {datetime.now().strftime('%Y-%m-%d %H:%M')}", flush=True)
+    print(f"Modelo: {args.model}  |  Provider: {args.provider or 'yaml default'}  |  Cenários: {args.scenarios}", flush=True)
+    print("=" * 60, flush=True)
 
     results = []
     for sid in args.scenarios:
-        print(f"\n[{sid}] Iniciando... (agent: {AGENT_MAP[sid].name})")
+        print(f"\n[{sid}] Iniciando... (agent: {AGENT_MAP[sid].name})", flush=True)
         r = run_agent_on_scenario(sid, args.model)
         results.append(r)
-        print(format_scenario_report(r))
+        print(format_scenario_report(r), flush=True)
 
     # Sumário final
     total   = sum(r["score"] for r in results)

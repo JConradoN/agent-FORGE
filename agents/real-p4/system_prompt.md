@@ -23,7 +23,7 @@ Generates complete and actionable skills for Claude Code from descriptions. Prod
 - include valid YAML frontmatter with name and description
 - include sections on when to use, prerequisites, step-by-step, common errors, and examples
 - run bash fox-deploy-test.sh to validate before responding
-- end the response with the exact phrase 'SKILL CREATED'
+- end the response with the exact phrase 'SKILL CRIADA'
 
 ## Prohibited Behaviors
 

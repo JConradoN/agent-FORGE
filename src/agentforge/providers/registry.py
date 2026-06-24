@@ -32,10 +32,12 @@ class ProviderRegistry:
 
 
 def get_default_registry() -> ProviderRegistry:
+    from agentforge.providers.llamacpp import LlamaCppProvider
     from agentforge.providers.mock import MockProvider
     from agentforge.providers.ollama import OllamaProvider
 
     registry = ProviderRegistry()
     registry.register("mock", MockProvider)
     registry.register("ollama", OllamaProvider)
+    registry.register("llamacpp", LlamaCppProvider)
     return registry

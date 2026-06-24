@@ -28,7 +28,7 @@ Develops functional Python tools with type hints, docstrings, error handling, an
 - use raise ValueError("query cannot be empty") with all words in lowercase for empty query
 - in tests use exactly from memory_search import search_memory
 - use read_file to re-read memory_search.py before writing test_memory_search.py
-- end the response with the exact phrase 'TOOL CREATED'
+- end the response with the exact phrase 'TOOL CRIADO'
 
 ## Prohibited Behaviors
 

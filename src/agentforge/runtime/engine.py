@@ -65,8 +65,8 @@ class RuntimeConfig(BaseModel):
         return {
             "runtime_version": values.get("runtime_version", ""),
             "agent_id": values.get("agent_id", ""),
-            "provider": values.get("provider", ""),
-            "model_default": model.get("default", ""),
+            "provider": __import__("os").environ.get("AGENTFORGE_PROVIDER") or values.get("provider", ""),
+            "model_default": __import__("os").environ.get("AGENTFORGE_MODEL") or model.get("default", ""),
             "model_fallback": model.get("fallback"),
             "workflow_mode": workflow.get("mode", ""),
             "channel_type": channel.get("type", ""),
@@ -403,11 +403,13 @@ class AgentRuntime:
         import re
         tool_results_log = tool_results_log or []
 
-        # Build flat evidence string from tool execution log
+        # Build flat evidence string from tool execution log.
+        # Truncate per-entry args to 200 chars so that long write_file content
+        # doesn't push later entries (like run_bash) out of the judge's window.
         evidence_parts = []
         for entry in tool_results_log:
-            args_str = json.dumps(entry.get("args", {}), ensure_ascii=False)
-            result_str = json.dumps(entry.get("result", ""), ensure_ascii=False)[:300]
+            args_str = json.dumps(entry.get("args", {}), ensure_ascii=False)[:200]
+            result_str = json.dumps(entry.get("result", ""), ensure_ascii=False)[:200]
             evidence_parts.append(f"tool={entry['tool']} args={args_str} result={result_str}")
         evidence_text = "\n".join(evidence_parts) if evidence_parts else "(no tools executed)"
 
@@ -440,8 +442,8 @@ class AgentRuntime:
                 "Respond ONLY with the unmet rules, one per line.\n"
                 "If all were met, respond exactly: NONE\n\n"
                 f"Mandatory rules:\n{rules_text}\n\n"
-                f"Tool execution evidence:\n{evidence_text[:1500]}\n\n"
-                f"Final response text:\n{output_text[:1500]}"
+                f"Tool execution evidence:\n{evidence_text[:3000]}\n\n"
+                f"Final response text:\n{output_text[:2000]}"
             )
             provider = self._get_provider()
             req = ProviderRequest(
