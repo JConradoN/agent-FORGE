@@ -1,0 +1,9 @@
+tools_version: '0.1'
+agent_id: wks-worker
+tools:
+  - name: collect_system_health
+    required: false
+    description: Coleta métricas de saúde do fox-server (CPU, RAM, disco, GPU, processos).
+  - name: collect_wks_health
+    required: false
+    description: Coleta métricas de saúde do fox-wks via SSH (CPU, RAM, GPU, disco).

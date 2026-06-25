@@ -1,0 +1,19 @@
+runtime_version: '0.1'
+agent_id: wks-worker
+provider: llamacpp
+model:
+  default: qwen3.5-9b
+  fallback: null
+workflow:
+  mode: respond_or_tool
+channel:
+  type: cli
+memory:
+  feed_mem0: false
+  enabled: false
+  type: none
+output:
+  mode: text
+  format: text
+conversation:
+  multi_turn: false

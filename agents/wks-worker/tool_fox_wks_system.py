@@ -1,0 +1,207 @@
+import platform, subprocess, os, shutil
+
+class Tools:
+
+    def _check_path(self, path):
+        resolved = os.path.normpath(os.path.abspath(path))
+        if not resolved.upper().startswith("D:\\"):
+            return None, f"Acesso negado: workspace e D:\\ (tentativa: {resolved})"
+        return resolved, None
+
+    def _ps(self, cmd, timeout=10):
+        r = subprocess.run(
+            ["powershell", "-NoProfile", "-NonInteractive", "-Command", cmd],
+            capture_output=True, text=True, timeout=timeout
+        )
+        return r.stdout.strip() or r.stderr.strip()
+
+    def _ssh(self, command, timeout=15):
+        import paramiko
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        try:
+            client.connect("192.168.88.200", username="conrado",
+                           key_filename="C:/ProgramData/open-webui-ssh/id_rsa", timeout=10)
+            _, stdout, stderr = client.exec_command(command, timeout=timeout)
+            out = stdout.read().decode("utf-8", errors="replace").strip()
+            err = stderr.read().decode("utf-8", errors="replace").strip()
+            return out or err or "(sem output)"
+        finally:
+            client.close()
+
+    def _win_os_name(self):
+        ver = platform.version()
+        try:
+            build = int(ver.split(".")[2])
+            if build >= 22000:
+                return f"Windows 11 (build {build})"
+        except Exception:
+            pass
+        return f"Windows {platform.release()} ({ver})"
+
+    def get_system_info(self):
+        "Retorna OS, CPU e RAM do fox-wks."
+        try:
+            ram_out = self._ps(
+                "$os = Get-CimInstance Win32_OperatingSystem; "
+                "Write-Output ($os.TotalVisibleMemorySize.ToString() + ' ' + $os.FreePhysicalMemory.ToString())"
+            )
+            parts = ram_out.split()
+            total = int(parts[0]) // 1024 if parts else 0
+            free  = int(parts[1]) // 1024 if len(parts) > 1 else 0
+            return (f"OS: {self._win_os_name()}\nMaquina: {platform.node()}\nCPU: {platform.processor()}\n"
+                    f"RAM: {total - free}/{total} MB usados ({free} MB livres)")
+        except Exception as e:
+            return f"Erro: {e}"
+
+    def get_gpu_info(self):
+        "Retorna temperatura, uso e VRAM da GPU NVIDIA do fox-wks."
+        try:
+            r = subprocess.run(
+                ["nvidia-smi",
+                 "--query-gpu=name,temperature.gpu,utilization.gpu,memory.used,memory.total,power.draw",
+                 "--format=csv,noheader,nounits"],
+                capture_output=True, text=True, timeout=10
+            )
+            if r.returncode != 0:
+                return "nvidia-smi nao disponivel."
+            out = []
+            for i, line in enumerate(r.stdout.strip().splitlines()):
+                p = [x.strip() for x in line.split(",")]
+                if len(p) >= 6:
+                    out.append(f"GPU {i}: {p[0]} | {p[1]}C | {p[2]}% | {p[3]}/{p[4]} MB VRAM | {p[5]}W")
+            return "\n".join(out) or "Nenhuma GPU."
+        except Exception as e:
+            return f"Erro: {e}"
+
+    def list_directory(self, path="D:\\"):
+        "Lista arquivos e pastas em D:\\ ou subdiretório."
+        resolved, err = self._check_path(path)
+        if err: return err
+        try:
+            if not os.path.exists(resolved):
+                return f"Diretorio nao existe: {resolved}"
+            items = []
+            for name in sorted(os.listdir(resolved)):
+                full = os.path.join(resolved, name)
+                if os.path.isdir(full):
+                    items.append(f"[DIR]  {name}/")
+                else:
+                    items.append(f"[FILE] {name} ({os.path.getsize(full)} bytes)")
+            return f"{resolved}\n" + ("\n".join(items) if items else "(vazio)")
+        except Exception as e:
+            return f"Erro: {e}"
+
+    def create_directory(self, path):
+        "Cria um diretório (e subdiretórios) em D:\\."
+        resolved, err = self._check_path(path)
+        if err: return err
+        try:
+            os.makedirs(resolved, exist_ok=True)
+            return f"Diretorio criado: {resolved}"
+        except Exception as e:
+            return f"Erro: {e}"
+
+    def write_file(self, path, content):
+        "Grava qualquer arquivo de texto em D:\\ (html, txt, md, json, py, js, css...)."
+        resolved, err = self._check_path(path)
+        if err: return err
+        try:
+            os.makedirs(os.path.dirname(resolved), exist_ok=True)
+            with open(resolved, "w", encoding="utf-8") as f:
+                f.write(content)
+            return f"Arquivo gravado: {resolved} ({len(content)} chars)"
+        except Exception as e:
+            return f"Erro: {e}"
+
+    def read_file(self, path):
+        "Le o conteudo de um arquivo em D:\\."
+        resolved, err = self._check_path(path)
+        if err: return err
+        try:
+            if not os.path.exists(resolved):
+                return f"Nao encontrado: {resolved}"
+            with open(resolved, "r", encoding="utf-8", errors="replace") as f:
+                return f.read(8000)
+        except Exception as e:
+            return f"Erro: {e}"
+
+    def delete_file(self, path):
+        "Deleta um arquivo em D:\\."
+        resolved, err = self._check_path(path)
+        if err: return err
+        try:
+            if not os.path.exists(resolved):
+                return f"Nao encontrado: {resolved}"
+            if os.path.isdir(resolved):
+                return "E um diretorio, use delete_directory."
+            os.remove(resolved)
+            return f"Deletado: {resolved}"
+        except Exception as e:
+            return f"Erro: {e}"
+
+    def delete_directory(self, path):
+        "Deleta um diretorio e todo seu conteudo em D:\\. Irreversivel."
+        resolved, err = self._check_path(path)
+        if err: return err
+        if resolved.upper().rstrip("\\") == "D:":
+            return "Nao e permitido deletar a raiz D:\\."
+        try:
+            if not os.path.exists(resolved):
+                return f"Nao encontrado: {resolved}"
+            shutil.rmtree(resolved)
+            return f"Diretorio removido: {resolved}"
+        except Exception as e:
+            return f"Erro: {e}"
+
+    def run_powershell(self, command):
+        "Executa PowerShell read-only no fox-wks (Get-*, dir, ls)."
+        blocked = ["shutdown", "restart", "format-", "invoke-expression", "iex ", "start-process"]
+        for b in blocked:
+            if b in command.lower():
+                return "Bloqueado: comando nao permitido."
+        try:
+            return (self._ps(command, timeout=15) or "(sem output)")[:2000]
+        except Exception as e:
+            return f"Erro: {e}"
+
+    def get_full_health(self):
+        "Retorna saude completa do fox-wks: OS, CPU, RAM, GPU e disco D em uma so chamada."
+        lines = [f"=== fox-wks ({platform.node()}) ==="]
+        lines.append(self.get_system_info())
+        lines.append(self.get_gpu_info())
+        disk = self._ps("$d=Get-PSDrive D; Write-Output (($d.Used/1GB).ToString('F1')+' GB usados, '+($d.Free/1GB).ToString('F1')+' GB livres')")
+        lines.append(f"Disco D: {disk}")
+        return "\n".join(lines)
+
+    def fox_server_health(self):
+        "Retorna saude do fox-server: CPU, RAM, disco, GPU e containers Docker."
+        try:
+            cpu    = self._ssh("top -bn1 | grep 'Cpu(s)' | awk '{print $2+$4\"%\"}'")
+            mem    = self._ssh("free -h | awk '/^Mem:/{print $3\"/\"$2}'")
+            disk   = self._ssh("df -h / /mnt/vault 2>/dev/null | awk 'NR>1{print $6\": \"$3\"/\"$2\" (\"$5\")\"}' ")
+            gpu    = self._ssh("docker exec ollama nvidia-smi --query-gpu=name,temperature.gpu,memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null || echo 'GPU indisponivel'")
+            docker = self._ssh("docker ps --format '{{.Names}} ({{.Status}})' | head -10")
+            return (f"=== fox-server ===\nCPU: {cpu}\nRAM: {mem}\nDisco:\n{disk}\n"
+                    f"GPU: {gpu}\nContainers:\n{docker}")
+        except Exception as e:
+            return f"Erro SSH fox-server: {e}"
+
+    def read_agent_memory(self, limit=10):
+        "Le as memorias mais recentes do agent-mesh do fox-server."
+        try:
+            sql = ("SELECT key, agent, substr(value,1,120), updated_at "
+                   "FROM shared_memory ORDER BY updated_at DESC LIMIT " + str(int(limit)) + ";")
+            cmd = 'sqlite3 ~/.agent-mesh/state.db "' + sql + '"'
+            return self._ssh(cmd)
+        except Exception as e:
+            return f"Erro ao ler agent-mesh: {e}"
+
+    def write_agent_memory(self, key, value):
+        "Grava uma memoria no agent-mesh do fox-server (fonte: fox-wks)."
+        try:
+            safe = value.replace("'", "''")
+            cmd = "python3 ~/.agent-mesh/write-memory.py '" + key + "' '" + safe + "' fox-wks"
+            return self._ssh(cmd)
+        except Exception as e:
+            return f"Erro ao gravar agent-mesh: {e}"

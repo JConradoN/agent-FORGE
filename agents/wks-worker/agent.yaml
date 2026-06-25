@@ -1,0 +1,47 @@
+spec_version: '0.1'
+agent:
+  id: wks-worker
+  name: WKS Worker
+  purpose: Lightweight agent for basic tasks using fox-wks model (qwen3.5-9b). Handles health monitoring on fox-server and fox-wks.
+persona:
+  tone: technical
+  style: objective
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: collect_system_health
+    required: false
+    description: Coleta métricas de saúde do fox-server (CPU, RAM, disco, GPU, processos).
+    input_schema: '{"type":"object","properties":{},"required":[]}'
+  - name: collect_wks_health
+    required: false
+    description: Coleta métricas de saúde do fox-wks via SSH (CPU, RAM, GPU, disco, llama-server).
+    input_schema: '{"type":"object","properties":{},"required":[]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+    - always call the appropriate tool before answering health/status questions
+    - use real data only
+  must_not:
+    - invent or estimate metrics
+eval:
+  user_score_enabled: false
+  notes: null
+deployment:
+  provider: llamacpp
+model_policy:
+  default_model: qwen3.5-9b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 5
+  reflection_rounds: 0
