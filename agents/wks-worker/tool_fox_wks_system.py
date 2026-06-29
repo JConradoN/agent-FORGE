@@ -205,3 +205,173 @@ class Tools:
             return self._ssh(cmd)
         except Exception as e:
             return f"Erro ao gravar agent-mesh: {e}"
+
+    def generate_image(self, prompt: str) -> str:
+        """
+        Gera uma imagem de alta qualidade usando o modelo FLUX Schnell localmente via ComfyUI.
+        :param prompt: Descrição detalhada da imagem a ser gerada (preferencialmente em inglês). Ex: 'a majestic red fox in a forest, digital art'.
+        :return: Tag markdown para exibir a imagem gerada no chat.
+        """
+        import urllib.request
+        import json
+        import random
+        import time
+
+        comfy_url = "http://localhost:8188"
+        api_path = "C:/ComfyUI_windows_portable/ComfyUI/user/default/workflows/flux_schnell_api.json"
+        
+        try:
+            with open(api_path, "r", encoding="utf-8") as f:
+                prompt_data = json.load(f)
+            
+            # Atualiza prompt (nó ID 6, input text) e seed (nó ID 25, input noise_seed)
+            prompt_data["6"]["inputs"]["text"] = prompt
+            prompt_data["25"]["inputs"]["noise_seed"] = random.randint(1, 10**15)
+            
+            payload = {"prompt": prompt_data}
+            data = json.dumps(payload).encode('utf-8')
+            
+            req = urllib.request.Request(f"{comfy_url}/prompt", data=data, headers={'Content-Type': 'application/json'})
+            response = urllib.request.urlopen(req, timeout=10)
+            res_json = json.loads(response.read().decode('utf-8'))
+            prompt_id = res_json["prompt_id"]
+            
+            # Aguarda a geração (polling history)
+            start_time = time.time()
+            while True:
+                try:
+                    hist_req = urllib.request.urlopen(f"{comfy_url}/history/{prompt_id}", timeout=5)
+                    hist_data = json.loads(hist_req.read().decode('utf-8'))
+                    if prompt_id in hist_data:
+                        outputs = hist_data[prompt_id]["outputs"]
+                        images = []
+                        for node_id, output in outputs.items():
+                            if "images" in output:
+                                for img in output["images"]:
+                                    images.append(img)
+                        if images:
+                            filename = images[0]["filename"]
+                            subfolder = images[0]["subfolder"]
+                            img_type = images[0]["type"]
+                            return f"![imagem](http://192.168.88.202:8188/view?filename={filename}&subfolder={subfolder}&type={img_type})"
+                except Exception:
+                    pass
+                if time.time() - start_time > 120:  # 2 minutos timeout
+                    return "Erro: Timeout na geração de imagem pelo ComfyUI."
+                time.sleep(2)
+        except Exception as e:
+            return f"Erro ao gerar imagem: {e}"
+
+    def generate_audio(self, text: str, voice_profile: str) -> str:
+        """
+        Gera uma síntese de voz (TTS) em português ou outra língua com OmniVoice local via ComfyUI.
+        :param text: O texto que deve ser falado.
+        :param voice_profile: O personagem ou perfil de voz. Use 'raposa' (voz masculina, jovem adulto, tom moderado) ou 'tartaruga' (voz feminina, idosa/lenta, tom suave).
+        :return: Tag HTML audio para reprodução direta no chat do Open WebUI.
+        """
+        import urllib.request
+        import json
+        import random
+        import time
+
+        comfy_url = "http://localhost:8188"
+        
+        # Define os parâmetros de voz com base no profile
+        if voice_profile.lower() == "raposa":
+            gender = "male"
+            age = "young adult"
+            pitch = "none"
+            accent = "portuguese accent"
+            speed = 1.0
+        elif voice_profile.lower() == "tartaruga":
+            gender = "female"
+            age = "elderly"
+            pitch = "none"
+            accent = "portuguese accent"
+            speed = 0.8  # mais lenta para a tartaruga
+        else:
+            gender = "male"
+            age = "adult"
+            pitch = "none"
+            accent = "portuguese accent"
+            speed = 1.0
+
+        prompt_data = {
+            "1": {
+                "inputs": {
+                    "device": "auto",
+                    "dtype": "auto",
+                    "offload_after_generate": False,
+                    "asr_model_name": "openai/whisper-large-v3-turbo"
+                },
+                "class_type": "OmniVoiceLoadModel"
+            },
+            "2": {
+                "inputs": {
+                    "pipe": ["1", 0],
+                    "text": text,
+                    "language": "auto",
+                    "style_gender": gender,
+                    "style_age": age,
+                    "style_pitch": pitch,
+                    "style_accent": accent,
+                    "num_step": 32,
+                    "guidance_scale": 2.0,
+                    "t_shift": 0.1,
+                    "layer_penalty_factor": 5.0,
+                    "position_temperature": 5.0,
+                    "class_temperature": 0.0,
+                    "speed": speed,
+                    "seed": random.randint(1, 2147483647),
+                    "use_duration": False,
+                    "duration": 10.0,
+                    "postprocess_output": True
+                },
+                "class_type": "OmniVoiceGenerate"
+            },
+            "3": {
+                "inputs": {
+                    "audio": ["2", 0],
+                    "filename_prefix": "audio/OmniVoice_Test"
+                },
+                "class_type": "SaveAudio"
+            }
+        }
+
+        try:
+            payload = {"prompt": prompt_data}
+            data = json.dumps(payload).encode('utf-8')
+            
+            req = urllib.request.Request(f"{comfy_url}/prompt", data=data, headers={'Content-Type': 'application/json'})
+            response = urllib.request.urlopen(req, timeout=10)
+            res_json = json.loads(response.read().decode('utf-8'))
+            prompt_id = res_json["prompt_id"]
+            
+            start_time = time.time()
+            while True:
+                try:
+                    hist_req = urllib.request.urlopen(f"{comfy_url}/history/{prompt_id}", timeout=5)
+                    hist_data = json.loads(hist_req.read().decode('utf-8'))
+                    if prompt_id in hist_data:
+                        status = hist_data[prompt_id].get("status", {})
+                        if status.get("completed") is not True:
+                            return f"Erro na geração de áudio: {status}"
+                        
+                        outputs = hist_data[prompt_id]["outputs"]
+                        audio_files = []
+                        for node_id, output in outputs.items():
+                            if "audio" in output:
+                                for audio in output["audio"]:
+                                    audio_files.append(audio)
+                        if audio_files:
+                            filename = audio_files[0]["filename"]
+                            subfolder = audio_files[0]["subfolder"]
+                            img_type = audio_files[0]["type"]
+                            return f'<audio controls src="http://192.168.88.202:8188/view?filename={filename}&subfolder={subfolder}&type={img_type}"></audio>'
+                except Exception:
+                    pass
+                if time.time() - start_time > 180:  # 3 minutos timeout
+                    return "Erro: Timeout na geração de áudio pelo ComfyUI."
+                time.sleep(2)
+        except Exception as e:
+            return f"Erro ao gerar áudio: {e}"

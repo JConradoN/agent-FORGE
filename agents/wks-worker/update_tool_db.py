@@ -1,6 +1,6 @@
 import sqlite3, json, time, sys
 
-DB_PATH = "C:/Users/morph/.open-webui/webui.db"
+DB_PATH = "C:/open-webui-data/webui.db"
 CODE_PATH = "C:/Users/morph/fox_wks_tool.py"
 
 with open(CODE_PATH, "r", encoding="utf-8") as f:
@@ -20,6 +20,8 @@ SPECS = [
     {"name":"fox_server_health","description":"Use quando o usuario pedir status do fox-server (Linux). Retorna CPU, RAM, disco, GPU e containers Docker via SSH.","parameters":{"type":"object","properties":{},"required":[]}},
     {"name":"read_agent_memory","description":"Le as memorias mais recentes do agent-mesh compartilhado entre fox-server, fox-wks e Claudio.","parameters":{"type":"object","properties":{"limit":{"type":"integer","description":"Numero de memorias (padrao: 10)"}},"required":[]}},
     {"name":"write_agent_memory","description":"Grava uma memoria no agent-mesh do fox-server (compartilhado com todos os agentes do lab).","parameters":{"type":"object","properties":{"key":{"type":"string","description":"Chave da memoria"},"value":{"type":"string","description":"Valor a gravar"}},"required":["key","value"]}},
+    {"name":"generate_image","description":"Gera uma imagem de alta qualidade usando o modelo FLUX Schnell localmente via ComfyUI. Retorna uma tag markdown da imagem gerada.","parameters":{"type":"object","properties":{"prompt":{"type":"string","description":"Descricao detalhada da imagem a ser gerada (em ingles). Ex: 'a majestic red fox in a forest, digital art'"}},"required":["prompt"]}},
+    {"name":"generate_audio","description":"Gera uma sintese de voz (TTS) com o OmniVoice local via ComfyUI. Retorna uma tag de audio HTML para tocar o arquivo gerado.","parameters":{"type":"object","properties":{"text":{"type":"string","description":"O texto que deve ser falado pelo personagem."},"voice_profile":{"type":"string","description":"O perfil da voz a ser gerada. Deve ser 'raposa' (voz masculina, jovem adulto) ou 'tartaruga' (voz feminina, idosa, mais lenta)."}},"required":["text","voice_profile"]}}
 ]
 
 con = sqlite3.connect(DB_PATH)
