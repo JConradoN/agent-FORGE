@@ -206,16 +206,20 @@ class Tools:
         except Exception as e:
             return f"Erro ao gravar agent-mesh: {e}"
 
-    def generate_image(self, prompt: str) -> str:
+    def generate_image(self, prompt: str, face_image_path: str = None) -> str:
         """
         Gera uma imagem de alta qualidade usando o modelo FLUX Schnell localmente via ComfyUI.
-        :param prompt: Descrição detalhada da imagem a ser gerada (preferencialmente em inglês). Ex: 'a majestic red fox in a forest, digital art'.
+        Permite a injeção opcional de rosto (Face Swap) via ReActor se for passada uma imagem de referência.
+        :param prompt: Descrição detalhada da imagem a ser gerada (em inglês). Ex: 'a majestic red fox'.
+        :param face_image_path: Caminho completo para a imagem de rosto (no Windows, ex: 'V:\\TEMP\\filha.jpg').
         :return: Tag markdown para exibir a imagem gerada no chat.
         """
         import urllib.request
         import json
         import random
         import time
+        import os
+        import shutil
 
         comfy_url = "http://localhost:8188"
         api_path = "C:/ComfyUI_windows_portable/ComfyUI/user/default/workflows/flux_schnell_api.json"
@@ -227,6 +231,49 @@ class Tools:
             # Atualiza prompt (nó ID 6, input text) e seed (nó ID 25, input noise_seed)
             prompt_data["6"]["inputs"]["text"] = prompt
             prompt_data["25"]["inputs"]["noise_seed"] = random.randint(1, 10**15)
+            
+            # Lógica de Face Swap
+            if face_image_path:
+                face_image_path = face_image_path.strip().strip("'\"")
+                if not (face_image_path.upper().startswith("C:") or face_image_path.upper().startswith("D:") or face_image_path.upper().startswith("V:")):
+                    face_image_path = os.path.join("D:\\", face_image_path)
+                
+                if os.path.exists(face_image_path):
+                    dest_dir = "C:/ComfyUI_windows_portable/ComfyUI/input"
+                    os.makedirs(dest_dir, exist_ok=True)
+                    temp_filename = "face_swap_ref.jpg"
+                    shutil.copy(face_image_path, os.path.join(dest_dir, temp_filename))
+                    
+                    # Adiciona os nós na estrutura da API
+                    prompt_data["30"] = {
+                        "inputs": {
+                            "image": temp_filename
+                        },
+                        "class_type": "LoadImage"
+                    }
+                    prompt_data["31"] = {
+                        "inputs": {
+                            "enabled": True,
+                            "input_faces_index": "0",
+                            "source_faces_index": "0",
+                            "face_index_order": "left-right",
+                            "face_model": "inswapper_128.onnx",
+                            "face_restore_model": "none",
+                            "face_restore_visibility": 1.0,
+                            "codeformer_weight": 0.5,
+                            "detect_gender_input": "no",
+                            "detect_gender_source": "no",
+                            "input_sex": "female",
+                            "source_sex": "female",
+                            "source_image": ["30", 0],
+                            "target_image": ["8", 0]
+                        },
+                        "class_type": "ReActorFaceSwap"
+                    }
+                    # Redireciona o input do SaveImage (nó 9) para a saída do Face Swap (nó 31)
+                    prompt_data["9"]["inputs"]["images"] = ["31", 0]
+                else:
+                    return f"Erro: Arquivo de imagem de rosto nao encontrado em {face_image_path}"
             
             payload = {"prompt": prompt_data}
             data = json.dumps(payload).encode('utf-8')
@@ -256,7 +303,7 @@ class Tools:
                             return f"![imagem](http://192.168.88.202:8188/view?filename={filename}&subfolder={subfolder}&type={img_type})"
                 except Exception:
                     pass
-                if time.time() - start_time > 120:  # 2 minutos timeout
+                if time.time() - start_time > 150:  # 2.5 minutos timeout
                     return "Erro: Timeout na geração de imagem pelo ComfyUI."
                 time.sleep(2)
         except Exception as e:
