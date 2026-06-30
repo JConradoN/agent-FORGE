@@ -1,5 +1,11 @@
 import platform, subprocess, os, shutil
 
+OWU_API_KEY = "sk-foxwks-bd6dc62fd0caca045e5fa615680866d4"
+OWU_BASE = "http://192.168.88.202:8080"
+GODZILLA_URL = "http://localhost:8085/v1/chat/completions"
+TURBOQUANT_URL = "http://fox-server.lan:8082/v1/chat/completions"
+TURBOQUANT_MODEL = "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf"
+
 class Tools:
 
     def _check_path(self, path):
@@ -206,13 +212,91 @@ class Tools:
         except Exception as e:
             return f"Erro ao gravar agent-mesh: {e}"
 
-    def generate_image(self, prompt: str, face_image_path: str = None) -> str:
+
+    def analyze_image(self, image_source: str, question: str = "Descreva detalhadamente o que você vê nesta imagem.") -> str:
         """
-        Gera uma imagem de alta qualidade usando o modelo FLUX Schnell localmente via ComfyUI.
-        Permite a injeção opcional de rosto (Face Swap) via ReActor se for passada uma imagem de referência.
-        :param prompt: Descrição detalhada da imagem a ser gerada (em inglês). Ex: 'a majestic red fox'.
-        :param face_image_path: Caminho completo para a imagem de rosto (no Windows, ex: 'V:\\TEMP\\filha.jpg').
-        :return: Tag markdown para exibir a imagem gerada no chat.
+        Analisa uma imagem usando visão computacional (Qwen3.6 multimodal nativo no fox-server).
+        Use quando o usuário enviar uma foto, screenshot, BIOS, diagrama ou qualquer imagem para interpretação.
+        Aceita imagem de D:\\ ou URL do OWU (ex: http://192.168.88.202:8080/api/v1/files/ID/content).
+        :param image_source: Caminho D:\\ (ex: D:\\screenshot.png) ou URL HTTP da imagem.
+        :param question: Pergunta ou instrução sobre a imagem. Padrão: descrição completa.
+        :return: Análise textual da imagem gerada pelo modelo de visão.
+        """
+        import base64, urllib.request, json, os
+
+        try:
+            if image_source.startswith("http://") or image_source.startswith("https://"):
+                req = urllib.request.Request(image_source)
+                req.add_header("Authorization", f"Bearer {OWU_API_KEY}")
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    img_bytes = resp.read()
+            else:
+                if not os.path.exists(image_source):
+                    return f"Erro: imagem não encontrada em '{image_source}'"
+                with open(image_source, "rb") as f:
+                    img_bytes = f.read()
+
+            img_b64 = base64.b64encode(img_bytes).decode()
+            ext = image_source.rsplit(".", 1)[-1].lower() if "." in image_source else "jpeg"
+            mime = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png", "gif": "image/gif", "webp": "image/webp"}.get(ext, "image/jpeg")
+
+            payload = json.dumps({
+                "model": TURBOQUANT_MODEL,
+                "messages": [{
+                    "role": "user",
+                    "content": [
+                        {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{img_b64}"}},
+                        {"type": "text", "text": question}
+                    ]
+                }],
+                "max_tokens": 2048,
+                "temperature": 0.1
+            }).encode()
+
+            req = urllib.request.Request(TURBOQUANT_URL, data=payload, headers={"Content-Type": "application/json"}, method="POST")
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                result = json.loads(resp.read())
+                return result["choices"][0]["message"]["content"]
+        except Exception as e:
+            return f"Erro na análise de imagem: {e}"
+
+    def save_face_reference(self, image_source: str) -> str:
+        """
+        Salva uma imagem de referência de rosto para uso no face swap com ReActor.
+        Chame ANTES de generate_image quando o usuário fornece uma foto.
+        :param image_source: Caminho Windows em D:\\ (ex: D:\\filha.jpg, D:\\fotos\\maria.jpg) ou URL HTTP do OWU (ex: http://192.168.88.202:8080/api/v1/files/ID/content).
+        :return: Caminho salvo no input do ComfyUI, pronto para usar em generate_image como face_image_path.
+        """
+        import urllib.request
+        import shutil
+        import os
+
+        dest = "C:\\ComfyUI_windows_portable\\ComfyUI\\input\\face_swap_ref.jpg"
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+
+        try:
+            if image_source.startswith("http://") or image_source.startswith("https://"):
+                req = urllib.request.Request(image_source)
+                req.add_header("Authorization", f"Bearer {OWU_API_KEY}")
+                with urllib.request.urlopen(req, timeout=15) as resp:
+                    with open(dest, "wb") as f:
+                        f.write(resp.read())
+            elif os.path.exists(image_source):
+                shutil.copy(image_source, dest)
+            else:
+                return f"Erro: imagem não encontrada em '{image_source}'"
+            return dest
+        except Exception as e:
+            return f"Erro ao salvar referência: {e}"
+
+    def generate_image(self, prompt: str, face_image_path: str = None, full_body: bool = False) -> str:
+        """
+        Gera uma imagem de alta qualidade usando JuggernautXL (SDXL) via ComfyUI.
+        Se o usuário enviou uma foto recentemente, o rosto é aplicado automaticamente via face swap.
+        :param prompt: Descrição detalhada em inglês. Ex: 'a 4 year old girl as a mermaid princess underwater'.
+        :param face_image_path: (opcional) Caminho para imagem de rosto em D:\\. Se omitido, usa referência salva automaticamente.
+        :param full_body: True para corpo inteiro com cauda completa. False (padrão) para retrato.
+        :return: Tag markdown com a imagem gerada.
         """
         import urllib.request
         import json
@@ -222,90 +306,80 @@ class Tools:
         import shutil
 
         comfy_url = "http://localhost:8188"
-        api_path = "C:/ComfyUI_windows_portable/ComfyUI/user/default/workflows/flux_schnell_api.json"
-        
+        FACE_REF = "C:/ComfyUI_windows_portable/ComfyUI/input/face_swap_ref.jpg"
+
+        # Auto-detectar face swap: referência salva há menos de 1h
+        if face_image_path is None and os.path.exists(FACE_REF):
+            if time.time() - os.path.getmtime(FACE_REF) < 3600:
+                face_image_path = FACE_REF
+
+        if face_image_path:
+            face_image_path = face_image_path.strip().strip("'\"")
+            if not any(face_image_path.upper().startswith(d) for d in ("C:", "D:", "V:")):
+                face_image_path = os.path.join("D:\\", face_image_path)
+
         try:
-            with open(api_path, "r", encoding="utf-8") as f:
-                prompt_data = json.load(f)
-            
-            # Atualiza prompt (nó ID 6, input text) e seed (nó ID 25, input noise_seed)
-            prompt_data["6"]["inputs"]["text"] = prompt
-            prompt_data["25"]["inputs"]["noise_seed"] = random.randint(1, 10**15)
-            
-            # Lógica de Face Swap
-            if face_image_path:
-                face_image_path = face_image_path.strip().strip("'\"")
-                if not (face_image_path.upper().startswith("C:") or face_image_path.upper().startswith("D:") or face_image_path.upper().startswith("V:")):
-                    face_image_path = os.path.join("D:\\", face_image_path)
-                
-                if os.path.exists(face_image_path):
-                    dest_dir = "C:/ComfyUI_windows_portable/ComfyUI/input"
-                    os.makedirs(dest_dir, exist_ok=True)
-                    temp_filename = "face_swap_ref.jpg"
-                    shutil.copy(face_image_path, os.path.join(dest_dir, temp_filename))
-                    
-                    # Adiciona os nós na estrutura da API
-                    prompt_data["30"] = {
-                        "inputs": {
-                            "image": temp_filename
-                        },
-                        "class_type": "LoadImage"
-                    }
-                    prompt_data["31"] = {
-                        "inputs": {
-                            "enabled": True,
-                            "input_faces_index": "0",
-                            "source_faces_index": "0",
-                            "face_index_order": "left-right",
-                            "face_model": "inswapper_128.onnx",
-                            "face_restore_model": "none",
-                            "face_restore_visibility": 1.0,
-                            "codeformer_weight": 0.5,
-                            "detect_gender_input": "no",
-                            "detect_gender_source": "no",
-                            "input_sex": "female",
-                            "source_sex": "female",
-                            "source_image": ["30", 0],
-                            "target_image": ["8", 0]
-                        },
-                        "class_type": "ReActorFaceSwap"
-                    }
-                    # Redireciona o input do SaveImage (nó 9) para a saída do Face Swap (nó 31)
-                    prompt_data["9"]["inputs"]["images"] = ["31", 0]
-                else:
-                    return f"Erro: Arquivo de imagem de rosto nao encontrado em {face_image_path}"
-            
-            payload = {"prompt": prompt_data}
-            data = json.dumps(payload).encode('utf-8')
-            
-            req = urllib.request.Request(f"{comfy_url}/prompt", data=data, headers={'Content-Type': 'application/json'})
-            response = urllib.request.urlopen(req, timeout=10)
-            res_json = json.loads(response.read().decode('utf-8'))
-            prompt_id = res_json["prompt_id"]
-            
-            # Aguarda a geração (polling history)
+            w, h = (832, 1216) if not full_body else (768, 1344)
+
+            neg = (
+                "adult, teenager, breasts, cleavage, makeup, eyeliner, eyeshadow, "
+                "ugly, deformed, blurry, extra limbs, bad anatomy, nsfw, mature, "
+                "bad face, watermark, signature, text"
+            )
+
+            prompt_data = {
+                "1": {"inputs": {"ckpt_name": "JuggernautXL_v9.safetensors"}, "class_type": "CheckpointLoaderSimple"},
+                "2": {"inputs": {"text": prompt + ", masterpiece, best quality, highly detailed, sharp focus, photorealistic", "clip": ["1", 1]}, "class_type": "CLIPTextEncode"},
+                "3": {"inputs": {"text": neg, "clip": ["1", 1]}, "class_type": "CLIPTextEncode"},
+                "4": {"inputs": {"width": w, "height": h, "batch_size": 1}, "class_type": "EmptyLatentImage"},
+                "5": {"inputs": {"seed": random.randint(1, 10**15), "steps": 30, "cfg": 7.0, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 1.0, "model": ["1", 0], "positive": ["2", 0], "negative": ["3", 0], "latent_image": ["4", 0]}, "class_type": "KSampler"},
+                "6": {"inputs": {"samples": ["5", 0], "vae": ["1", 2]}, "class_type": "VAEDecode"},
+                "9": {"inputs": {"filename_prefix": "ComfyUI", "images": ["6", 0]}, "class_type": "SaveImage"},
+            }
+
+            # Face swap
+            if face_image_path and os.path.exists(face_image_path):
+                dest = "C:/ComfyUI_windows_portable/ComfyUI/input/face_swap_ref.jpg"
+                if face_image_path != dest:
+                    shutil.copy(face_image_path, dest)
+                prompt_data["30"] = {"inputs": {"image": "face_swap_ref.jpg"}, "class_type": "LoadImage"}
+                prompt_data["31"] = {
+                    "inputs": {
+                        "enabled": True,
+                        "input_image": ["6", 0],
+                        "source_image": ["30", 0],
+                        "swap_model": "inswapper_128.onnx",
+                        "facedetection": "retinaface_resnet50",
+                        "face_restore_model": "GFPGANv1.4.pth",
+                        "face_restore_visibility": 0.85,
+                        "codeformer_weight": 0.5,
+                        "detect_gender_input": "no",
+                        "detect_gender_source": "no",
+                        "input_faces_index": "0",
+                        "source_faces_index": "0",
+                        "console_log_level": 1
+                    },
+                    "class_type": "ReActorFaceSwap"
+                }
+                prompt_data["9"]["inputs"]["images"] = ["31", 0]
+
+            data = json.dumps({"prompt": prompt_data}).encode("utf-8")
+            req = urllib.request.Request(f"{comfy_url}/prompt", data=data, headers={"Content-Type": "application/json"})
+            res = json.loads(urllib.request.urlopen(req, timeout=10).read())
+            prompt_id = res["prompt_id"]
+
             start_time = time.time()
-            while True:
+            while time.time() - start_time < 180:
                 try:
-                    hist_req = urllib.request.urlopen(f"{comfy_url}/history/{prompt_id}", timeout=5)
-                    hist_data = json.loads(hist_req.read().decode('utf-8'))
-                    if prompt_id in hist_data:
-                        outputs = hist_data[prompt_id]["outputs"]
-                        images = []
-                        for node_id, output in outputs.items():
-                            if "images" in output:
-                                for img in output["images"]:
-                                    images.append(img)
-                        if images:
-                            filename = images[0]["filename"]
-                            subfolder = images[0]["subfolder"]
-                            img_type = images[0]["type"]
-                            return f"![imagem](http://192.168.88.202:8188/view?filename={filename}&subfolder={subfolder}&type={img_type})"
+                    hist = json.loads(urllib.request.urlopen(f"{comfy_url}/history/{prompt_id}", timeout=5).read())
+                    if prompt_id in hist and hist[prompt_id].get("status", {}).get("completed"):
+                        for nid, out in hist[prompt_id]["outputs"].items():
+                            for img in out.get("images", []):
+                                return f"![imagem](http://192.168.88.202:8188/view?filename={img['filename']}&subfolder={img['subfolder']}&type={img['type']})"
                 except Exception:
                     pass
-                if time.time() - start_time > 150:  # 2.5 minutos timeout
-                    return "Erro: Timeout na geração de imagem pelo ComfyUI."
-                time.sleep(2)
+                time.sleep(3)
+            return "Erro: timeout na geração."
         except Exception as e:
             return f"Erro ao gerar imagem: {e}"
 
