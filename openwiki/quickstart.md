@@ -2,7 +2,7 @@
 
 **AgentForge** is a Python **spec-first**, **local-first** framework for creating and running LLM agents on-premise. Its core thesis, validated across 4 months of benchmarking 19 models, is:
 
-> **20% is the model, 80% is the runtime.**
+> **TESTE-CI-PR-CLAUDE 2026-07-10: linha temporária pra validar o workflow de PR automático.**
 
 The quality of a local agent depends more on how the runtime manages context, tool use decisions, guardrails, and evaluation than on the model itself.
 
