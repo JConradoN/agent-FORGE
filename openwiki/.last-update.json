@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-09T23:21:26.851Z",
-  "command": "init",
-  "gitHead": "023a72534ce52f6c75cc27f06aec01c32848ea5e",
-  "model": "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf"
+  "updatedAt": "2026-07-10T15:57:04.944Z",
+  "command": "update",
+  "gitHead": "8c6918beaf5706129915e7b105158ccb3b38264b",
+  "model": "z-ai/glm-5.2"
 }
