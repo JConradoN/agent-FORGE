@@ -98,6 +98,20 @@ def test_normalize_args_string_kept_as_string():
 
 # ── payload generation ─────────────────────────────────────────────────────────
 
+@pytest.fixture(autouse=True)
+def _no_gpu_broker():
+    """Provider agora coordena via fox-gpu-broker (ver gpu_broker_client.acquire_gpu).
+    Este módulo é 'no live server required' — bypassa o broker pra manter isolado."""
+    from contextlib import contextmanager
+
+    @contextmanager
+    def _noop(*args, **kwargs):
+        yield
+
+    with patch("agentforge.providers.llamacpp.acquire_gpu", side_effect=_noop):
+        yield
+
+
 def _make_provider():
     return LlamaCppProvider()
 

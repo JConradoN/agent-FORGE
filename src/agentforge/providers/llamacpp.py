@@ -5,6 +5,7 @@ import os
 
 import requests
 
+from agentforge.gpu_broker_client import acquire_gpu
 from agentforge.providers.base import BaseProvider, ProviderError, ProviderRequest, ProviderResponse
 
 _DEFAULT_HOST = "http://localhost:8082"
@@ -123,11 +124,12 @@ class LlamaCppProvider(BaseProvider):
         timeout = int(os.environ.get("LLAMACPP_TIMEOUT", str(_DEFAULT_TIMEOUT)))
 
         try:
-            response = requests.post(
-                f"{base_url}/v1/chat/completions",
-                json=payload,
-                timeout=(_CONNECT_TIMEOUT, timeout),
-            )
+            with acquire_gpu(client=f"agentforge:{request.agent_id}", priority="batch", max_wait_s=timeout):
+                response = requests.post(
+                    f"{base_url}/v1/chat/completions",
+                    json=payload,
+                    timeout=(_CONNECT_TIMEOUT, timeout),
+                )
         except requests.exceptions.ConnectionError as exc:
             raise LlamaCppConnectionError(
                 f"Could not connect to llama.cpp server ({base_url}). "
