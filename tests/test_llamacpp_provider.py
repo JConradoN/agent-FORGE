@@ -365,6 +365,59 @@ def test_no_loop_detected_when_tool_call_arrives_before_threshold():
     assert resp.tool_calls[0]["name"] == "write_file"
 
 
+def test_loop_detected_on_repeated_content_line():
+    """Regression test: gemma4:12b's thinking tags (<|channel>thought...)
+    aren't recognized by llama.cpp as reasoning_content, so a repetitive
+    "thinking out loud" spiral lands entirely in regular `content` instead —
+    the original loop guard (which requires `not content_parts`) never fires
+    for this case. Confirmed 2026-07-21: a must_compliance judge call
+    repeated the same line 500+ times until it filled the context window and
+    stalled the server. The provider must catch this from `content` directly,
+    not only from an absence of content.
+    """
+    req = _make_request(input_text="Judge this")
+    provider = _make_provider()
+    repeated_line = "Wait, let me check the main function again."
+    # Interleave with enough short filler deltas to cross the every-20-deltas
+    # batch check, and repeat well past the default threshold (6).
+    lines = []
+    for _ in range(10):
+        lines.append(_content_chunk(repeated_line + "\n"))
+        for _ in range(3):
+            lines.append(_content_chunk("ok "))
+    lines.append(_DONE)
+    with patch("agentforge.providers.llamacpp.requests.post", return_value=_stream_resp(lines)):
+        resp = provider.generate(req)
+    assert resp.metadata["loop_detected"] is True
+    assert resp.tool_calls is None
+    assert resp.output_text
+
+
+def test_no_loop_detected_on_legitimately_long_varied_content():
+    """A long response with mostly-distinct lines (e.g. a real report) must
+    not trip the repetition guard just because it's long."""
+    req = _make_request(input_text="Write a report")
+    provider = _make_provider()
+    lines = [
+        _content_chunk(f"Line number {i} with some distinct detail here.\n")
+        for i in range(120)
+    ] + [_DONE]
+    with patch("agentforge.providers.llamacpp.requests.post", return_value=_stream_resp(lines)):
+        resp = provider.generate(req)
+    assert resp.metadata["loop_detected"] is False
+
+
+def test_no_loop_detected_on_repeated_short_lines():
+    """Short repeated lines (table dividers, bullet markers) below
+    _MIN_REPEAT_LINE_LEN must not trip the guard."""
+    req = _make_request(input_text="Write a table")
+    provider = _make_provider()
+    lines = [_content_chunk("---\n") for _ in range(80)] + [_DONE]
+    with patch("agentforge.providers.llamacpp.requests.post", return_value=_stream_resp(lines)):
+        resp = provider.generate(req)
+    assert resp.metadata["loop_detected"] is False
+
+
 def test_total_timeout_enforced_regardless_of_active_chunks(monkeypatch):
     """A model that keeps streaming SOMETHING forever must still be cut off at
     LLAMACPP_TIMEOUT — this is the real fix for the RTX 5060 Ti incident, where

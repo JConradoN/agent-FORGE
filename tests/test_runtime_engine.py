@@ -1156,6 +1156,31 @@ class TestMustComplianceFilenameCheck:
         assert missing == []
 
 
+class TestJudgeModel:
+    """Regression coverage for 2026-07-21 (gemma4:12b P3): the must_compliance
+    and guardrail LLM-judge calls used model=self.runtime_config.model_default
+    — the candidate under test judging its own output. A candidate's own
+    instability (e.g. a reasoning-loop tendency not recognized as
+    reasoning_content by llama.cpp for non-Qwen templates) then contaminates
+    the judgment: the judge call itself fell into a 500+ line repetitive loop,
+    filled the context window, and stalled the server. AGENTFORGE_JUDGE_MODEL
+    lets a stable judge be pinned regardless of which candidate is running.
+    """
+
+    def test_defaults_to_model_default_when_unset(self, tmp_path, monkeypatch):
+        monkeypatch.delenv("AGENTFORGE_JUDGE_MODEL", raising=False)
+        agent_dir = _make_agent_dir(tmp_path)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        assert runtime._judge_model() == runtime.runtime_config.model_default
+
+    def test_uses_override_when_set(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("AGENTFORGE_JUDGE_MODEL", "qwen3.6-35b-a3b-nothink")
+        agent_dir = _make_agent_dir(tmp_path)
+        runtime = AgentRuntime.from_agent_dir(agent_dir)
+        assert runtime._judge_model() == "qwen3.6-35b-a3b-nothink"
+        assert runtime._judge_model() != runtime.runtime_config.model_default
+
+
 class TestMustComplianceCorrectionMessage:
     """Regression coverage for 2026-07-20 (FORGE F5): when a missing rule is
     about a file, the correction sent back to the model must explicitly say

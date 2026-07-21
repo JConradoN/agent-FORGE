@@ -17,6 +17,19 @@ _CHUNK_TIMEOUT = 60  # seconds of stream inactivity (between SSE chunks) before 
 # reasoning_content) before we treat it as a stuck "explaining without acting" loop
 # and abort the stream early instead of burning the full max_tokens budget.
 _DEFAULT_LOOP_GUARD_TOKENS = 6000
+# The loop guard above only catches "stuck reasoning, zero content" — it
+# requires `not content_parts`. Some model templates (e.g. gemma4's
+# `<|channel>thought...<channel|>` tags) aren't recognized by llama.cpp as a
+# separate reasoning channel, so their thinking lands in `content` instead of
+# `reasoning_content` and slips right past that check. Confirmed 2026-07-21:
+# gemma4:12b's must_compliance judge call repeated the same line ("Wait, let
+# me check the main function again.") 500+ times as regular content, filled
+# the context window, and stalled the server. This second guard catches
+# repetition directly regardless of which channel it landed in. Only lines at
+# least this long count, to avoid false positives on short, legitimately
+# repeated tokens (table separators, bullet markers, etc.).
+_DEFAULT_REPETITION_THRESHOLD = 6
+_MIN_REPEAT_LINE_LEN = 20
 
 
 class LlamaCppProviderError(ProviderError):
@@ -136,6 +149,9 @@ class LlamaCppProvider(BaseProvider):
         loop_guard_tokens = int(
             os.environ.get("LLAMACPP_LOOP_GUARD_TOKENS", str(_DEFAULT_LOOP_GUARD_TOKENS))
         )
+        repetition_threshold = int(
+            os.environ.get("LLAMACPP_REPETITION_THRESHOLD", str(_DEFAULT_REPETITION_THRESHOLD))
+        )
 
         reasoning_parts: list[str] = []
         content_parts: list[str] = []
@@ -143,6 +159,8 @@ class LlamaCppProvider(BaseProvider):
         finish_reason: str | None = None
         decoded_tokens_approx = 0
         loop_detected = False
+        line_repeat_counts: dict[str, int] = {}
+        content_deltas_since_repeat_check = 0
 
         try:
             with acquire_gpu(client=f"agentforge:{request.agent_id}", priority="batch", max_wait_s=total_timeout):
@@ -202,6 +220,31 @@ class LlamaCppProvider(BaseProvider):
                         if ct:
                             content_parts.append(ct)
                             decoded_tokens_approx += 1
+                            content_deltas_since_repeat_check += 1
+
+                        # Repetition guard: re-derive line counts from the tail of the
+                        # accumulated content periodically (not every delta — most SSE
+                        # chunks are a few characters, so lines only actually complete
+                        # every so often; checking in batches keeps this cheap). Only
+                        # lines long enough to be meaningful count, so short repeated
+                        # tokens (bullets, table dividers) can't trip it.
+                        if content_deltas_since_repeat_check >= 20 and not tool_call_chunks:
+                            content_deltas_since_repeat_check = 0
+                            tail = "".join(content_parts)[-8000:]
+                            line_repeat_counts = {}
+                            for raw_ln in tail.splitlines():
+                                ln = raw_ln.strip()
+                                if len(ln) < _MIN_REPEAT_LINE_LEN:
+                                    continue
+                                line_repeat_counts[ln] = line_repeat_counts.get(ln, 0) + 1
+                                if line_repeat_counts[ln] >= repetition_threshold:
+                                    loop_detected = True
+                                    break
+
+                        if loop_detected:
+                            resp.close()
+                            break
+
                         for tc in delta.get("tool_calls") or []:
                             idx = tc.get("index", 0)
                             entry = tool_call_chunks.setdefault(idx, {"name": "", "arguments": ""})

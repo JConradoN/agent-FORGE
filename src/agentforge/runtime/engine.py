@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -284,8 +285,8 @@ class AgentRuntime:
             if response.metadata.get("loop_detected") and loop_redirects < _MAX_LOOP_REDIRECTS:
                 loop_redirects += 1
                 self.logger.warning(
-                    "loop_detected[%d/%d]: model reasoned for %s tokens with no content or "
-                    "tool_calls committed — redirecting",
+                    "loop_detected[%d/%d]: model stuck after %s tokens (no action committed, "
+                    "or repeated content) — redirecting",
                     loop_redirects, _MAX_LOOP_REDIRECTS,
                     response.metadata.get("decoded_tokens_approx"),
                 )
@@ -507,6 +508,24 @@ class AgentRuntime:
         cleaned = re.sub(r"<tool_use>.*?</tool_use>", "", text, flags=re.DOTALL)
         return re.sub(r"\n{3,}", "\n\n", cleaned).strip()
 
+    def _judge_model(self) -> str:
+        """
+        Model used for must_compliance/guardrail LLM-judge calls — deliberately
+        NOT self.runtime_config.model_default (the candidate under test) unless
+        no override is set. Letting a candidate judge its own output means any
+        instability it has (e.g. a reasoning-loop tendency) contaminates the
+        judgment too: confirmed 2026-07-21, gemma4:12b's must_compliance judge
+        call itself fell into a 500+ line repetitive loop ("Wait, let me check
+        again...") that filled the context window and stalled the server —
+        the exact same failure mode the candidate was being tested for,
+        reproduced inside the harness's own verification step. Set
+        AGENTFORGE_JUDGE_MODEL to pin a stable judge (e.g. the production
+        champion) across every benchmark run regardless of which candidate is
+        under test; falls back to model_default only if unset, so existing
+        single-model setups are unaffected.
+        """
+        return os.environ.get("AGENTFORGE_JUDGE_MODEL", self.runtime_config.model_default)
+
     def _missing_must_files(self) -> list[str]:
         """
         Filename-shaped quoted terms from guardrails.must that don't exist on
@@ -635,7 +654,7 @@ class AgentRuntime:
                 agent_id=self.runtime_config.agent_id,
                 input_text=prompt,
                 system_prompt=None,
-                model=self.runtime_config.model_default,
+                model=self._judge_model(),
                 history=[],
             )
             resp = provider.generate(req)
@@ -664,7 +683,7 @@ class AgentRuntime:
             agent_id=self.runtime_config.agent_id,
             input_text=prompt,
             system_prompt=None,
-            model=self.runtime_config.model_default,
+            model=self._judge_model(),
             history=[],
         )
         resp = provider.generate(req)
