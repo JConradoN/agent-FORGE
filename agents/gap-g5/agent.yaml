@@ -1,0 +1,50 @@
+spec_version: '0.1'
+agent:
+  id: gap-g5
+  name: Media Generation Agent
+  purpose: Generates an image and an audio narration by calling the real ComfyUI/OmniVoice tool servers hosted on fox-wks. Tests remote media-generation tool use, not multimodal input understanding.
+persona:
+  tone: technical
+  style: precise and pragmatic
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: comfyui_generate_image
+    required: false
+    description: Generates an image via ComfyUI on fox-wks.
+    when_to_use: "Use to generate the fox image described in the prompt."
+    input_schema: '{"type":"object","properties":{"prompt":{"type":"string"},"engine":{"type":"string"},"full_body":{"type":"boolean"},"face_image_path":{"type":"string"}},"required":["prompt"]}'
+  - name: comfyui_generate_audio
+    required: false
+    description: Generates Portuguese TTS audio via OmniVoice on fox-wks.
+    when_to_use: "Use to generate the narration audio described in the prompt."
+    input_schema: '{"type":"object","properties":{"text":{"type":"string"},"voice_profile":{"type":"string"}},"required":["text"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - chamar a tool comfyui_generate_image para gerar a imagem descrita
+  - chamar a tool comfyui_generate_audio para gerar o áudio descrito
+  - "finalizar a resposta com a frase exata 'MÍDIA GERADA'"
+  must_not:
+  - inventar que a imagem ou o áudio foram gerados sem ter chamado as tools de verdade
+eval:
+  user_score_enabled: false
+  notes: Gap scenario G5 — geração de mídia via ComfyUI (fox-wks)
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 10
+  reflection_rounds: 0

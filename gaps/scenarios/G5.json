@@ -1,0 +1,44 @@
+{
+  "id": "G5",
+  "name": "Gap — Geração de mídia via ComfyUI (fox-wks)",
+  "description": "Pede pro agente gerar uma imagem e um áudio, chamando as tools reais de ComfyUI/OmniVoice hospedadas no fox-wks. Diferente do teste de multimodal (entender mídia de entrada) — esse mede capacidade de usar ferramentas de geração remota como parte da tarefa.",
+  "difficulty": "medium",
+  "expected_turns": "2-6",
+  "version": 1,
+  "prompt": "Gere uma imagem de uma raposa correndo numa floresta ao entardecer, estilo fotográfico. Depois, gere um áudio narrando a frase 'Bem-vindo ao fox-server' usando a voz raposa. Confirme ao final com a frase exata 'MÍDIA GERADA'.",
+  "prompt_vars": {},
+  "auto_checks": [
+    {
+      "type": "tool_called",
+      "label": "chamou comfyui_generate_image",
+      "tool": "comfyui_generate_image",
+      "weight": 3
+    },
+    {
+      "type": "tool_called",
+      "label": "chamou comfyui_generate_audio",
+      "tool": "comfyui_generate_audio",
+      "weight": 3
+    },
+    {
+      "type": "tool_call_result_contains",
+      "label": "imagem gerada de verdade (retornou path/URL real)",
+      "tool": "comfyui_generate_image",
+      "result_needle": "view?filename",
+      "weight": 2
+    },
+    {
+      "type": "tool_call_result_contains",
+      "label": "áudio gerado de verdade (retornou path/URL real)",
+      "tool": "comfyui_generate_audio",
+      "result_needle": "view?filename",
+      "weight": 2
+    },
+    {
+      "type": "response_contains",
+      "label": "confirmou conclusão",
+      "needle": "MÍDIA GERADA",
+      "weight": 1
+    }
+  ]
+}

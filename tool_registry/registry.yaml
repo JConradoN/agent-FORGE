@@ -57,3 +57,27 @@ tools:
     do arquivo .png a salvar em AGENT_WORKDIR"}},"required":["url","filename"]}'
   name: browser_screenshot
   registered_at: '2026-07-20T15:45:00+00:00'
+- created_by: claude-code
+  description: Gera uma imagem via ComfyUI no fox-wks (image_tool_server :8090,
+    JuggernautXL/SDXL por padrão ou Flux Schnell). Consome a API HTTP já
+    homologada, não sobe nem gerencia o ComfyUI.
+  file: comfyui_generate_image.py
+  function: comfyui_generate_image
+  input_schema: '{"type":"object","properties":{"prompt":{"type":"string","description":"Descrição
+    da imagem a gerar"},"engine":{"type":"string","description":"sdxl (padrão)
+    ou flux"},"full_body":{"type":"boolean","description":"Enquadramento de
+    corpo inteiro"},"face_image_path":{"type":"string","description":"Referência
+    de rosto opcional para face swap via ReActor"}},"required":["prompt"]}'
+  name: comfyui_generate_image
+  registered_at: '2026-07-21T16:40:00+00:00'
+- created_by: claude-code
+  description: Gera síntese de voz em português via OmniVoice/ComfyUI no fox-wks
+    (system_tool_server :8091). Consome a API HTTP já homologada, não sobe nem
+    gerencia o ComfyUI.
+  file: comfyui_generate_audio.py
+  function: comfyui_generate_audio
+  input_schema: '{"type":"object","properties":{"text":{"type":"string","description":"Texto
+    a sintetizar"},"voice_profile":{"type":"string","description":"conrado,
+    claudio, raposa (padrão) ou tartaruga"}},"required":["text"]}'
+  name: comfyui_generate_audio
+  registered_at: '2026-07-21T16:40:00+00:00'
