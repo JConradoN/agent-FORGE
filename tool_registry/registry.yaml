@@ -9,3 +9,51 @@ tools:
     default ~/.agent-mesh/state.db"}},"required":["query"]}'
   name: search_memory
   registered_at: '2026-06-06T20:14:00.325922+00:00'
+- created_by: claude-code
+  description: Pesquisa o preco de um produto em 4 lojas brasileiras (Mercado Livre,
+    Pichau, Kabum, Terabyte) via SearXNG local, uma query por loja com operador site:.
+    Retorna lista de {loja, titulo, url, conteudo} sem parsear preco.
+  file: buscar_precos_br.py
+  function: buscar_precos_br
+  input_schema: '{"type":"object","properties":{"produto":{"type":"string","description":"Nome
+    do produto a pesquisar (ex: i7 11700k)"}},"required":["produto"]}'
+  name: buscar_precos_br
+  registered_at: '2026-07-14T01:09:21.263031+00:00'
+- created_by: claude-code
+  description: Navega até uma URL com Chromium headless e retorna o texto da página
+    (JavaScript já executado). Portada de real/scripts/real_runner.py pra migração
+    do funil REAL pro motor do AgentForge.
+  file: browser_navigate.py
+  function: browser_navigate
+  input_schema: '{"type":"object","properties":{"url":{"type":"string"},"wait_selector":{"type":"string","description":"Seletor
+    CSS para aguardar antes de ler (opcional)"}},"required":["url"]}'
+  name: browser_navigate
+  registered_at: '2026-07-20T15:30:00+00:00'
+- created_by: claude-code
+  description: Executa JavaScript numa página e retorna o resultado. Útil para páginas
+    SPA/dinâmicas que não renderizam conteúdo em HTML estático. Portada de
+    real/scripts/real_runner.py pra migração do funil REAL pro motor do AgentForge.
+  file: browser_execute_js.py
+  function: browser_execute_js
+  input_schema: '{"type":"object","properties":{"url":{"type":"string"},"script":{"type":"string","description":"código
+    JS a executar (deve retornar um valor)"}},"required":["url","script"]}'
+  name: browser_execute_js
+  registered_at: '2026-07-20T15:30:00+00:00'
+- created_by: claude-code
+  description: Retorna o texto de um elemento CSS de uma página. Portada de
+    real/scripts/real_runner.py pra migração do funil REAL pro motor do AgentForge.
+  file: browser_get_element.py
+  function: browser_get_element
+  input_schema: '{"type":"object","properties":{"url":{"type":"string"},"selector":{"type":"string","description":"seletor
+    CSS"}},"required":["url","selector"]}'
+  name: browser_get_element
+  registered_at: '2026-07-20T15:30:00+00:00'
+- created_by: claude-code
+  description: Navega até uma URL e salva um screenshot em AGENT_WORKDIR. Portada de
+    real/scripts/real_runner.py pra migração do funil REAL pro motor do AgentForge.
+  file: browser_screenshot.py
+  function: browser_screenshot
+  input_schema: '{"type":"object","properties":{"url":{"type":"string"},"filename":{"type":"string","description":"nome
+    do arquivo .png a salvar em AGENT_WORKDIR"}},"required":["url","filename"]}'
+  name: browser_screenshot
+  registered_at: '2026-07-20T15:45:00+00:00'
