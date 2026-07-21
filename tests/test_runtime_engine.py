@@ -31,16 +31,19 @@ from agentforge.runtime.engine import AgentRuntime, RuntimeConfig
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _make_spec() -> AgentSpec:
+def _make_spec(
+    tools: list[ToolSpec] | None = None,
+    guardrails: GuardrailSpec | None = None,
+) -> AgentSpec:
     return AgentSpec(
         spec_version="0.1",
         agent=AgentIdentity(id="test_agent", name="Test Agent", purpose="Testing"),
         persona=AgentPersona(tone="direto", style="técnico"),
         channel=ChannelSpec(type="cli"),
-        tools=[ToolSpec(name="web_search")],
+        tools=[ToolSpec(name="web_search")] if tools is None else tools,
         memory=MemorySpec(type="session_summary", enabled=True),
         output=OutputSpec(mode="text", format="text"),
-        guardrails=GuardrailSpec(),
+        guardrails=guardrails if guardrails is not None else GuardrailSpec(),
         eval=EvaluationSpec(),
         deployment=DeploymentSpec(provider="mock"),
         model_policy=ModelPolicySpec(default_model="gemma4:e4b", fallback_model="qwen3:5b"),
@@ -48,8 +51,12 @@ def _make_spec() -> AgentSpec:
     )
 
 
-def _make_agent_dir(tmp_path: Path) -> Path:
-    spec = _make_spec()
+def _make_agent_dir(
+    tmp_path: Path,
+    tools: list[ToolSpec] | None = None,
+    guardrails: GuardrailSpec | None = None,
+) -> Path:
+    spec = _make_spec(tools=tools, guardrails=guardrails)
     agent_dir = tmp_path / "test_agent"
     agent_dir.mkdir()
 
@@ -178,7 +185,14 @@ class TestRun:
         assert result["input"] == "teste"
 
     def test_output_uses_mock_provider(self, tmp_path: Path) -> None:
-        runtime = AgentRuntime.from_agent_dir(_make_agent_dir(tmp_path))
+        # No tools on this agent: the default fixture declares one, and
+        # MockProvider never simulates a tool_call, which triggers
+        # no_tool_redirect (engine.py) — by its 2nd redirect the cycle sends
+        # input_text="" to the provider, so "teste" no longer appears in the
+        # final echoed output. Irrelevant to what this test checks (that
+        # run() wires up and returns MockProvider's output), so use a
+        # tool-less agent to keep that redirect out of the way.
+        runtime = AgentRuntime.from_agent_dir(_make_agent_dir(tmp_path, tools=[]))
         result = runtime.run("teste")
         assert "MOCK_PROVIDER_RESPONSE" in result["output"]
         assert "teste" in result["output"]
@@ -1089,3 +1103,149 @@ class TestMultiAgent:
         assert result["agent_id"] == "lab-ops"
         assert result["output"] == "CPU 45%, RAM 60%."
         mock_runtime.run.assert_called_once_with("saúde?")
+
+
+# ---------------------------------------------------------------------------
+# must_compliance — filename-shaped quoted terms need a real file, not just text
+# ---------------------------------------------------------------------------
+
+class TestMustComplianceFilenameCheck:
+    """Regression coverage for 2026-07-20 (REAL P2): a quoted filename term in
+    a `must` rule was satisfied by substring presence in output/evidence text,
+    so a rule that also quoted an unrelated word ('agents_report.md' ...
+    'error') passed as soon as the model's prose happened to say "error" —
+    even though the file was never written. Filename-shaped quoted terms now
+    require the file to actually exist in AGENT_WORKDIR.
+    """
+
+    def _runtime(self, tmp_path: Path, must: list[str], monkeypatch) -> AgentRuntime:
+        workdir = tmp_path / "work"
+        workdir.mkdir()
+        monkeypatch.setenv("AGENT_WORKDIR", str(workdir))
+        agent_dir = _make_agent_dir(
+            tmp_path, tools=[], guardrails=GuardrailSpec(must=must)
+        )
+        return AgentRuntime.from_agent_dir(agent_dir), workdir
+
+    def test_filename_rule_missing_when_file_not_written(self, tmp_path, monkeypatch):
+        runtime, _ = self._runtime(tmp_path, ["criar 'output.json'"], monkeypatch)
+        missing = runtime._check_must_compliance("all done, no files though", [])
+        assert missing == ["criar 'output.json'"]
+
+    def test_filename_rule_satisfied_when_file_exists(self, tmp_path, monkeypatch):
+        runtime, workdir = self._runtime(tmp_path, ["criar 'output.json'"], monkeypatch)
+        (workdir / "output.json").write_text("{}")
+        missing = runtime._check_must_compliance("all done", [])
+        assert missing == []
+
+    def test_unrelated_quoted_word_does_not_mask_missing_file(self, tmp_path, monkeypatch):
+        """The exact bug: a rule quoting both a filename and a content word."""
+        rule = "criar 'agents_report.md' com status 'error' destacado"
+        runtime, _ = self._runtime(tmp_path, [rule], monkeypatch)
+        output = "Relatório: 2 agentes com status error encontrados."
+        missing = runtime._check_must_compliance(output, [])
+        assert missing == [rule]
+
+    def test_non_filename_quoted_phrase_still_uses_text_match(self, tmp_path, monkeypatch):
+        """Non-filename quoted phrases (exact confirmation strings, etc.) are
+        unaffected — they keep matching against output/evidence text."""
+        runtime, _ = self._runtime(
+            tmp_path, ["finalizar com a frase exata 'TAREFA CONCLUÍDA'"], monkeypatch
+        )
+        missing = runtime._check_must_compliance("Trabalho pronto. TAREFA CONCLUÍDA", [])
+        assert missing == []
+
+
+class TestMustComplianceCorrectionMessage:
+    """Regression coverage for 2026-07-20 (FORGE F5): when a missing rule is
+    about a file, the correction sent back to the model must explicitly say
+    to call write_file — the old generic "use tools if necessary" (or worse,
+    "do NOT call any tools" for all-quoted rules) let the model just
+    re-describe the file's content as text again instead of ever saving it.
+    """
+
+    def _runtime(self, tmp_path: Path, must: list[str], monkeypatch) -> AgentRuntime:
+        workdir = tmp_path / "work"
+        workdir.mkdir()
+        monkeypatch.setenv("AGENT_WORKDIR", str(workdir))
+        agent_dir = _make_agent_dir(
+            tmp_path, tools=[], guardrails=GuardrailSpec(must=must)
+        )
+        return AgentRuntime.from_agent_dir(agent_dir)
+
+    def test_missing_file_rule_explicitly_requests_write_file_call(self, tmp_path, monkeypatch):
+        from unittest.mock import patch
+
+        runtime = self._runtime(tmp_path, ["criar 'output.json'"], monkeypatch)
+        with patch.object(
+            runtime, "_run_tool_calling_cycle", wraps=runtime._run_tool_calling_cycle
+        ) as spy:
+            runtime.run("faça a tarefa")
+        # Second call is the must_compliance retry; first positional arg is
+        # the correction message sent back to the model.
+        assert spy.call_count >= 2
+        correction = spy.call_args_list[1].args[0]
+        assert "write_file" in correction
+        assert "output.json" in correction
+        assert "Do NOT call any tools" not in correction
+
+    def test_pure_textual_rule_still_forbids_tool_calls(self, tmp_path, monkeypatch):
+        """Bug 13 protection preserved: a rule with only a non-filename quoted
+        phrase must still tell the model not to call tools, to avoid the
+        unbounded tool-calling spiral that motivated this branch originally.
+
+        _check_must_compliance is mocked directly: MockProvider's response
+        echoes the input, which includes a rendering of the `must` rules
+        themselves — so a rule's own quoted phrase always appears in the
+        echoed output and the rule reads as satisfied on the first pass,
+        never reaching the correction path this test targets.
+        """
+        from unittest.mock import patch
+
+        runtime = self._runtime(
+            tmp_path, ["finalizar com a frase exata 'TAREFA CONCLUÍDA'"], monkeypatch
+        )
+        rule = "finalizar com a frase exata 'TAREFA CONCLUÍDA'"
+        with (
+            patch.object(runtime, "_check_must_compliance", side_effect=[[rule], []]),
+            patch.object(
+                runtime, "_run_tool_calling_cycle", wraps=runtime._run_tool_calling_cycle
+            ) as spy,
+        ):
+            runtime.run("faça a tarefa")
+        assert spy.call_count >= 2
+        correction = spy.call_args_list[1].args[0]
+        assert "Do NOT call any tools" in correction
+
+    def test_stops_retrying_once_satisfied(self, tmp_path, monkeypatch):
+        """Regression for 2026-07-20 (FORGE F5): the correction loop must
+        actually re-check after each attempt and stop as soon as the rule is
+        satisfied — not always burn all 3 attempts, and not give up after
+        exactly one regardless of outcome (the bug this loop replaces)."""
+        from unittest.mock import patch
+
+        runtime = self._runtime(tmp_path, ["criar 'output.json'"], monkeypatch)
+        with patch.object(
+            runtime, "_check_must_compliance", side_effect=[["criar 'output.json'"], []]
+        ) as check_spy:
+            runtime.run("faça a tarefa")
+        # First call finds it missing, correction runs, second call (the
+        # re-check) finds it satisfied — loop must stop there, not call a
+        # 3rd/4th time.
+        assert check_spy.call_count == 2
+
+    def test_exhausts_all_attempts_when_never_satisfied(self, tmp_path, monkeypatch):
+        """When the model never fixes it, the loop tries the full budget
+        (3 attempts) rather than giving up after one — matches the native
+        forge_runner.py runner's MAX_REFLECTION=3."""
+        from unittest.mock import patch
+
+        runtime = self._runtime(tmp_path, ["criar 'output.json'"], monkeypatch)
+        with patch.object(
+            runtime, "_run_tool_calling_cycle", wraps=runtime._run_tool_calling_cycle
+        ) as spy:
+            runtime.run("faça a tarefa")
+        # 1 initial attempt + 3 retries = 4 calls to _run_tool_calling_cycle
+        # (the file never gets created by MockProvider, so every re-check
+        # keeps finding it missing).
+        assert spy.call_count == 4

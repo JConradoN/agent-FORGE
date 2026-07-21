@@ -214,7 +214,7 @@ class AgentRuntime:
         input_text: str,
         system_prompt: str | None,
         history: list[dict],
-    ) -> tuple[str, list[dict]]:
+    ) -> tuple[str, list[dict], list[dict]]:
         """
         Tool calling cycle with loop guard.
 
@@ -224,6 +224,18 @@ class AgentRuntime:
           3. If model responds directly → return
 
         Loop guard: stops if the same (tool, args_hash) repeats in a round.
+
+        Returns (output_text, tool_results_log, messages) — the third element
+        is the full accumulated message history (including every tool call
+        and tool result from this cycle), not just history + a collapsed
+        text summary. A caller that needs to continue the conversation (e.g.
+        a must-compliance correction retry) should chain from THIS, not from
+        the original `history` plus the returned text — otherwise the model
+        loses access to file contents it already read and, needing to re-read
+        them, may not bother and just re-describe them as text again instead
+        of calling write_file. Octopus multi-provider investigation,
+        2026-07-20 (FORGE F5 regression) — confirmed independently by two
+        probes as a real, code-verified cause of wasted/lost context on retry.
         """
         provider = self._get_provider()
         tools_schema = self._build_tools_schema()
@@ -247,6 +259,17 @@ class AgentRuntime:
         _MAX_TOOL_REDIRECTS = 2
         no_tool_redirects = 0
 
+        # Tracks how many times we redirected the model out of a stuck
+        # reasoning loop (provider-level loop_detected — see llamacpp.py).
+        # Separate counter and separate (stronger) message from
+        # no_tool_redirects above: this fires even when tools HAVE already
+        # been called earlier in the cycle (tool_results_log non-empty),
+        # which is exactly the case no_tool_redirects doesn't cover — the
+        # gap that let the RTX 5060 Ti Bonsai run ramble 30K+ tokens with
+        # no new tool_call after its first successful write_file (2026-07-18).
+        _MAX_LOOP_REDIRECTS = 1
+        loop_redirects = 0
+
         for cycle in range(max_cycles):
             request = ProviderRequest(
                 agent_id=self.runtime_config.agent_id,
@@ -257,6 +280,26 @@ class AgentRuntime:
                 tools_schema=tools_schema if tools_schema else None,
             )
             response = provider.generate(request)
+
+            if response.metadata.get("loop_detected") and loop_redirects < _MAX_LOOP_REDIRECTS:
+                loop_redirects += 1
+                self.logger.warning(
+                    "loop_detected[%d/%d]: model reasoned for %s tokens with no content or "
+                    "tool_calls committed — redirecting",
+                    loop_redirects, _MAX_LOOP_REDIRECTS,
+                    response.metadata.get("decoded_tokens_approx"),
+                )
+                messages.append({"role": "assistant", "content": response.output_text})
+                messages.append({
+                    "role": "user",
+                    "content": (
+                        "You have been reasoning for a long time without taking any action "
+                        "or giving a final answer. Stop explaining your plan. In your next "
+                        "message, either call a tool immediately, or — if the task is already "
+                        "done — give your final answer in one short paragraph."
+                    ),
+                })
+                continue
 
             if not response.tool_calls:
                 # If tools are available and none have been executed yet, push back
@@ -281,7 +324,53 @@ class AgentRuntime:
                         ),
                     })
                     continue
-                return response.output_text, tool_results_log
+
+                # The redirect above only fires while zero tools have EVER been
+                # called (tool_results_log empty) — the instant the model calls
+                # even one read_file, this gate goes permanently silent for the
+                # rest of the cycle, per that condition. That's the exact gap
+                # that let FORGE F5 through unfixed: the model reads several
+                # source files (tool_results_log non-empty), writes a full,
+                # correct-looking analysis as chat TEXT instead of via
+                # write_file, and returns here — with nothing left to catch it,
+                # since must_compliance only runs afterward in run(), by which
+                # point this cycle has already ended. Octopus multi-provider
+                # investigation, 2026-07-20 — confirmed: the model completed
+                # every attempt via exactly this path, never the loop_guard or
+                # the max_cycles/final-inference fallback below. Reuse the same
+                # filename-existence check must_compliance uses in run(), but
+                # here — before the cycle ends — so a still-missing required
+                # file can trigger one real push toward calling the write tool
+                # while tool context is still fresh. Separate, tighter budget
+                # (own counter, checked here) so a model that truly has nothing
+                # left to write can't be redirected forever.
+                if (
+                    tools_schema
+                    and tool_results_log
+                    and no_tool_redirects < _MAX_TOOL_REDIRECTS
+                ):
+                    missing_files = self._missing_must_files()
+                    if missing_files:
+                        no_tool_redirects += 1
+                        self.logger.info(
+                            "no_tool_redirect[%d/%d]: required file(s) not yet written (%s) — redirecting",
+                            no_tool_redirects, _MAX_TOOL_REDIRECTS, ", ".join(missing_files),
+                        )
+                        messages.append({"role": "assistant", "content": response.output_text})
+                        messages.append({
+                            "role": "user",
+                            "content": (
+                                "You have described the content above but have not actually "
+                                "saved it. The following required file(s) still do not exist "
+                                f"on disk: {', '.join(missing_files)}. Call the write_file tool "
+                                "now for each of them, with the full content you just described. "
+                                "Do not just repeat it as chat text."
+                            ),
+                        })
+                        continue
+
+                messages.append({"role": "assistant", "content": response.output_text})
+                return response.output_text, tool_results_log, messages
 
             # Always append the assistant turn that requested tool_calls, even when
             # output_text is empty.  Without this, cycles > 0 send [user, tool(result)]
@@ -365,15 +454,51 @@ class AgentRuntime:
 
         messages.append({"role": "user", "content": completion_hint})
 
+        # tools_schema was omitted here originally — meaning the model was
+        # physically unable to call write_file (or any tool) at exactly the
+        # moment it's told to "produce your final response based on the
+        # tools executed above", even if the honest final response requires
+        # persisting something it only described in text so far. Octopus
+        # multi-provider investigation, 2026-07-20 (FORGE F5 regression):
+        # code-verified by two independent probes (qwen). Give it one more
+        # real chance to call a tool here — if it does, run the tool(s) and
+        # take the text response that follows; if it doesn't, this behaves
+        # exactly as before (a plain completion).
         final_req = ProviderRequest(
             agent_id=self.runtime_config.agent_id,
             input_text="",
             system_prompt=system_prompt,
             model=self.runtime_config.model_default,
             history=messages,
+            tools_schema=tools_schema if tools_schema else None,
         )
         final_response = provider.generate(final_req)
-        return final_response.output_text, tool_results_log
+        if final_response.tool_calls:
+            messages.append({
+                "role": "assistant",
+                "content": final_response.output_text,
+                "tool_calls": final_response.tool_calls,
+            })
+            for tc in final_response.tool_calls:
+                tool_name = tc.get("name", "")
+                tool_args = tc.get("arguments") or {}
+                self.logger.info("tool_call[final]: %s args=%s", tool_name, tool_args)
+                result = self._execute_tool(tool_name, **tool_args)
+                tool_results_log.append({
+                    "tool": tool_name, "args": tool_args,
+                    "result": result, "cycle": "final",
+                })
+                result_text = json.dumps(result, ensure_ascii=False, default=str) if result else "null"
+                messages.append({"role": "tool", "content": result_text, "name": tool_name})
+            closing_req = ProviderRequest(
+                agent_id=self.runtime_config.agent_id,
+                input_text="",
+                system_prompt=system_prompt,
+                model=self.runtime_config.model_default,
+                history=messages,
+            )
+            final_response = provider.generate(closing_req)
+        return final_response.output_text, tool_results_log, messages
 
     @staticmethod
     def _strip_xml_tool_tags(text: str) -> str:
@@ -381,6 +506,33 @@ class AgentRuntime:
         import re
         cleaned = re.sub(r"<tool_use>.*?</tool_use>", "", text, flags=re.DOTALL)
         return re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+
+    def _missing_must_files(self) -> list[str]:
+        """
+        Filename-shaped quoted terms from guardrails.must that don't exist on
+        disk yet. Cheap, deterministic subset of _check_must_compliance's
+        filename check — used mid-cycle (inside _run_tool_calling_cycle,
+        before the model is allowed to finish without calling write_file),
+        not just after the fact in run().
+        """
+        import re
+        import os as _os
+
+        must_rules = self.agent_spec.guardrails.must
+        if not must_rules:
+            return []
+
+        workdir = Path(_os.environ.get("AGENT_WORKDIR", "."))
+        _filename_re = re.compile(r"^[\w.-]+\.[A-Za-z0-9]{1,5}$")
+
+        missing_files: list[str] = []
+        for rule in must_rules:
+            quoted = re.findall(r"'([^']+)'", rule)
+            filename_terms = [q for q in quoted if _filename_re.match(q)]
+            for q in filename_terms:
+                if not (workdir / q).exists() and q not in missing_files:
+                    missing_files.append(q)
+        return missing_files
 
     def _check_must_compliance(
         self,
@@ -407,11 +559,26 @@ class AgentRuntime:
         # Truncate per-entry args to 200 chars so that long write_file content
         # doesn't push later entries (like run_bash) out of the judge's window.
         evidence_parts = []
+        evidence_parts_full = []
         for entry in tool_results_log:
-            args_str = json.dumps(entry.get("args", {}), ensure_ascii=False)[:200]
-            result_str = json.dumps(entry.get("result", ""), ensure_ascii=False)[:200]
-            evidence_parts.append(f"tool={entry['tool']} args={args_str} result={result_str}")
+            args_str = json.dumps(entry.get("args", {}), ensure_ascii=False)
+            result_str = json.dumps(entry.get("result", ""), ensure_ascii=False)
+            evidence_parts.append(
+                f"tool={entry['tool']} args={args_str[:200]} result={result_str[:200]}"
+            )
+            evidence_parts_full.append(
+                f"tool={entry['tool']} args={args_str} result={result_str}"
+            )
         evidence_text = "\n".join(evidence_parts) if evidence_parts else "(no tools executed)"
+        # Untruncated evidence — only for the deterministic quoted-phrase check below.
+        # The 200-char truncation exists to keep the LLM judge's context window from
+        # being crowded out by one big write_file entry (Bug 10); a plain substring
+        # search has no such concern and needs the full content, otherwise a rule
+        # satisfied deep inside a large write_file (e.g. a later section heading)
+        # is wrongly reported as missing — confirmed 2026-07-18 (Bonsai F3 crash).
+        evidence_text_full = (
+            "\n".join(evidence_parts_full) if evidence_parts_full else "(no tools executed)"
+        )
 
         # Called tool names for quick lookup
         called_tools = {e["tool"] for e in tool_results_log}
@@ -419,14 +586,32 @@ class AgentRuntime:
         missing = []
         open_rules = []
 
+        import os as _os
+        workdir = Path(_os.environ.get("AGENT_WORKDIR", "."))
+        _filename_re = re.compile(r"^[\w.-]+\.[A-Za-z0-9]{1,5}$")
+
         for rule in must_rules:
             # Rules with quoted phrases → deterministic check against output + evidence
             quoted = re.findall(r"'([^']+)'", rule)
             if quoted:
-                satisfied = any(q.lower() in output_text.lower() for q in quoted)
-                if not satisfied:
-                    # Check evidence: phrase in any tool result
-                    satisfied = any(q.lower() in evidence_text.lower() for q in quoted)
+                filename_terms = [q for q in quoted if _filename_re.match(q)]
+                if filename_terms:
+                    # Filename-shaped quoted term(s) present → authoritative and
+                    # mandatory (AND), not one-of-many alongside other quoted
+                    # words in the same rule. A rule like "criar 'x.json' com
+                    # campo 'status' preenchido" must not pass just because
+                    # 'status' happens to appear in the prose while x.json was
+                    # never written — confirmed 2026-07-20 (REAL P2): exactly
+                    # this shape ('agents_report.md' ... 'error') was marked
+                    # satisfied by the word 'error' alone. Only a real file on
+                    # disk counts for the filename term(s); other quoted words
+                    # in the same rule are ignored for this determination.
+                    satisfied = all((workdir / q).exists() for q in filename_terms)
+                else:
+                    satisfied = any(
+                        q.lower() in output_text.lower() or q.lower() in evidence_text_full.lower()
+                        for q in quoted
+                    )
                 if not satisfied:
                     missing.append(rule)
             else:
@@ -768,9 +953,10 @@ class AgentRuntime:
         )
 
         tool_results_log: list[dict] = []
+        cycle_messages: list[dict] = []
 
         if self.runtime_config.workflow_mode == "respond_or_tool":
-            output_text, tool_results_log = self._run_tool_calling_cycle(
+            output_text, tool_results_log, cycle_messages = self._run_tool_calling_cycle(
                 final_input, system_prompt, history
             )
             raw_response = None
@@ -810,21 +996,99 @@ class AgentRuntime:
                 )
 
         # Must compliance — verifica regras obrigatórias e corrige se necessário.
+        #
+        # Loops up to _MAX_MUST_COMPLIANCE_RETRIES times, re-checking after
+        # each correction, instead of a single shot-and-accept attempt. The
+        # native forge_runner.py runner (pre-AgentForge) does this natively —
+        # MAX_REFLECTION=3 rounds, each re-prompting the model to compare its
+        # own work against the task point by point before declaring done —
+        # and reliably gets 100% on tasks this single-shot version stalled on
+        # at ~18% (confirmed 2026-07-20, FORGE F5: model said it was done,
+        # and even said the required completion phrase, after just one
+        # generic nudge, without ever having called write_file for any of
+        # the 3 required documents — one correction attempt wasn't enough
+        # for a model that confidently considers a text description
+        # equivalent to having saved the file).
+        _MAX_MUST_COMPLIANCE_RETRIES = 3
         if self.agent_spec.guardrails.must:
-            must_missing = self._check_must_compliance(output_text, tool_results_log)
-            if must_missing:
-                self.logger.warning("must_compliance: rules not met: %s", must_missing)
-                correction = (
-                    "Your response is incomplete. The following mandatory rules were not met:\n"
-                    + "\n".join(f"- {r}" for r in must_missing)
-                    + "\n\nComplete your response by including the missing items. Use tools if necessary."
+            import re as _re
+            _filename_re = _re.compile(r"^[\w.-]+\.[A-Za-z0-9]{1,5}$")
+
+            def _missing_filename(rule: str) -> str | None:
+                for q in _re.findall(r"'([^']+)'", rule):
+                    if _filename_re.match(q):
+                        return q
+                return None
+
+            for _attempt in range(_MAX_MUST_COMPLIANCE_RETRIES):
+                must_missing = self._check_must_compliance(output_text, tool_results_log)
+                if not must_missing:
+                    break
+                self.logger.warning(
+                    "must_compliance[%d/%d]: rules not met: %s",
+                    _attempt + 1, _MAX_MUST_COMPLIANCE_RETRIES, must_missing,
                 )
+                # Rules with quoted phrases are USUALLY textual/formatting
+                # requirements (section headers, exact phrases, language) that
+                # never need a new tool call — inviting tool use for those
+                # risks an unbounded tool-calling spiral (Bug 13 — confirmed
+                # 2026-07-15 Qwythos, escalated to a full context-window crash
+                # 2026-07-18 Bonsai F3). But a quoted term can also be a
+                # filename (see _check_must_compliance's file-existence check
+                # above) — for those, "add the missing text to your response"
+                # is actively wrong: the model needs to call write_file, not
+                # talk about the file.
+                missing_files = [f for r in must_missing if (f := _missing_filename(r))]
+                all_textual = not missing_files and all(
+                    _re.search(r"'[^']+'", r) for r in must_missing
+                )
+                if missing_files:
+                    files_list = ", ".join(f"'{fn}'" for fn in missing_files)
+                    correction = (
+                        "Your response is incomplete. The following mandatory rules were not met:\n"
+                        + "\n".join(f"- {r}" for r in must_missing)
+                        + f"\n\nYou must call the write_file tool now to actually save {files_list} "
+                        + "— describing the content in your chat response does not save it to disk. "
+                        + "If you already wrote this content in a previous response, call write_file "
+                        + "with that same content for each missing file, one call per file."
+                    )
+                elif all_textual:
+                    correction = (
+                        "Your response is incomplete. The following mandatory rules were not met:\n"
+                        + "\n".join(f"- {r}" for r in must_missing)
+                        + "\n\nThese are textual/formatting requirements only (exact phrases, "
+                        + "section headers, or language). Add the missing text or formatting to "
+                        + "your existing response. Do NOT call any tools."
+                    )
+                else:
+                    correction = (
+                        "Your response is incomplete. The following mandatory rules were not met:\n"
+                        + "\n".join(f"- {r}" for r in must_missing)
+                        + "\n\nComplete your response by including the missing items. Use tools if necessary."
+                    )
                 # Reinicia um ciclo de ferramentas focado na correção.
-                # Passa o histórico atual para manter o contexto do que já foi feito.
-                output_text, correction_tools = self._run_tool_calling_cycle(
+                #
+                # Chains from cycle_messages (the FULL accumulated history of
+                # the previous cycle — every tool call and tool result, not
+                # just the collapsed final text) rather than history + a
+                # bare assistant-text turn. The latter silently discarded
+                # every read_file result from the prior cycle, so the model
+                # was told "call write_file now" for content it could no
+                # longer see — it would either re-read the same files again
+                # (wasted turns) or, worse, just re-describe them as text
+                # again since regenerating write_file's exact args without
+                # the source in context is unreliable. Falls back to the old
+                # collapsed form only if cycle_messages is empty (shouldn't
+                # happen once _run_tool_calling_cycle always returns it, kept
+                # only as a defensive guard). Octopus multi-provider
+                # investigation, 2026-07-20 (FORGE F5 regression).
+                retry_history = cycle_messages or (
+                    history + [{"role": "assistant", "content": output_text}]
+                )
+                output_text, correction_tools, cycle_messages = self._run_tool_calling_cycle(
                     correction,
                     system_prompt,
-                    history + [{"role": "assistant", "content": output_text}],
+                    retry_history,
                 )
                 tool_results_log.extend(correction_tools)
 
@@ -840,6 +1104,13 @@ class AgentRuntime:
                             "guardrail: persistent violations after must_compliance retry: %s",
                             guardrail_violations,
                         )
+            else:
+                still_missing = self._check_must_compliance(output_text, tool_results_log)
+                if still_missing:
+                    self.logger.error(
+                        "must_compliance: still not met after %d attempts: %s",
+                        _MAX_MUST_COMPLIANCE_RETRIES, still_missing,
+                    )
 
         # Update in-memory history for multi-turn sessions.
         if self.runtime_config.conversation_multi_turn:
