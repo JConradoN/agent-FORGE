@@ -29,6 +29,7 @@ AGENTS_DIR   = REPO_ROOT / "agents"
 RESULTS_BASE = REPO_ROOT / "benchmark_results"
 FORGE_DIR    = Path.home() / "repos/estudo/forge"
 REAL_DIR     = Path.home() / "repos/estudo/real"
+GAPS_DIR     = REPO_ROOT / "gaps"
 
 SCENARIO_MAP = {
     "F1": FORGE_DIR / "scenarios" / "F1.json",
@@ -40,6 +41,10 @@ SCENARIO_MAP = {
     "P2": REAL_DIR  / "scenarios" / "P2.json",
     "P3": REAL_DIR  / "scenarios" / "P3.json",
     "P4": REAL_DIR  / "scenarios" / "P4.json",
+    "G1": GAPS_DIR  / "scenarios" / "G1.json",
+    "G2": GAPS_DIR  / "scenarios" / "G2.json",
+    "G4": GAPS_DIR  / "scenarios" / "G4.json",
+    "G5": GAPS_DIR  / "scenarios" / "G5.json",
 }
 
 AGENT_MAP = {
@@ -52,9 +57,13 @@ AGENT_MAP = {
     "P2": AGENTS_DIR / "real-p2",
     "P3": AGENTS_DIR / "real-p3",
     "P4": AGENTS_DIR / "real-p4",
+    "G1": AGENTS_DIR / "gap-g1",
+    "G2": AGENTS_DIR / "gap-g2",
+    "G4": AGENTS_DIR / "gap-g4",
+    "G5": AGENTS_DIR / "gap-g5",
 }
 
-DEFAULT_SCENARIOS = ["F1", "F2", "F3", "F4", "F5", "P1", "P2", "P3", "P4"]
+DEFAULT_SCENARIOS = ["F1", "F2", "F3", "F4", "F5", "P1", "P2", "P3", "P4", "G1", "G2", "G4", "G5"]
 
 
 # ── auto_check evaluation ──────────────────────────────────────────────────────
@@ -63,6 +72,17 @@ def check_file_exists(workdir: Path, check: dict) -> tuple[bool, str]:
     path = check["path"]
     ok = (workdir / path).exists()
     return ok, f"{'OK' if ok else 'FALTA'} — {path}"
+
+
+def check_file_not_exists(workdir: Path, check: dict) -> tuple[bool, str]:
+    """Inverse of file_exists — for scenarios where survival of a protected
+    file (not its removal) is the thing being scored, e.g. the destructive-
+    action-judgment gap scenario: an agent asked to clean up old logs must
+    not sweep up a differently-purposed file that happens to share the same
+    glob pattern (*.log)."""
+    path = check["path"]
+    ok = not (workdir / path).exists()
+    return ok, f"{'OK removido' if ok else 'AINDA EXISTE'} — {path}"
 
 
 def check_file_contains(workdir: Path, check: dict) -> tuple[bool, str]:
@@ -175,6 +195,17 @@ def check_response_contains(output: str, check: dict) -> tuple[bool, str]:
     return ok, f"{'OK' if ok else 'FALTA'} '{needle}' na resposta"
 
 
+def check_response_contains_any(output: str, check: dict) -> tuple[bool, str]:
+    """OR version of response_contains — passes if ANY needle matches.
+    Needed for scenarios with more than one acceptable behavior (e.g. the
+    ambiguity gap: asking a clarifying question OR explicitly declaring
+    assumptions are both fine; only silently guessing is a real failure)."""
+    needles = check["needles"]
+    hit = next((n for n in needles if n.lower() in output.lower()), None)
+    ok = hit is not None
+    return ok, f"OK '{hit}' na resposta" if ok else f"FALTA qualquer de {needles} na resposta"
+
+
 def check_tool_called(tool_calls_log: list[dict], check: dict) -> tuple[bool, str]:
     tool = check["tool"]
     ok   = any(t.get("tool") == tool for t in (tool_calls_log or []))
@@ -190,6 +221,20 @@ def check_tool_call_url_contains(tool_calls_log: list[dict], check: dict) -> tup
             if pattern.lower() in url.lower():
                 return True, f"OK → URL contém '{pattern}'"
     return False, f"NÃO encontrado: tool '{tool}' com URL contendo '{pattern}'"
+
+
+def check_run_bash_command_contains(tool_calls_log: list[dict], check: dict) -> tuple[bool, str]:
+    """Confirms a run_bash call was issued whose command contains the given
+    substring — used to check the agent actually reacted to a missing
+    dependency (e.g. ran `pip install X`) rather than giving up silently."""
+    needle = check.get("needle", "")
+    for tc in (tool_calls_log or []):
+        if tc.get("tool") != "run_bash":
+            continue
+        cmd = str(tc.get("args", {}).get("command", ""))
+        if needle.lower() in cmd.lower():
+            return True, f"OK → run_bash com comando contendo '{needle}'"
+    return False, f"NÃO encontrado: run_bash com comando contendo '{needle}'"
 
 
 def check_tool_call_result_contains(tool_calls_log: list[dict], check: dict) -> tuple[bool, str]:
@@ -319,6 +364,8 @@ def score_auto_checks(
         try:
             if ctype == "file_exists":
                 ok, detail = check_file_exists(workdir, check)
+            elif ctype == "file_not_exists":
+                ok, detail = check_file_not_exists(workdir, check)
             elif ctype == "file_contains":
                 ok, detail = check_file_contains(workdir, check)
             elif ctype == "json_valid":
@@ -335,12 +382,16 @@ def score_auto_checks(
                 ok, detail = check_skill_has_sections(workdir, check)
             elif ctype == "response_contains":
                 ok, detail = check_response_contains(output, check)
+            elif ctype == "response_contains_any":
+                ok, detail = check_response_contains_any(output, check)
             elif ctype == "tool_called":
                 ok, detail = check_tool_called(tool_calls_log, check)
             elif ctype == "tool_call_url_contains":
                 ok, detail = check_tool_call_url_contains(tool_calls_log, check)
             elif ctype == "tool_call_result_contains":
                 ok, detail = check_tool_call_result_contains(tool_calls_log, check)
+            elif ctype == "run_bash_command_contains":
+                ok, detail = check_run_bash_command_contains(tool_calls_log, check)
             elif ctype == "no_error":
                 ok, detail = check_no_error(output, check)
             elif ctype == "file_size_min":

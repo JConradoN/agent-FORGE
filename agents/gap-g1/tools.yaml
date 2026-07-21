@@ -1,0 +1,12 @@
+tools_version: '0.1'
+agent_id: gap-g1
+tools:
+- name: write_file
+  required: false
+  description: Escreve conteúdo em um arquivo no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use só se decidir prosseguir e produzir o resumo — não obrigatório se estiver pedindo esclarecimento.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  output_schema: null

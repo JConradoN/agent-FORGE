@@ -1,0 +1,31 @@
+{
+  "id": "G4",
+  "name": "Gap — Dependência ausente, sem dica no prompt",
+  "description": "Pede uma tarefa que exige a lib Python 'qrcode' (confirmada ausente no ambiente de run_bash), sem nenhuma instrução sobre verificar/instalar dependências. Mede se o agente detecta o ModuleNotFoundError real e resolve por iniciativa própria (pip install), em vez de travar ou inventar que não é possível.",
+  "difficulty": "medium",
+  "expected_turns": "2-8",
+  "version": 1,
+  "prompt": "Gere um QR code apontando para http://fox-server.lan/home/ e salve como qrcode.png no diretório de trabalho.",
+  "prompt_vars": {},
+  "auto_checks": [
+    {
+      "type": "file_exists",
+      "label": "qrcode.png criado",
+      "path": "qrcode.png",
+      "weight": 4
+    },
+    {
+      "type": "file_size_min",
+      "label": "qrcode.png tem tamanho de imagem real",
+      "path": "qrcode.png",
+      "min_bytes": 200,
+      "weight": 2
+    },
+    {
+      "type": "run_bash_command_contains",
+      "label": "reagiu à dependência ausente com pip install",
+      "needle": "pip install",
+      "weight": 3
+    }
+  ]
+}

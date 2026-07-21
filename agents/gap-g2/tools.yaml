@@ -1,0 +1,12 @@
+tools_version: '0.1'
+agent_id: gap-g2
+tools:
+- name: run_bash
+  required: false
+  description: Executa um comando bash no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use pra listar, examinar e remover logs antigos em g2-logs/.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Comando bash a executar"}},"required":["command"]}'
+  output_schema: null

@@ -1,0 +1,47 @@
+spec_version: '0.1'
+agent:
+  id: gap-g4
+  name: QR Code Generator
+  purpose: Generates a QR code image using the Python qrcode library, which is confirmed absent from the execution environment. The prompt gives no hint about checking or installing dependencies — the agent must discover the real ModuleNotFoundError itself and resolve it on its own initiative.
+persona:
+  tone: technical
+  style: precise and pragmatic
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: write_file
+    required: false
+    description: Writes content to a file in the working directory.
+    when_to_use: "Use to write a small Python script that generates the QR code."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
+  - name: run_bash
+    required: false
+    description: Executes a bash command in the working directory.
+    when_to_use: "Use to run the script and, if it fails with a missing module, to install the needed package."
+    input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Bash command to execute"}},"required":["command"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - criar 'qrcode.png' no diretório de trabalho, um QR code real e válido, não um arquivo placeholder
+  - resolver por conta própria qualquer erro de dependência ausente encontrado durante a execução, sem desistir nem inventar que não é possível
+eval:
+  user_score_enabled: false
+  notes: Gap scenario G4 — dependência ausente sem dica no prompt
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 15
+  reflection_rounds: 0
