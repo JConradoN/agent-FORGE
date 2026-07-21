@@ -608,6 +608,31 @@ def _docker_start(name: str) -> None:
         subprocess.run(["docker", "start", name], capture_output=True)
 
 
+def _wait_for_llamacpp_ready(timeout_s: int = 60) -> None:
+    """Polls llama.cpp's /health until it answers before running any
+    scenario. Without this, the very first scenario (always F1 if present)
+    would occasionally hit the server in the brief window right after
+    `docker start` returns but before llama-server has actually finished
+    booting and bound its port — confirmed 2026-07-21, gemma4:12b: F1 failed
+    twice with 'Could not connect to llama.cpp server' at the very start of
+    two separate runs, while every later scenario in the same run connected
+    fine. A container being 'Up' doesn't mean the process inside it is
+    actually accepting connections yet."""
+    import requests
+
+    base_url = os.environ.get("LLAMACPP_HOST", "http://localhost:8082").rstrip("/")
+    deadline = time.monotonic() + timeout_s
+    while time.monotonic() < deadline:
+        try:
+            resp = requests.get(f"{base_url}/health", timeout=3)
+            if resp.status_code == 200:
+                return
+        except requests.exceptions.RequestException:
+            pass
+        time.sleep(1)
+    print(f"[infra] aviso: {base_url}/health não respondeu em {timeout_s}s — seguindo mesmo assim", flush=True)
+
+
 # ── main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -639,6 +664,7 @@ def main():
         # --provider llamacpp → para Ollama antes de iniciar; ao final sobe de volta.
         if args.provider == "llamacpp":
             _docker_stop("ollama")
+            _wait_for_llamacpp_ready()
     else:
         # Ollama provider → para TurboQuant antes de iniciar; ao final sobe de volta.
         _docker_stop("turboquant")
