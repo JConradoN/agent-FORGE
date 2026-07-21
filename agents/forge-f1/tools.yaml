@@ -1,0 +1,21 @@
+tools_version: '0.1'
+agent_id: forge-f1
+tools:
+- name: write_file
+  required: false
+  description: Escreve conteúdo em um arquivo no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use para criar imoveis.json e index.html.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  output_schema: null
+- name: run_bash
+  required: false
+  description: Executa um comando bash no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use para subir o servidor HTTP e confirmar com curl que está respondendo.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Comando bash a executar"}},"required":["command"]}'
+  output_schema: null

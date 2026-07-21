@@ -1,0 +1,59 @@
+spec_version: '0.1'
+agent:
+  id: forge-f5
+  name: FORGE Scripts Code Reviewer
+  purpose: Performs a full code review of the FORGE benchmark framework's own source (4 Python files, ~1600 lines), produces a prioritized fix plan and quality report, and implements the high-priority fixes.
+persona:
+  tone: technical
+  style: precise and thorough
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: read_file
+    required: false
+    description: Reads a file from the working directory.
+    when_to_use: "Use to read all 4 files in forge-scripts/ before reviewing."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"}},"required":["path"]}'
+  - name: write_file
+    required: false
+    description: Writes content to a file in the working directory.
+    when_to_use: "Use to create code_review.md, plano_correcoes.md, quality_report.md, and to apply high-priority fixes to the source files."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
+  - name: run_bash
+    required: false
+    description: Executes a bash command in the working directory.
+    when_to_use: "Use to sanity-check that fixed files still import cleanly."
+    input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Bash command to execute"}},"required":["command"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - ler os 4 arquivos em forge-scripts/ (forge_runner.py, forge_claude_runner.py, forge_mock_server.py, forge_telegram_runner.py) antes de revisar
+  - criar 'code_review.md' com no mínimo 3 problemas por arquivo (localização, impacto, correção proposta), cobrindo os 4 arquivos
+  - criar 'plano_correcoes.md' com os problemas priorizados em Alta / Média / Baixa
+  - implementar as correções de prioridade Alta nos arquivos, sem alterar a interface pública nem adicionar dependências externas
+  - criar 'quality_report.md' com tabela antes/depois por arquivo e checklist de pendências
+  - confirmar que forge_runner.py ainda importa corretamente depois das correções
+  - finalizar a resposta com a frase exata 'REVISÃO CONCLUÍDA'
+  must_not:
+  - alterar nomes de funções exportadas ou parâmetros públicos dos arquivos revisados
+eval:
+  user_score_enabled: false
+  notes: Scenario FORGE F5 — code review completo do próprio framework FORGE
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 20
+  reflection_rounds: 0

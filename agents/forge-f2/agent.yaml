@@ -1,0 +1,58 @@
+spec_version: '0.1'
+agent:
+  id: forge-f2
+  name: Web Relevance Analyst
+  purpose: Fetches a web page, analyzes its relevance to the local AI stack (Ollama, agents, n8n, Qdrant, Docker), writes a structured report, and notifies the result via Claudio.
+persona:
+  tone: technical
+  style: objective and analytical
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: http_get
+    required: false
+    description: Performs GET on a URL and returns text.
+    when_to_use: "Use to fetch the target page's content."
+    input_schema: '{"type":"object","properties":{"url":{"type":"string","description":"Complete URL"},"headers":{"type":"object","description":"Optional headers","default":{}}},"required":["url"]}'
+  - name: write_file
+    required: false
+    description: Writes content to a file in the working directory.
+    when_to_use: "Use to save the relevance report in Markdown."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
+  - name: send_claudio
+    required: false
+    description: Sends a message through the Claudio Telegram bot to notify the user.
+    when_to_use: "Use at the end to send the page title, relevance classification, and the report's first paragraph."
+    input_schema: '{"type":"object","properties":{"message":{"type":"string","description":"Message to send (supports Markdown)"}},"required":["message"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - buscar a URL indicada no prompt via http_get antes de escrever o relatório
+  - salvar o relatório em arquivo markdown com write_file
+  - incluir as seções RESUMO, TECNOLOGIAS IDENTIFICADAS, RELEVÂNCIA PARA O STACK, OPORTUNIDADES e CONCLUSÃO no relatório
+  - enviar notificação via send_claudio com título da página, classificação de relevância e primeiro parágrafo
+  - "finalizar a resposta com a frase exata 'ANÁLISE CONCLUÍDA'"
+  must_not:
+  - inventar conteúdo da página sem ter chamado http_get primeiro
+  - enviar notificação via send_claudio sem ter salvo o relatório antes
+eval:
+  user_score_enabled: false
+  notes: Scenario FORGE F2 — análise web + relatório + notificação Claudio
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 12
+  reflection_rounds: 0

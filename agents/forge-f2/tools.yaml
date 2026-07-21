@@ -1,0 +1,30 @@
+tools_version: '0.1'
+agent_id: forge-f2
+tools:
+- name: http_get
+  required: false
+  description: Faz GET numa URL e retorna o texto.
+  category: null
+  status: stable
+  when_to_use: Use para buscar o conteúdo da página alvo.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"url":{"type":"string","description":"URL completa"},"headers":{"type":"object","description":"Headers opcionais","default":{}}},"required":["url"]}'
+  output_schema: null
+- name: write_file
+  required: false
+  description: Escreve conteúdo em um arquivo no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use para salvar o relatório de relevância em Markdown.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  output_schema: null
+- name: send_claudio
+  required: false
+  description: Envia uma mensagem pelo bot Claudio no Telegram.
+  category: null
+  status: stable
+  when_to_use: Use ao final para notificar título, classificação de relevância e primeiro parágrafo.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"message":{"type":"string","description":"Mensagem a enviar (aceita Markdown)"}},"required":["message"]}'
+  output_schema: null

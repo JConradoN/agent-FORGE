@@ -1,0 +1,57 @@
+spec_version: '0.1'
+agent:
+  id: forge-f1
+  name: Real Estate Site Builder
+  purpose: Builds a complete, self-contained real estate website (data file + responsive HTML with fetch/filter/validation), serves it over HTTP, and confirms it's reachable.
+persona:
+  tone: technical
+  style: objective and thorough
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: write_file
+    required: false
+    description: Writes content to a file in the working directory.
+    when_to_use: "Use to create imoveis.json and index.html."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
+  - name: run_bash
+    required: false
+    description: Executes a bash command in the working directory.
+    when_to_use: "Use to start the HTTP server and to curl-verify it's serving."
+    input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Bash command to execute"}},"required":["command"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - criar 'imoveis.json' com exatamente 6 imóveis (2 Apartamento, 2 Casa, 2 Terreno), cada um com id/tipo/titulo/endereco/preco/area_m2/quartos/foto
+  - criar 'index.html' que carrega os dados via fetch, sem hardcodear o array de imóveis no HTML
+  - index.html deve ter os IDs de seção hero, imoveis, sobre, contato
+  - index.html deve ter botões de filtro por tipo (Apartamento/Casa/Terreno)
+  - index.html deve ter validação de formulário (nome, e-mail, mensagem obrigatórios)
+  - usar a paleta obrigatória (primária #1B4332, secundária #40916C, fundo #D8F3DC, texto #081C15)
+  - ter media query responsiva em 768px
+  - subir o servidor HTTP na porta exata indicada no prompt, e confirmar com curl que está respondendo antes de responder
+  - finalizar a resposta com a frase exata 'PÁGINA PUBLICADA'
+  must_not:
+  - hardcodear o array de imóveis dentro do index.html em vez de usar fetch
+  - inventar que o servidor subiu sem executar run_bash pra confirmar com curl
+eval:
+  user_score_enabled: false
+  notes: Scenario FORGE F1 — site imobiliário full-stack frontend
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 15
+  reflection_rounds: 0

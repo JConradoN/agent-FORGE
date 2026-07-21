@@ -1,0 +1,53 @@
+spec_version: '0.1'
+agent:
+  id: real-p1
+  name: Hacker News Scraper
+  purpose: Navigates a live page with a headless browser, extracts the top 10 posts, and writes structured JSON plus a Markdown summary.
+persona:
+  tone: technical
+  style: objective and thorough
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: browser_navigate
+    required: false
+    description: Navigates to a URL with headless Chromium and returns the rendered page text (JavaScript already executed).
+    when_to_use: "Use to load https://news.ycombinator.com — the content is dynamic, http_get would miss it."
+    input_schema: '{"type":"object","properties":{"url":{"type":"string"},"wait_selector":{"type":"string","description":"Optional CSS selector to wait for"}},"required":["url"]}'
+  - name: write_file
+    required: false
+    description: Writes content to a file in the working directory.
+    when_to_use: "Use to save hn_top10.json and resumo.md."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - usar browser_navigate (não http_get) — o conteúdo é dinâmico
+  - extrair os 10 primeiros posts (título, pontuação, número de comentários, URL)
+  - salvar em 'hn_top10.json' como array de objetos com campos rank, title, url, score, comments
+  - criar 'resumo.md' com tabela markdown (rank, título truncado em 60 chars, score) e seção DESTAQUE com o post de maior score
+  - "finalizar a resposta com a frase exata 'COLETA CONCLUÍDA: [N] posts extraídos, maior score: [título]'"
+  must_not:
+  - usar http_get pra carregar a página do Hacker News
+  - inventar dados de posts sem ter navegado até a página primeiro
+eval:
+  user_score_enabled: false
+  notes: Scenario REAL P1 — browser scraping de página dinâmica
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 12
+  reflection_rounds: 0

@@ -1,0 +1,21 @@
+tools_version: '0.1'
+agent_id: real-p1
+tools:
+- name: browser_navigate
+  required: false
+  description: Navega até uma URL com Chromium headless e retorna o texto da página (JavaScript já executado).
+  category: null
+  status: stable
+  when_to_use: Use para carregar https://news.ycombinator.com — o conteúdo é dinâmico, http_get não pegaria.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"url":{"type":"string"},"wait_selector":{"type":"string","description":"Seletor CSS opcional para aguardar antes de ler"}},"required":["url"]}'
+  output_schema: null
+- name: write_file
+  required: false
+  description: Escreve conteúdo em um arquivo no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use para salvar hn_top10.json e resumo.md.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  output_schema: null

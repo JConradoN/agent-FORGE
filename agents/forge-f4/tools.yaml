@@ -1,0 +1,30 @@
+tools_version: '0.1'
+agent_id: forge-f4
+tools:
+- name: read_file
+  required: false
+  description: Lê um arquivo do diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use pra ler buggy-module/cache.py, retry.py e logger.py antes do review.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"}},"required":["path"]}'
+  output_schema: null
+- name: write_file
+  required: false
+  description: Escreve conteúdo em um arquivo no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use pra criar code_review.md e aplicar as correções nos arquivos com bug.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  output_schema: null
+- name: run_bash
+  required: false
+  description: Executa um comando bash no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use pra rodar buggy-module/validate.py e conferir ALL TESTS PASSED.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Comando bash a executar"}},"required":["command"]}'
+  output_schema: null

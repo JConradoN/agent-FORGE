@@ -31,18 +31,30 @@ FORGE_DIR    = Path.home() / "repos/estudo/forge"
 REAL_DIR     = Path.home() / "repos/estudo/real"
 
 SCENARIO_MAP = {
+    "F1": FORGE_DIR / "scenarios" / "F1.json",
+    "F2": FORGE_DIR / "scenarios" / "F2.json",
     "F3": FORGE_DIR / "scenarios" / "F3.json",
+    "F4": FORGE_DIR / "scenarios" / "F4.json",
+    "F5": FORGE_DIR / "scenarios" / "F5.json",
+    "P1": REAL_DIR  / "scenarios" / "P1.json",
+    "P2": REAL_DIR  / "scenarios" / "P2.json",
     "P3": REAL_DIR  / "scenarios" / "P3.json",
     "P4": REAL_DIR  / "scenarios" / "P4.json",
 }
 
 AGENT_MAP = {
+    "F1": AGENTS_DIR / "forge-f1",
+    "F2": AGENTS_DIR / "forge-f2",
     "F3": AGENTS_DIR / "forge-f3",
+    "F4": AGENTS_DIR / "forge-f4",
+    "F5": AGENTS_DIR / "forge-f5",
+    "P1": AGENTS_DIR / "real-p1",
+    "P2": AGENTS_DIR / "real-p2",
     "P3": AGENTS_DIR / "real-p3",
     "P4": AGENTS_DIR / "real-p4",
 }
 
-DEFAULT_SCENARIOS = ["F3", "P3", "P4"]
+DEFAULT_SCENARIOS = ["F1", "F2", "F3", "F4", "F5", "P1", "P2", "P3", "P4"]
 
 
 # ── auto_check evaluation ──────────────────────────────────────────────────────
@@ -197,11 +209,80 @@ def check_tool_call_result_contains(tool_calls_log: list[dict], check: dict) -> 
 
 
 def check_no_error(output: str, _check: dict) -> tuple[bool, str]:
-    err_patterns = ["[ERRO]", "Error:", "Traceback", "Exception:"]
+    # "Error:"/"Exception:" need a word boundary before them — a plain substring
+    # search also matches inside compound identifiers the model legitimately
+    # quotes as reported/example content, e.g. "ConnectionRefusedError:" inside
+    # a data report (confirmed 2026-07-20, REAL P2 false positive: the model's
+    # own analysis quoted a fabricated exception name from scraped data, no
+    # real error occurred). "[ERRO]" and "Traceback" already have natural
+    # boundaries (bracket, whole word) so they don't need this treatment.
+    err_patterns = [r"\[ERRO\]", r"(?<![A-Za-z])Error:", r"Traceback", r"(?<![A-Za-z])Exception:"]
     for pat in err_patterns:
-        if pat in output:
+        if re.search(pat, output):
             return False, f"erro encontrado: {pat}"
     return True, "sem erros detectados"
+
+
+def check_file_size_min(workdir: Path, check: dict) -> tuple[bool, str]:
+    p = workdir / check["path"]
+    min_bytes = check["min_bytes"]
+    if not p.exists():
+        return False, f"arquivo não encontrado: {check['path']}"
+    size = p.stat().st_size
+    ok = size >= min_bytes
+    return ok, f"{check['path']}: {size} bytes ({'≥' if ok else '<'} {min_bytes})"
+
+
+def check_file_contains_count(workdir: Path, check: dict) -> tuple[bool, str]:
+    p = workdir / check["path"]
+    needle = check["needle"]
+    min_count = check.get("min_count", 1)
+    if not p.exists():
+        return False, f"arquivo não encontrado: {check['path']}"
+    content = p.read_text(errors="replace")
+    count = content.lower().count(needle.lower())
+    ok = count >= min_count
+    return ok, f"'{needle}' aparece {count}x em {check['path']} (mín {min_count})"
+
+
+def check_port_open(_workdir: Path, check: dict) -> tuple[bool, str]:
+    import socket
+    port = int(check["port"])
+    try:
+        with socket.create_connection(("localhost", port), timeout=3):
+            return True, f"porta {port} aberta"
+    except OSError:
+        return False, f"porta {port} fechada"
+
+
+def check_file_unchanged(workdir: Path, check: dict, scenarios_base: Path) -> tuple[bool, str]:
+    import hashlib
+    p = workdir / check["path"]
+    ref = scenarios_base / check["ref"]
+    if not p.exists():
+        return False, f"{check['path']} não existe"
+    if not ref.exists():
+        return False, f"referência não encontrada: {check['ref']}"
+    h_cur = hashlib.md5(p.read_bytes()).hexdigest()
+    h_ref = hashlib.md5(ref.read_bytes()).hexdigest()
+    ok = h_cur == h_ref
+    return ok, "inalterado" if ok else f"modificado (md5 {h_cur[:8]} ≠ {h_ref[:8]})"
+
+
+def check_run_command_ok(workdir: Path, check: dict) -> tuple[bool, str]:
+    cmd = check["cmd"]
+    expect = check.get("expect_output", "")
+    try:
+        r = subprocess.run(
+            cmd, shell=True, capture_output=True, text=True, timeout=30, cwd=str(workdir)
+        )
+        out = (r.stdout + r.stderr).strip()
+        ok = r.returncode == 0 and (not expect or expect.lower() in out.lower())
+        return ok, f"exit {r.returncode}: {out[:120]}"
+    except subprocess.TimeoutExpired:
+        return False, "timeout (30s)"
+    except Exception as e:
+        return False, str(e)
 
 
 def score_auto_checks(
@@ -210,6 +291,8 @@ def score_auto_checks(
     output: str,
     tool_calls_log: list[dict],
     model_slug: str = "",
+    port: int | None = None,
+    scenarios_base: Path | None = None,
 ) -> tuple[int, int, list[dict]]:
     """Retorna (score, max_score, detalhes)."""
     total  = 0
@@ -217,9 +300,14 @@ def score_auto_checks(
     details = []
 
     for check in checks:
-        # substitui {model_slug} nos path/needle templates
+        # substitui {model_slug}/{port}/{workdir} nos path/needle/cmd templates
         check = {
-            k: (v.replace("{model_slug}", model_slug) if isinstance(v, str) else v)
+            k: (
+                v.replace("{model_slug}", model_slug)
+                 .replace("{port}", str(port) if port is not None else "{port}")
+                 .replace("{workdir}", str(workdir))
+                if isinstance(v, str) else v
+            )
             for k, v in check.items()
         }
 
@@ -255,6 +343,16 @@ def score_auto_checks(
                 ok, detail = check_tool_call_result_contains(tool_calls_log, check)
             elif ctype == "no_error":
                 ok, detail = check_no_error(output, check)
+            elif ctype == "file_size_min":
+                ok, detail = check_file_size_min(workdir, check)
+            elif ctype == "file_contains_count":
+                ok, detail = check_file_contains_count(workdir, check)
+            elif ctype == "port_open":
+                ok, detail = check_port_open(workdir, check)
+            elif ctype == "file_unchanged":
+                ok, detail = check_file_unchanged(workdir, check, scenarios_base or FORGE_DIR / "scenarios")
+            elif ctype == "run_command_ok":
+                ok, detail = check_run_command_ok(workdir, check)
             else:
                 ok, detail = False, f"check type '{ctype}' não implementado"
         except Exception as e:
@@ -278,22 +376,49 @@ def score_auto_checks(
 
 def run_agent_on_scenario(scenario_id: str, model: str) -> dict:
     """Roda agent AgentForge no cenário e retorna {score, max_score, details, output, latency_ms}."""
-    scenario_path = SCENARIO_MAP[scenario_id]
-    agent_dir     = AGENT_MAP[scenario_id]
+    import random
+    import shutil
+
+    scenario_path  = SCENARIO_MAP[scenario_id]
+    agent_dir      = AGENT_MAP[scenario_id]
+    scenarios_base = scenario_path.parent
 
     scenario = json.loads(scenario_path.read_text())
-    prompt   = scenario["prompt"]
     model_slug = model.replace(":", "-").replace("/", "_")
-
-    # Substituições de template no prompt (ex: {model_slug})
-    prompt = prompt.replace("{model_slug}", model_slug)
-    # F3 usa {model_slug} no nome do arquivo — também nos auto_checks
     checks = scenario.get("auto_checks", [])
+
+    # Porta única por run — alguns cenários (FORGE F1) pedem pro modelo subir
+    # um servidor HTTP nessa porta e o check port_open confirma que ele usou
+    # a certa. Faixa alta evita colidir com serviços de produção (8082 etc).
+    port = random.randint(20000, 40000)
 
     # Workdir isolado por run (timestamp) — evita contaminação entre runs
     run_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     workdir = RESULTS_BASE / scenario_id / model_slug / f"run_{run_ts}"
     workdir.mkdir(parents=True, exist_ok=True)
+
+    # Copia fixtures de diretório pro workdir (ex: FORGE F4/F5) — mesmo padrão
+    # do forge_runner.py: fixtures/X/ → workdir/X/. Nunca toca no original.
+    for fixture_rel in scenario.get("fixture_dirs") or []:
+        src = scenarios_base / fixture_rel
+        dst = workdir / src.name
+        if dst.exists():
+            shutil.rmtree(dst)
+        shutil.copytree(src, dst)
+        print(f"  [fixture] copiado: {src.name}/ → {dst.name}/", flush=True)
+
+    # Copia PRD como TASK.md se definido (ex: FORGE F1/F4)
+    prd_rel = scenario.get("prd_file")
+    if prd_rel:
+        shutil.copy(scenarios_base / prd_rel, workdir / "TASK.md")
+        print(f"  [prd] copiado: {prd_rel} → TASK.md", flush=True)
+
+    # Substituições de template no prompt: model_slug, port, workdir e
+    # qualquer prompt_vars do cenário (ex: FORGE F2 tem target_url).
+    prompt_vars = dict(scenario.get("prompt_vars") or {})
+    prompt = scenario["prompt"].format(
+        model_slug=model_slug, port=port, workdir=str(workdir), **prompt_vars
+    )
 
     # Define workdir para os tools via env var
     os.environ["AGENT_WORKDIR"] = str(workdir)
@@ -310,6 +435,18 @@ def run_agent_on_scenario(scenario_id: str, model: str) -> dict:
         runtime = AgentRuntime.from_agent_dir(str(agent_dir))
         if model and runtime.runtime_config.model_default != model:
             runtime.runtime_config.model_default = model
+        # Cenário pode pedir mais ciclos que o padrão do agent-spec (ex: FORGE
+        # F5 declara max_turns=30 — o antigo forge_runner.py honrava isso por
+        # cenário; a spec estática do agente sozinha não escala pra tarefas
+        # maiores). Nunca reduz — só aumenta se o cenário pedir mais.
+        scenario_max_turns = scenario.get("max_turns")
+        if scenario_max_turns and scenario_max_turns > runtime.runtime_config.max_tool_cycles:
+            print(
+                f"  [max_turns] cenário pede {scenario_max_turns}, "
+                f"agent-spec tinha {runtime.runtime_config.max_tool_cycles} — ajustando",
+                flush=True,
+            )
+            runtime.runtime_config.max_tool_cycles = scenario_max_turns
         print(f"[{scenario_id}] runtime.run() iniciado...", flush=True)
         result = runtime.run(prompt)
     except Exception as e:
@@ -338,7 +475,8 @@ def run_agent_on_scenario(scenario_id: str, model: str) -> dict:
     tool_calls_log = result.get("metadata", {}).get("tool_calls_log") or []
 
     score, max_score, details = score_auto_checks(
-        checks, workdir, output, tool_calls_log, model_slug=model_slug
+        checks, workdir, output, tool_calls_log,
+        model_slug=model_slug, port=port, scenarios_base=scenarios_base,
     )
     pct = round(score / max_score * 100, 1) if max_score else 0.0
 
@@ -435,7 +573,17 @@ def main():
     if args.provider:
         os.environ["AGENTFORGE_PROVIDER"] = args.provider
         if args.provider == "llamacpp" and "LLAMACPP_THINKING_BUDGET" not in os.environ:
-            os.environ["LLAMACPP_THINKING_BUDGET"] = "800"
+            # Forcing a thinking budget > 0 sets chat_template_kwargs to
+            # enable_thinking=True (see llamacpp.py) — for a model whose
+            # slug says "-nothink" that channel was never tuned for, and it
+            # can degenerate into an endless reasoning ramble that never
+            # resolves into content or a tool_call (confirmed 2026-07-20:
+            # this alone, not any harness/engine logic, was the entire
+            # FORGE F5 regression — 17.6% forced-thinking vs 100% with
+            # thinking off, identical model/scenario/backend otherwise).
+            os.environ["LLAMACPP_THINKING_BUDGET"] = (
+                "0" if "nothink" in args.model.lower() else "800"
+            )
         # TurboQuant (21GB VRAM) e Ollama com modelos grandes são mutuamente exclusivos.
         # --provider llamacpp → para Ollama antes de iniciar; ao final sobe de volta.
         if args.provider == "llamacpp":
@@ -454,6 +602,18 @@ def main():
         r = run_agent_on_scenario(sid, args.model)
         results.append(r)
         print(format_scenario_report(r), flush=True)
+        if not args.no_notify:
+            sys.path.insert(0, str(REPO_ROOT / "src"))
+            from agentforge.tools.send_claudio import send_claudio
+            icon = "✅" if r["pct"] >= 70 else ("⚠️" if r["pct"] >= 40 else "❌")
+            failed = [d["label"] for d in r.get("details", []) if not d.get("ok")]
+            msg = (
+                f"{icon} *{r['scenario']}* ({r['model']}): {r['score']}/{r['max_score']} "
+                f"({r['pct']}%) — {r['latency_ms']/1000:.1f}s"
+            )
+            if failed:
+                msg += "\nFalhou: " + ", ".join(failed[:5])
+            send_claudio(msg)
 
     # Sumário final
     total   = sum(r["score"] for r in results)

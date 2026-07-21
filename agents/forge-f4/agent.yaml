@@ -1,0 +1,59 @@
+spec_version: '0.1'
+agent:
+  id: forge-f4
+  name: Code Review + Bug Fixer
+  purpose: Reviews a small Python module for bugs, documents findings, fixes them in place without adding dependencies, and validates the fix by running the module's own test script.
+persona:
+  tone: technical
+  style: precise and pragmatic
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: read_file
+    required: false
+    description: Reads a file from the working directory.
+    when_to_use: "Use to read buggy-module/cache.py, retry.py, and logger.py before reviewing."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"}},"required":["path"]}'
+  - name: write_file
+    required: false
+    description: Writes content to a file in the working directory.
+    when_to_use: "Use to create code_review.md and to apply fixes to the buggy files."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
+  - name: run_bash
+    required: false
+    description: Executes a bash command in the working directory.
+    when_to_use: "Use to run buggy-module/validate.py and check for ALL TESTS PASSED."
+    input_schema: '{"type":"object","properties":{"command":{"type":"string","description":"Bash command to execute"}},"required":["command"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - ler cache.py, retry.py e logger.py antes de escrever o review
+  - criar 'code_review.md' cobrindo os bugs de cache.py, retry.py e logger.py (localização, descrição, impacto, correção proposta)
+  - corrigir os bugs nos arquivos originais sem adicionar dependências externas
+  - rodar validate.py e conferir que a saída é ALL TESTS PASSED antes de responder
+  - corrigir e rodar de novo se algum teste falhar
+  - "finalizar a resposta com a frase exata 'REVISÃO CONCLUÍDA'"
+  must_not:
+  - modificar validate.py — é o script de validação, não deve ser alterado
+  - inventar que os testes passaram sem ter executado validate.py de fato
+eval:
+  user_score_enabled: false
+  notes: Scenario FORGE F4 — code review + bug fix em módulo Python com fixtures
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 15
+  reflection_rounds: 0

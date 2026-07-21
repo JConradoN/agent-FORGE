@@ -1,0 +1,39 @@
+tools_version: '0.1'
+agent_id: real-p2
+tools:
+- name: browser_navigate
+  required: false
+  description: Navega até uma URL com Chromium headless e retorna o texto da página (JavaScript já executado).
+  category: null
+  status: stable
+  when_to_use: Use para carregar a página inicial da SPA.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"url":{"type":"string"},"wait_selector":{"type":"string","description":"Seletor CSS opcional para aguardar antes de ler"}},"required":["url"]}'
+  output_schema: null
+- name: browser_execute_js
+  required: false
+  description: Executa JavaScript numa página e retorna o resultado. Necessário para páginas SPA cujo dado só existe numa variável JS.
+  category: null
+  status: stable
+  when_to_use: 'Use para ler window.__AGENTS_DATA__ via: return JSON.stringify(window.__AGENTS_DATA__)'
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"url":{"type":"string"},"script":{"type":"string","description":"expressão JS a avaliar"}},"required":["url","script"]}'
+  output_schema: null
+- name: browser_screenshot
+  required: false
+  description: Navega até uma URL e salva um screenshot no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use para salvar 'page.png' da SPA.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"url":{"type":"string"},"filename":{"type":"string"}},"required":["url","filename"]}'
+  output_schema: null
+- name: write_file
+  required: false
+  description: Escreve conteúdo em um arquivo no diretório de trabalho.
+  category: null
+  status: stable
+  when_to_use: Use para salvar agents_raw.json e agents_report.md.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Caminho relativo do arquivo"},"content":{"type":"string","description":"Conteúdo a escrever"}},"required":["path","content"]}'
+  output_schema: null

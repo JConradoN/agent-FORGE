@@ -1,0 +1,65 @@
+spec_version: '0.1'
+agent:
+  id: real-p2
+  name: SPA Data Extractor
+  purpose: Extracts data from a JavaScript-only single-page application using browser automation — never static HTML parsing — and reports on it.
+persona:
+  tone: technical
+  style: objective and thorough
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: browser_navigate
+    required: false
+    description: Navigates to a URL with headless Chromium and returns the rendered page text (JavaScript already executed).
+    when_to_use: "Use to load the SPA's initial page."
+    input_schema: '{"type":"object","properties":{"url":{"type":"string"},"wait_selector":{"type":"string","description":"Optional CSS selector to wait for"}},"required":["url"]}'
+  - name: browser_execute_js
+    required: false
+    description: Executes JavaScript on a page and returns the result. Required for SPA pages whose data only exists in a JS variable.
+    when_to_use: "Use to read window.__AGENTS_DATA__ via: return JSON.stringify(window.__AGENTS_DATA__)"
+    input_schema: '{"type":"object","properties":{"url":{"type":"string"},"script":{"type":"string","description":"JS expression to evaluate"}},"required":["url","script"]}'
+  - name: browser_screenshot
+    required: false
+    description: Navigates to a URL and saves a screenshot to the working directory.
+    when_to_use: "Use to save 'page.png' of the SPA."
+    input_schema: '{"type":"object","properties":{"url":{"type":"string"},"filename":{"type":"string"}},"required":["url","filename"]}'
+  - name: write_file
+    required: false
+    description: Writes content to a file in the working directory.
+    when_to_use: "Use to save agents_raw.json and agents_report.md."
+    input_schema: '{"type":"object","properties":{"path":{"type":"string","description":"Relative path of the file"},"content":{"type":"string","description":"Content to write"}},"required":["path","content"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - usar SOMENTE ferramentas browser_* — a página é uma SPA e o HTML estático não contém os dados
+  - usar browser_execute_js pra ler window.__AGENTS_DATA__
+  - salvar os dados brutos em 'agents_raw.json'
+  - criar 'agents_report.md'
+  - agents_report.md deve conter contagem de agentes, lista com nome/status/última execução, agentes com status de erro destacados, e recomendação
+  - salvar screenshot em 'page.png' via browser_screenshot
+  - "finalizar a resposta com a frase exata 'EXTRAÇÃO CONCLUÍDA: [N] agentes encontrados, [N] com erro'"
+  must_not:
+  - usar http_get pra acessar a SPA
+  - inventar dados de agentes sem ter executado browser_execute_js primeiro
+eval:
+  user_score_enabled: false
+  notes: Scenario REAL P2 — SPA com JavaScript dinâmico
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 12
+  reflection_rounds: 0
