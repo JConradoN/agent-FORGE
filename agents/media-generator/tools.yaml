@@ -1,0 +1,24 @@
+tools_version: '0.1'
+agent_id: media-generator
+tools:
+- name: comfyui_generate_image
+  required: false
+  description: Gera uma imagem via ComfyUI no fox-wks.
+  category: null
+  status: stable
+  when_to_use: Use sempre que a tarefa pedir uma imagem.
+  when_not_to_use: null
+  input_schema: '{"type":"object","properties":{"prompt":{"type":"string","description":"Descrição
+    da imagem"},"engine":{"type":"string","description":"sdxl (padrão) ou flux"},"full_body":{"type":"boolean"},"face_image_path":{"type":"string"}},"required":["prompt"]}'
+  output_schema: null
+- name: comfyui_generate_audio
+  required: false
+  description: Gera áudio TTS em português via OmniVoice no fox-wks.
+  category: null
+  status: stable
+  when_to_use: Use apenas se a tarefa pedir explicitamente áudio ou narração.
+  when_not_to_use: A tarefa pediu só uma imagem.
+  input_schema: '{"type":"object","properties":{"text":{"type":"string","description":"Texto
+    a sintetizar"},"voice_profile":{"type":"string","description":"conrado,
+    claudio, raposa (padrão) ou tartaruga"}},"required":["text"]}'
+  output_schema: null

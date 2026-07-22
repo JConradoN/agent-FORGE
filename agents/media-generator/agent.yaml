@@ -1,0 +1,61 @@
+spec_version: '0.1'
+agent:
+  id: media-generator
+  name: Media Generator
+  purpose: Agente de propósito geral para gerar imagens e, quando pedido, narração
+    em áudio via ComfyUI/OmniVoice reais no fox-wks. Feito pra ser reaproveitado
+    por qualquer chamador (Cláudio, pipeline do Canal, outros agentes) — não é
+    um cenário de benchmark.
+persona:
+  tone: technical
+  style: precise and pragmatic
+  personality: null
+channel:
+  type: cli
+  interface: cli
+tools:
+  - name: comfyui_generate_image
+    required: false
+    description: Gera uma imagem via ComfyUI no fox-wks (JuggernautXL/SDXL por
+      padrão ou Flux Schnell).
+    when_to_use: "Use sempre que a tarefa pedir uma imagem."
+    input_schema: '{"type":"object","properties":{"prompt":{"type":"string"},"engine":{"type":"string"},"full_body":{"type":"boolean"},"face_image_path":{"type":"string"}},"required":["prompt"]}'
+  - name: comfyui_generate_audio
+    required: false
+    description: Gera síntese de voz em português via OmniVoice no fox-wks.
+    when_to_use: "Use apenas se a tarefa pedir explicitamente áudio ou narração."
+    input_schema: '{"type":"object","properties":{"text":{"type":"string"},"voice_profile":{"type":"string"}},"required":["text"]}'
+memory:
+  type: none
+  enabled: false
+  max_turns: 0
+  policy: truncate
+output:
+  mode: text
+  format: text
+guardrails:
+  must:
+  - se a tarefa pedir uma imagem, chamar a tool comfyui_generate_image de verdade
+    antes de responder
+  - se a tarefa pedir áudio ou narração, chamar a tool comfyui_generate_audio de
+    verdade antes de responder
+  - incluir na resposta final o caminho ou URL do arquivo gerado, retornado pela
+    tool
+  must_not:
+  - inventar que a imagem ou o áudio foram gerados sem ter chamado as tools de
+    verdade
+  - chamar comfyui_generate_audio quando a tarefa só pediu uma imagem
+  optional: []
+eval:
+  user_score_enabled: false
+  notes: Agente de produção — geração de mídia reaproveitável (substitui o uso
+    ad-hoc do cenário de benchmark gap-g5 para esse fim).
+deployment:
+  provider: ollama
+model_policy:
+  default_model: qwen3.5:27b
+  fallback_model: null
+workflow:
+  mode: respond_or_tool
+  max_tool_cycles: 6
+  reflection_rounds: 1
