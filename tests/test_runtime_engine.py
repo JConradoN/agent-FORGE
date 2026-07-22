@@ -1156,6 +1156,53 @@ class TestMustComplianceFilenameCheck:
         assert missing == []
 
 
+class TestMustComplianceToolNameCheck:
+    """Regression coverage for 2026-07-21 (media-generator agent, Cláudio v2):
+    a `must` rule naming a specific tool (e.g. "chamar a tool
+    comfyui_generate_image de verdade antes de responder") had no quoted
+    phrase, so it always fell to the LLM judge — which false-negatived even
+    with the tool call clearly present in tool_results_log, causing the
+    agent to redo a real (expensive) image generation 2-3x per request. A
+    rule naming a tool that was actually called is now satisfied
+    deterministically, without ever reaching the judge.
+    """
+
+    def _runtime(self, tmp_path: Path, must: list[str], monkeypatch) -> AgentRuntime:
+        agent_dir = _make_agent_dir(
+            tmp_path,
+            tools=[ToolSpec(name="comfyui_generate_image")],
+            guardrails=GuardrailSpec(must=must),
+        )
+        return AgentRuntime.from_agent_dir(agent_dir)
+
+    def test_rule_satisfied_without_judge_when_tool_was_called(self, tmp_path, monkeypatch):
+        from unittest.mock import patch
+
+        rule = "chamar a tool comfyui_generate_image de verdade antes de responder"
+        runtime = self._runtime(tmp_path, [rule], monkeypatch)
+        tool_log = [{"tool": "comfyui_generate_image", "args": {"prompt": "x"}, "result": "ok"}]
+
+        with patch.object(runtime, "_get_provider") as mock_get_provider:
+            missing = runtime._check_must_compliance("Aqui está a imagem.", tool_log)
+
+        assert missing == []
+        mock_get_provider.assert_not_called()
+
+    def test_rule_still_uses_judge_when_tool_was_not_called(self, tmp_path, monkeypatch):
+        """Unaffected existing behavior: if the tool truly wasn't called, the
+        rule still needs judgment (the task may not have required it)."""
+        rule = "chamar a tool comfyui_generate_image de verdade antes de responder"
+        runtime = self._runtime(tmp_path, [rule], monkeypatch)
+
+        missing = runtime._check_must_compliance("Aqui está a imagem.", [])
+
+        # MockProvider echoes the input (which includes the rule text) back,
+        # so the rule reads as present/satisfied — the point here is just
+        # that it went through the judge path at all (no crash, deterministic
+        # short-circuit did not fire), not the judge's specific verdict.
+        assert isinstance(missing, list)
+
+
 class TestJudgeModel:
     """Regression coverage for 2026-07-21 (gemma4:12b P3): the must_compliance
     and guardrail LLM-judge calls used model=self.runtime_config.model_default

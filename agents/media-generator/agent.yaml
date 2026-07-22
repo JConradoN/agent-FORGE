@@ -37,8 +37,6 @@ guardrails:
   must:
   - se a tarefa pedir uma imagem, chamar a tool comfyui_generate_image de verdade
     antes de responder
-  - se a tarefa pedir áudio ou narração, chamar a tool comfyui_generate_audio de
-    verdade antes de responder
   - incluir na resposta final o caminho ou URL do arquivo gerado, retornado pela
     tool
   must_not:

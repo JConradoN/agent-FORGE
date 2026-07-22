@@ -633,6 +633,20 @@ class AgentRuntime:
                     )
                 if not satisfied:
                     missing.append(rule)
+            elif any(
+                re.search(rf"\b{re.escape(tool_name)}\b", rule) for tool_name in called_tools
+            ):
+                # Rule mentions the name of a tool that was genuinely called
+                # (per tool_results_log) → satisfied deterministically, skip
+                # the LLM judge entirely for this rule. Confirmed 2026-07-21
+                # (media-generator agent): the judge false-negatived "chamar
+                # a tool comfyui_generate_image de verdade" even with the
+                # call clearly present in evidence, causing the agent to
+                # redo the (expensive, real) image generation 2-3x per
+                # request. Only fires when the tool WAS called — a rule
+                # whose tool was never called still goes to the judge below,
+                # since whether it was actually required needs judgment.
+                continue
             else:
                 open_rules.append(rule)
 
