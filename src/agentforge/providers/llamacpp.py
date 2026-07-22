@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 
 import requests
@@ -42,6 +43,45 @@ class LlamaCppConnectionError(LlamaCppProviderError):
 
 class LlamaCppResponseError(LlamaCppProviderError):
     pass
+
+
+# Tag-based tool-call format shared by at least two independent model
+# families tested 2026-07-22 (Poolside Laguna XS 2.1 and Zhipu GLM-4.5-Air):
+#   <tool_call>function_name
+#   <arg_key>key1</arg_key><arg_value>val1</arg_value>
+#   <arg_key>key2</arg_key><arg_value>val2</arg_value>
+#   </tool_call>
+# Neither model's format is recognized by llama.cpp's native/jinja-aware
+# response parser (both crashed with "Failed to parse input at pos 0" until
+# served with --skip-chat-parsing) — but --skip-chat-parsing also means the
+# server never populates the structured `tool_calls` field, dumping this raw
+# tag text into `content` instead. Without this fallback, AgentForge sees no
+# tool_calls at all and the agent loop stalls (confirmed: Laguna's F1 got
+# stuck in loop_detected repeatedly, "no action committed", because it WAS
+# calling write_file — just not in a form the harness could see).
+_TAG_TOOL_CALL_RE = re.compile(
+    r"<tool_call>\s*([A-Za-z_][\w.]*)\s*(.*?)</tool_call>", re.DOTALL
+)
+_TAG_ARG_RE = re.compile(
+    r"<arg_key>\s*(.*?)\s*</arg_key>\s*<arg_value>\s*(.*?)\s*</arg_value>", re.DOTALL
+)
+
+
+def _parse_tag_tool_calls(text: str) -> tuple[str, list[dict] | None]:
+    """Extracts <tool_call>name<arg_key>..</arg_key><arg_value>..</arg_value></tool_call>
+    blocks from raw text. Returns (text_with_blocks_removed, tool_calls_or_None)."""
+    matches = list(_TAG_TOOL_CALL_RE.finditer(text))
+    if not matches:
+        return text, None
+
+    tool_calls = []
+    for m in matches:
+        name, body = m.group(1), m.group(2)
+        args = {k.strip(): v.strip() for k, v in _TAG_ARG_RE.findall(body)}
+        tool_calls.append({"name": name, "arguments": args})
+
+    cleaned = _TAG_TOOL_CALL_RE.sub("", text).strip()
+    return cleaned, tool_calls or None
 
 
 def _normalize_messages(messages: list[dict]) -> list[dict]:
@@ -322,6 +362,17 @@ class LlamaCppProvider(BaseProvider):
                 "instead of one large call.]"
             )
             output_text = f"{output_text}\n\n{note}" if output_text else note
+
+        # Fallback: native parsing found no structured tool_calls, but the
+        # model may still have emitted a real call in the shared tag format
+        # (see _parse_tag_tool_calls docstring) — happens whenever the
+        # server runs with --skip-chat-parsing for a model template llama.cpp
+        # doesn't natively recognize.
+        if not tool_calls and output_text:
+            cleaned_text, tag_tool_calls = _parse_tag_tool_calls(output_text)
+            if tag_tool_calls:
+                output_text = cleaned_text
+                tool_calls = tag_tool_calls
 
         if not output_text and not tool_calls and not loop_detected:
             raise LlamaCppResponseError(

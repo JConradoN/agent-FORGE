@@ -284,6 +284,77 @@ def test_truncated_tool_call_json_dropped_not_emptied():
     assert "write_file" in resp.output_text or "append_file" in resp.output_text
 
 
+# ── tag-based tool-call fallback (Laguna XS 2.1 / GLM-4.5-Air format) ────────────
+
+def test_tag_tool_call_parsed_when_no_structured_tool_calls():
+    """Regression 2026-07-22: when served with --skip-chat-parsing (needed
+    because llama.cpp's native parser doesn't recognize this template), the
+    model's tool call lands as raw content text instead of the structured
+    SSE tool_calls field. Confirmed against a real Laguna XS 2.1 response:
+    '<tool_call>write_file<arg_key>path</arg_key><arg_value>teste.txt</arg_value>
+    <arg_key>content</arg_key><arg_value>oi</arg_value></tool_call>'"""
+    req = _make_request(input_text="Escreva um arquivo")
+    provider = _make_provider()
+    raw = (
+        "<tool_call>write_file"
+        "<arg_key>path</arg_key><arg_value>teste.txt</arg_value>"
+        "<arg_key>content</arg_key><arg_value>oi</arg_value>"
+        "</tool_call>"
+    )
+    lines = [_content_chunk(raw, finish_reason="stop"), _DONE]
+    with patch("agentforge.providers.llamacpp.requests.post", return_value=_stream_resp(lines)):
+        resp = provider.generate(req)
+    assert resp.tool_calls is not None
+    assert len(resp.tool_calls) == 1
+    assert resp.tool_calls[0]["name"] == "write_file"
+    assert resp.tool_calls[0]["arguments"] == {"path": "teste.txt", "content": "oi"}
+    assert "<tool_call>" not in resp.output_text
+
+
+def test_tag_tool_call_with_newlines_between_tags():
+    """GLM-4.5-Air's own chat_template renders the tags with newlines between
+    them (Laguna's real response above had none) — both must parse."""
+    req = _make_request(input_text="Rode um comando")
+    provider = _make_provider()
+    raw = (
+        "<tool_call>run_bash\n"
+        "<arg_key>command</arg_key>\n<arg_value>ls -la</arg_value>\n"
+        "</tool_call>"
+    )
+    lines = [_content_chunk(raw, finish_reason="stop"), _DONE]
+    with patch("agentforge.providers.llamacpp.requests.post", return_value=_stream_resp(lines)):
+        resp = provider.generate(req)
+    assert resp.tool_calls is not None
+    assert resp.tool_calls[0]["name"] == "run_bash"
+    assert resp.tool_calls[0]["arguments"] == {"command": "ls -la"}
+
+
+def test_tag_tool_call_does_not_interfere_with_structured_native_calls():
+    """When the native SSE tool_calls field IS populated (normal case, e.g.
+    Qwen-family models), the tag fallback must never run — a model that
+    legitimately mentions the literal string '<tool_call>' in prose content
+    alongside a real structured call must not get its call double-parsed or
+    corrupted."""
+    req = _make_request(input_text="Fetch something")
+    provider = _make_provider()
+    lines = _tool_call_chunks("http_get", '{"url": "https://example.com"}') + [_DONE]
+    with patch("agentforge.providers.llamacpp.requests.post", return_value=_stream_resp(lines)):
+        resp = provider.generate(req)
+    assert resp.tool_calls == [{"name": "http_get", "arguments": {"url": "https://example.com"}}]
+
+
+def test_plain_text_mentioning_tool_call_word_is_not_misparsed():
+    """Prose that just talks *about* tool calls (no actual tag block) must
+    pass through untouched."""
+    req = _make_request(input_text="O que é uma tool_call?")
+    provider = _make_provider()
+    lines = [_content_chunk("Uma tool_call é uma chamada de função.", finish_reason="stop"), _DONE]
+    with patch("agentforge.providers.llamacpp.requests.post", return_value=_stream_resp(lines)):
+        resp = provider.generate(req)
+    assert resp.tool_calls is None
+    assert resp.output_text == "Uma tool_call é uma chamada de função."
+
+
 def test_provider_raises_on_connection_error():
     req = _make_request(input_text="Hello")
     provider = _make_provider()
