@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:744ef3c424accc6a80ff93e1470fcc6fd1bcca7ecb56f0d209a6f99d24be1cc5",
+  "claims": [
+    {
+      "id": "claim_c075c6820ee14e19b2c1c5dbb0ebb351",
+      "statement": "AgentRuntime.run() in src/agentforge/runtime/engine.py is the end-to-end execution pipeline: it prepares the input, runs the tool-calling cycle (or a single inference), applies reflection and guardrails, persists memory, and returns a result dict plus a runs.jsonl log entry.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L935-L1197",
+          "version": "repo-lines-v1:sha256:f588fadfd38eef3587c12f45f65ad21ac95c48d2896ae382387a15caed4a2284:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3OTBjOWFhMDZiOTg3YWQxNzdjYjhhYTg5MGQ3NjMwNGJkMTFhNzE1NjBhNDE4NmY5MWU0NDdmYjI2NjJlZWU3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3NzJmOTY5NWM3NDY3Yzc0NzczYzljZTdmYzQyOWM1ZDBkMGU0ODdmM2M1MWQxNWQ2NjY4YTNkMjQwNzJiYjk1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxNWQyODUwNmZjOGQ5NTZlY2U5YmQ1Zjc1MDUyYTgwOGFkNDYyZWM3YmNkMWU5N2RiMzUxOGJhZTQxN2I4Yzg2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0YjBjODRiNzI5MTllM2U2ZmMxYzM0YTVmNDJhMDg1NzU5ODNhZWFmZTYwNzdmOGUyMWEzZWIxY2Y2ZDA1ZTJkIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_10f2d43be6c34a5d804c56f062a7db1e",
+      "statement": "AgentRuntime is constructed per agent directory via from_agent_dir(), which loads agent.yaml (AgentSpec), runtime.yaml (flattened into RuntimeConfig, honouring AGENTFORGE_PROVIDER/AGENTFORGE_MODEL env overrides), and an optional tools.yaml list of ToolSpec.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L113-L135",
+          "version": "repo-lines-v1:sha256:60361000fda4f6e362dd31357fc9afa19bbb463f9bbc81b1469e0fad7e851225:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyMGI0NTNmNWUwYzkyZDVmNmMyNTFhNWVhMTk2MGQ3MmYzYmQwNzk1NmFlODU3ZGEyMGUzMWE4OGM1NTk2OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkNWFiODVjYTkzZjZlZWNmNzlkNWI2YjFjMGQ2ZDYwOWZhNjk2YjRiZWIzOTgwM2JlZTYyNjM4MGY4NGYwMjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhNjkyM2MzMWY5NjRhZTMzNWU0MGIwYzhiMWQ5YmRhMGY4Njg0MTk4NWZlMjlmNzBjNGY2YmNiNWY3OGI1YmYifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L55-L84",
+          "version": "repo-lines-v1:sha256:8b0424f4b8dbc570e56cae34434ea810f586cbf946f4fcc2238594ad900b4c47:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1NWQzZjRmNmJlNzRjOTY4MjViZmUxZTVkZGZjMTk2MjI1ZWRlZTBiM2FkZDU4YzYzMjhjMTQ4YWNiNmUyMTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI4NDNkMjQ5M2EwODgxNTQxOGQ2NDNiYTc3MGM0OWIyN2ZmMjVjZWI3ZTkzYTFjOWIyNzg3YWIxYTFlNTdjODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxNWEyNGYwMjNmZDVmY2M4ODU0YzgwMjQ1M2QyNTlkOGM3YTQ5N2JmMjViODA0MjJhZmY4YzE1NWZlODUxYWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2b932b8c26874337b39b0b9e33bd0e3b",
+      "statement": "Before inference, run() injects every guardrails.must rule into the user input as a 'MANDATORY RULES FOR THIS TASK' block, executes any ToolSpec marked required (embedding the result in <tool_results> tags), and optionally triggers read_log_tail / extract_file_content keyword intent hooks.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L923-L973",
+          "version": "repo-lines-v1:sha256:90b90fab6783ebfcdf494eadc42b9a15ed80d1d6088df88855c956722a70c9b8:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyZDdiMjhiMmUyYTdiYWI4ZmQ1M2ZjNmQ4OWNjZTE1OGZiNGQyYmY5MGJhZjgxNjUxMTgxY2M0NTI5ZmU3NTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjODNiZWQxYzc0YTlmMzU3ODY3NTJmMjA5YzljZDAxM2Q4ZWQ4NmNjYTMzNWFmN2M0NjM3MDMyZDlhMDYwNmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5MWRjMzU5ZDQ5NWNiYWY3ODNhNDMyODQxZTk0M2UxZWZiODljYWFkNmU0NzU3NGZhZTdkMjJlYmFiMDBlMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2ZjAyZTk1MGI1NTU0ODAxZDNmODM1NWE0YzA3ZmM0Y2Y5MTNjODY4MmY2NjJlZDNkOTc3MGIwMmIzYzcxMjMifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L935-L952",
+          "version": "repo-lines-v1:sha256:f24e6f551477737a543585014460f7e9c4029441c990f562e422c748be9baed3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5MGM5YWEwNmI5ODdhZDE3N2NiOGFhODkwZDc2MzA0YmQxMWE3MTU2MGE0MTg2ZjkxZTQ0N2ZiMjY2MmVlZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5ZTlkNWI3MjNlZWM3NzBhMDczZDIyYWVjNjZkOGJjNjdiMjE3MTM4NTBlYjk5NWZlZDQ3ZTIzMDZlNzExZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZDI4NTA2ZmM4ZDk1NmVjZTliZDVmNzUwNTJhODA4YWQ0NjJlYzdiY2QxZTk3ZGIzNTE4YmFlNDE3YjhjODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5NGU5MmQxZTM1ZjQ4ZTQwMjAzMzNiZjNhNjFkNzU0ODRiMGYxZGM2OWMzMTUyMzI3MzRlMzU2MjMzYzlkZjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6b1e1931bf8044bb9e375eb7a9f98a3c",
+      "statement": "In workflow.mode=respond_or_tool, _run_tool_calling_cycle() iterates up to max_tool_cycles (default 3) inference rounds with the full tool schema; other modes make a single provider.generate() call without tools.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L274-L283",
+          "version": "repo-lines-v1:sha256:d1661d2e0914289452fd34a4dff0045980fb12eeac5181516907d24bb5293a43:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxNmI2YTVkNzk0ZDg3OWNiYmE2ODRiMmFmMTNkMTZiNmYzNGY0OGUyN2Y3ODU1Mzk5ZTRhYzRiODdlYTBlYTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxNmQyNzQ1OWM4MDc2MjFjYWYzZDYxZTg4ZDdmMDA0OWQyZjdiNjM2NjRjOTZkMTI2Y2I5OGQ0M2JlMDFmYzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZiYTA4YjZjNzQ3ZjZiNDA5MjcwZWI5MDA3M2QyMDIxZWUzMWI3YzFhNWUyNGM4NGE1Zjk1OGI3MWE1YzY2NDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5MGI2MjVlZjA5YzY4M2U1M2VkNDMyNGM1MWJlYjIxZWMzNTY5MTM5ZWI0NmY1OWI2NThmYWYyN2EwNDFkYmEifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L52-L52",
+          "version": "repo-lines-v1:sha256:b1e7aa2216bcb4d9c4683f3a8e07afe5278dbd9819185647b771d0dea701cd3c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjFlN2FhMjIxNmJjYjRkOWM0NjgzZjNhOGUwN2FmZTUyNzhkYmQ5ODE5MTg1NjQ3Yjc3MWQwZGVhNzAxY2QzYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjFlN2FhMjIxNmJjYjRkOWM0NjgzZjNhOGUwN2FmZTUyNzhkYmQ5ODE5MTg1NjQ3Yjc3MWQwZGVhNzAxY2QzYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTBjMTUzODA5ZGQyMjM4NmI0MjBmMzlmZmY4MmQzMWUzYmEzZDkxYzYxMzgxYTQ0NzM1ZjEyZWI4M2FmNDRhYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTEzZTgwZjVjMjY5NjRlZDQ5OGMwYTZmMTM4OTYzYzVlMmE4NjhkOWM1ZjU3N2U3ZDg2YjUzYzAxZDRhN2E0ZCJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L991-L1008",
+          "version": "repo-lines-v1:sha256:6139a9253b870189f0cba82a71bdc9bbf8e302315ad1dd8dea97f0645394c08b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxYzhjMmJmOGQ3YzU4OWNkNjc5ODA4OTA1M2MwN2FlMDk3Y2IzZTUzNjEwMjE2YjlmNzU2NzQ3YmZkNmRmMDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmNDI4ZDdhNmIzYzgyYmI1ZDc1NTUxMWNhYWM5MzY5MTVmMzU3ZTU0NzE0MmYyZWQxZGMwYmQ1MWM1NjVkNDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzNWViYmFmMDAyYTNiMzcwYTYxZWYxNDIzNGYzMTY0MDEyMjkyZGFiNDZlZDlhNWIzNzYxMWE3ZDVmNjVhZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmOWIyYzZjMGVjYTg4NjVhMjk2NWE2OWFhNDAzYTYxZmU1ZTU1ZTdkYjIyZTViNDg0NTZmZjkzZDQxOTkxNjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c4afc4547b6a47199ba75c78cac47688",
+      "statement": "The tool cycle has two pushback paths capped by a shared budget of 2: a generic redirect when the model answers with text and zero tools have been executed, and a mid-cycle redirect when filename-shaped quoted must-terms are still missing on disk, telling the model to call write_file instead of describing files as text.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L260-L261",
+          "version": "repo-lines-v1:sha256:d0894d87105c485a523106c8a613c6716fd86cd397308db0876fd419a03e904d:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQzYzkxMTA5YWQ1MmI5OTM3ZDY4ZWU2YzYxNDZmNWFmMmJhMGUzMTIwZTcwM2VlNDFhN2QzOTJlMDdiZDkzOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQ3YWVhZWJiY2Q3MDg5ZjFhMGU4OWFkMzRlZTUwMTdlZGJlMDM5NjAzNjBlYjZlODZmMDk3MWJiNzJmNGQ4YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmUxOThmNTMwMTU1MzIyZGY2NThkZmE2NDQ2YmE1NTUwYjYwYmQxOWQ5NDU3MDcwMWM0NmQwMzVlZGFiZGFlNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTQ3ZWY2OTU2ODExMWY3YWVmMWViYWI0NzNhYTQ1NDRkM2UyMjUwOGQ5NGUyMDhhNzliY2VkY2Q5ODY4N2M4MSJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L305-L371",
+          "version": "repo-lines-v1:sha256:f596cf071ba9ed0472a33a34ddba1080f6dc0289f79f6290eb8ad6e0fa998a31:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyOWQxZDE1NzZiYzFiMzY5ZjY0NTFhZWUyYmE1NjY0OWRhNzc0YjgwZTgyYzc3MjQxMDk2YmIzNGNjMmRiM2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MzM3NTdjNmJiYzZjOWUyOTYzYjQwNDIwNjBiMDAyN2E0ZTI4YzgzZGZmZjhlZDJhMGIyNjA4NDZiZjIyYzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5OWM4YjVhNmZlZDY0MWQ1MmVlNTJhYmMxYTdiOGI5OGFjNmRmNzk3MmM4M2QxYjhhN2ZmYzE0MDgwZWMyYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjczZWI3ZDM0MGE0YTc2YzU5NGNjOTg2YjcwZjZkNThkYjgzNzVlNGM3M2FmNmQzY2I0M2ZiZTdhNjUzNmQ2ZTIifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L529-L554",
+          "version": "repo-lines-v1:sha256:5afdfef0e1c10405a9e77c2324430449665d74e4e99ce206af9cbad8c47d21fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhZGI3ZDJhNjdhZTgxYzg5ZTgxMGY5MDdmYTA3YjI5ODRhYzlhODY5ZDAxZDBhNjRkZGFjYzliMTEzMmE3ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmZjMxNGNjYzhhMTI2NjVlMzE1ODY1M2Y3MTE3NTA3NDBiODI1ZWM2OGJiYTc1NzBmMWY2OTljNmJmNDBjN2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4Yjk1NmU3YTBkOTc0ODFjMGEzODFhODQwYTY5OTZkZGQ4OWY5ZjkyZjY3YjlkZjllMDFjMjVlYmI3OTdhYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjODM1ZDkxNDE0YmJhZTY3OWM2YjYyNWI1YmUzOWM4MDM1ZGY5YzkzZWVhOTE3N2QyNDZlMTJjMjVkZmY5N2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_98f7ade2acbb441fbf6c433bf95ad8c7",
+      "statement": "A separate 1-attempt budget redirects when the provider sets metadata.loop_detected on the response (emitted by the llama.cpp provider), telling the model to stop planning and either call a tool or give a final answer.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L377-L392",
+          "version": "repo-lines-v1:sha256:2465f7c7b506220faf1249363953c70606aaecc4cffbe3497a74be50eda5337d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5YjU2NDRkMDA0MDc5MGFjNzc2ZTJkZDUwMWQzMzBlZDE4ZmU1NzFlY2ZhMmNlOGM1N2I1NDU0MjFlZmZiYWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4Y2JiZjAyOWJmNWRhNzg3YTQ0MjNkOWJjYWFiMmQ0M2ZhNGJkMDc1YWM0MmRkODc3ODM0M2Q3NmQwMTkyYjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxZTY3ZGRhZWY1ZTU4ODE4NmRjNDFiMDRmMWY2NDE4ZmU3YjUzNmY2NDg3MzcxMmE0NmE3MmFlZDY1MDhhMTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhMzE5MGM5YWZiYmI5NzAxMDlmZGJkYTFiOGZjZmFhY2FkOTAxNTRkZWFiYjBiMjVhMjBmYzFhMDA4ODhiZGYifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L271-L303",
+          "version": "repo-lines-v1:sha256:e274fe1c1a4f9f859c70ceb54559491bbd994bd5b849be2d0512d04156e527d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMjBlNmE0YzU2OTljODMwZTM4NDk4ZWMwMDRlNDg5ODE3MWIwZTAwZDkwNTQ3N2UyYjg5ZmQyMDE3MDBkMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkOGE5ZTljMzI1MjgyMGM2NWE4MTY1MjBiOGRiNDkzMjI4MDg0OWVjOGM3ZDJlYjYyNzJhZmRmZWJlMDU5YzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjExZjQ0MTlhM2ViZjgyZmU2NTIyNGU3MDA4NmY0OTFjNjM5YjkyNzJmNGVmMTc2ZDZiNWU4NGYxYTdiNmI5MTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkMTQ0ODhiZDdmOGQ4NGQ2MzhlZDEzYTJiN2NhM2NjNmEyZTBhNmI5NWZhMzRjNjc3NjUxMGQzYmNkNWFiMjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e7853267b2824671bd62fd1643ef8cab",
+      "statement": "The loop guard maintains a sliding window of 5 stringified (tool name, sorted-args JSON, result JSON) triplets; when all 5 entries are identical the cycle aborts. Including the result in the key lets legitimate async polling (same call, evolving result, e.g. heygen_get_agent_session) survive while still catching a truly stuck loop.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L249-L256",
+          "version": "repo-lines-v1:sha256:147595389aa423f0e073dd3bfc302579d09caabe5cd189a1480ed15670cc89ff:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ3MmQyM2FkODdhNDE1MzM4ZmUwYjRmNDE5NjMwYTE0NzRjMTZiMTdjNGFmYjEwMTk0ZGE4NGJiOGQwNjgyZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTRlNjg3ZTZhODk5NzU5ODIyMWZjMjEyMGZjYjllZjNkNTE3MjExYWYxNGI0NTc5ZGRmOTNmMDQ0NDVhYmQ0NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTNmOTIwZTE0ZWNlYmI1NmFiN2Q1ZWQzZDMwYTU1OTIzZTJlMmI2NmVmNTJkNjI4NGNkZGI4OGM0Y2JiOWRlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmUxOThmNTMwMTU1MzIyZGY2NThkZmE2NDQ2YmE1NTUwYjYwYmQxOWQ5NDU3MDcwMWM0NmQwMzVlZGFiZGFlNiJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L389-L424",
+          "version": "repo-lines-v1:sha256:cebdfbe1b5940684bc3fc5dd75f571f223893b6d66c0a97bb1052d4124f2f40a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjM2NhNzk5NjVjNjgwMjE4Y2M1MDMyZTAxOTAyNzNhZTM3MGFlNGVlNDVhNjM3ODlkMGZlMGFlZDliODkxYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxYmQ1OWJhZjEwOThhZTk2ZmQ3ODY0ZjM2ZTg4MjJjNTExMWFlMGZkNzBmNmFiODI2MzZmZWUyZTg1ZjRhYjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg4MGJiOTdiNWJjODc2ZTMxMTNiOTYyNzAwZTcwOTRkM2RhYWI1MmNjMzEzMTY0YWMzMzcxOTBkYjJlYzJlMTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwNmFlMDgzMjk4MDgzNGJmMjEyMGY1NDgwNDg3MzM0NTkyOTI2YmRjMmIzYmQxNWJlY2NkNjcxOTE4N2FiN2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_562a4a1b3dde459da10882b682e6c7cb",
+      "statement": "When cycles are exhausted or a loop is detected, the engine appends a completion hint summarizing executed tools plus up to 3 quoted phrases from must rules, then makes a final generate call that still carries the tool schema; if that response has tool calls they are executed and a closing tool-less inference produces the final text.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L426-L502",
+          "version": "repo-lines-v1:sha256:fe225cd40c7040d0a865b7df6ababf1baffc553fc33bd6ddf93ba92ba220e52a:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjZmU5NzQ5MmVjNzBhMmM4YmRmNWVlZDM5NjI4ZDJlYTdiNDlmMGNiNGJmYTQzZmYzODNiNzQ1M2UxMGYyYzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmYThmMmE2MWI0YTNmMjdlMTRjMzI3MmM3ZGE5OWFhM2IzNTI1NTlhNjNlYWY5YWNkOTlmZTMzOTM2YzAzOWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxMTBkM2IxMmUzZGRkMzFlYjEzM2Q4ODgxNjFjNDhhNWQ5YzNiNDYwM2U4MTdkMDY4Y2FhMWM0OWZhNzc0OGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmYjRhMTg0ODE0MzlhODExY2FmMDRkYjMwYTQzOWE4NWY2NThlMTA4MzZlZDY4OTFkNmNhNDQyMzk3NWNlZTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e6b5b5fa8188488aad7993ae66456745",
+      "statement": "_run_tool_calling_cycle() returns the full accumulated message history (cycle_messages) alongside the output and tool log, so must-compliance correction cycles chain from the complete tool context rather than a collapsed text summary.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1104-L1126",
+          "version": "repo-lines-v1:sha256:5089e86c5f038e6bcfc56904f27c3e184251ea528487312daef9ee28dedc1875:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlNmUzOGU0M2QyZTBlODgzYWFjOWU5ZmY4NDRmZmUwM2M1YzRiOTRmMWZiMmIxMDFmODhhM2VlOWMyODhlMzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjZGMyYzY1MzQzNjkzNGVhNWM2YzVjOTM5NWY1OGNiZGI0YzZhZWVjYTQ3YzlmNzRhYmE3MjRhNGJlNjFhZDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI0OTFjZjJkYTY3YWE3YzQzOWU5ZGFlZjk2MGU2Njk2Zjg0MjI1ZDdlMWYzYjhlMTM2NDM5Y2IxZDMxZTU0OGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2NWM2YjIzOTUxMjhkYzk5OWIwNTcyZTU4YjkyZDcwMWJkYmZkYjljMjhhMWNiNGUxZGQ5NDk2NjAzNjQ0MmQifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L213-L240",
+          "version": "repo-lines-v1:sha256:d0e530414ed9a043c6a569154e491fc6bee2518d334d13890659c19c3481b5fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlYTAzYjE5YWQyZjEwMjQ3NDJhYjM0YzQ2NmJmMTZiZGVlNTU5MGIwOGY2N2NlOTI3NTlhYTg0OThmM2E4MTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwZGUyNTg3MTk2MTQ5MjYwNzFjOGZiMTlmZDg2NjE1MDU1NWYxYjAxMzU0ZjhjZDE2MDNhMTA5YTdkZGFlNDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyN2I3MjZmOTUxYjAzNTUzNGQ3YTM0MWZiNTU5MGU3OTliMzZlZTRmZDQ4MDg5MDJiZjVmOWYzZTgxM2UyOTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0Mjk4ZmIxNTQ4ZDBmYzFjMTc1ZDc4MzM4NmQ4MjhjZTgxMzU2ZWY2ZWExYTIyOTFjNDlmYTBhN2Q4MDQ1OWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0978a02bb30545be944dfdc42901426d",
+      "statement": "_build_tools_schema() converts each ToolSpec to OpenAI/Ollama function format, appending when_to_use/when_not_to_use as decision hints and parsing input_schema JSON into parameters; when workflow.agents declares workers it injects a synthetic run_agent tool listing all available agent_dirs.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L147-L211",
+          "version": "repo-lines-v1:sha256:16b048acaf0b316d8fcf19e1bc56f17a4b3eaeac9754d8e3b3e2c76a358f14d5:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4YWMyZjI0NTdkNGVjYTA2MjZmNWI4MTRjOTRjOTI1ZjAwMGQwNWM1NWU4NjAyZWQ5NDNmMzZhNWNjYWNjZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlMDc1ZjNjMWYzNmVkMmMyNDFlNzAzMzY1N2VlZjc0NGE0Yzc0YzBjZTIzNTZhZmFiZjI3ZTM4Y2M3Y2Q2ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwZWMyOTcwNjcyZjUxNmU2NThmNWMyNGFiZjVhMjNmYmZlNjZjMWI3YTQ5MTVkOTE0ZWE5NTg5Njk2ZGFkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlM2NkMjI1ZDBmMGFkMjMzNmJmNGJhN2M2Zjc0ZWExNThhNDQwNTU1ZmQ2OGY3MTAwNzUwMTBmNDU0NTJlZmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7d2b75bf57c348a197b1a60d7a20269b",
+      "statement": "The run_agent tool builds a fresh AgentRuntime.from_agent_dir(agent_dir), runs the delegated input, and returns only {agent_id, output} to the parent agent.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/run_agent.py#L1-L13",
+          "version": "repo-lines-v1:sha256:501ac8be629af997426e4c908da343bec8bacfea26ffbd4f32d01439383903fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzODRiZmRiMmRmMzgwYjY1NTdjYzdhNzFkMTY4OTE0MTViY2NhYTg3Njk5NDA2ZTIzNmY3NTJjNjQxNTM4OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_46f052688f974965a56372beeac12c2e",
+      "statement": "OllamaProvider always sends think:False, falls back to message.thinking when content and tool_calls are empty, applies regex fallbacks to extract tool calls from output text, and raises OllamaResponseError with a malformed-history hint when the response contains neither text nor tool calls.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/ollama.py#L98-L214",
+          "version": "repo-lines-v1:sha256:6c4b18696729e48a9738f0385d2fe7bed9c2a57882b48c90c83ed78386cc928a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIzMTg3OTQ4OWEwYzE4YzNiZDYxODNiMzFjMDVlOGNiOTI1ZGM1OGIyNGYxZmM5MDU4M2Y3ZGE4MDk4NGQ4NDVhIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1OTA5YTUzYTYxOGQwMjhlMWQzMDAwYzBhN2FiY2VlY2JlNWZiMzdmNGU1MTFlZmU0NjY0M2ZhZDZlNjY4NzJmIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI2MTgwODRjMDc5ZmRkZDQzMDk0OGJjODE4ZTJkYWU0ZWY3NGVjNTkzMGI3NGQ2MzRiYzE5ODBiZjc1MWVlOTY4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzMDNjMzAzYzNjZjZmMGNlOGU2ZWFjMjM4MzdhMGFmYzEzNjIzYmU4YzJmN2E5NmNmZWJjMGQxZWJhZDMzMjAyIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_55c132d23a594b5283351934191948f8",
+      "statement": "Reflection (workflow.reflection_rounds > 0) runs N sequential stateless self-critique rounds that replace the output before guardrail checks, so guardrails always evaluate the reflected text.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1010-L1015",
+          "version": "repo-lines-v1:sha256:802c74e4b658723701b5b17dad2818774dac86b960bc52095556de3350d82c24:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMzZTY2MTY0ZTZhM2MzMWFhZmI3Njk1YjVjMTQ4YTU1MjZkNWQ5NmU4MDI4YzJmOGUxNDMzMDE4ZjgxNjE2OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUwMzJlOTY0ZDA5MzIzNTFlNWQxODUyNjkyODFiMTcxYTNhMDliMDhiMjg2ZTY2MWVhNDcwMzIzYzgyZWI0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDc3MjRmNzMwYTFkMWQ2OWY1YWZhYTI5NmMyYWMyOTNiNzI1MmI1NmRhOTdhMzhmYmJlMDlmZjgyM2FkZDJmZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTc1YWYxNmE0YWFiZjg4YmQzNDY5ODdkYmY4MDE4NGRkM2ZlMzJjMTZkYTI0YzRhYzQyNjIzYjYyOTllODg0MCJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L783-L819",
+          "version": "repo-lines-v1:sha256:f42e9e3cb5b9575763beb6580f7e000cc4d75f2858b5a52dd337e7efda47b103:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwNGNjM2RmNjliNzQzMzA4YzIyMzhiNGEzZmVjNTRlMzllZmIyNDhmZWY0ZDUwMmFmNmUzNjUxY2NjNTQ1NDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MWQ0OTc1ZGIzZGZmNDI2MmNkODBmMGU3MjVmMTA5ODAwOGM5YzRhYmI4YzE1YTBkYjgyMDY5NmY3OTVkM2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1YmUzZGVmODU1ZmQxNGZjNDlkNmIzYjljMmNkYzZlMmNjNTBjNGMyODBkNzRhODAyNTMxMDdhODY5NmJlNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI3ZjA4OTllNDlkMzYxMDJlODFlNjg4Y2IyNzY2YTljOWZjZWQ3ZTJjMjY2YjdiYjdiOTk1ZjBkMjdiNDZmNjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4142a7c7f2754c7786f89afec4d42800",
+      "statement": "must_not auto-correction: _apply_guardrails() checks the last write_file content when present (otherwise the chat output), asks the judge which rules are violated, re-generates with a correction prompt up to 2 retries, re-writes the corrected content to disk for write_file-based output, and returns any remaining violations into metadata.guardrail_violations.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1020-L1029",
+          "version": "repo-lines-v1:sha256:78124dde5afa7073a61ed7befcfbd3a3e65808251dc6484fbf059d7417ad7f5e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxNzA4OGUxMmFiOTIwNjI1YjZmMWY0YmMzMzRjNzE2NGM1OTEyODkwN2JjMDJmYjZkMmJhNjE5YmEzMjMzNDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxMDM0ODFjNTdkMGYwZGMwZjc2Y2QyY2M4YjM2MDRjNGU4Mjk2ZGE0MTIyYWRkMTllODE3NDVkYzdlMzMxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhOTljMmUwMzdmMjdhYzQzMjA2NTgwOTljYmUyMjg2OThmNjU5NmFmN2RjNWJmMTVkNzgxODcwMTRiYTZlNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzMzgyNDE3OGViZWNiYjNjMDYxNDk4ZmViNDljMmI2NTc3M2E2OTAzNjE0OTk3N2EyYzk1Y2I4NDU4YTdkY2EifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L681-L707",
+          "version": "repo-lines-v1:sha256:ee42762d21d08000f0a6a34884538201fc06f4aa324a8f7cf21db88102148f9a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwODgxOTcyYmIzNmYzMGIyNmQxMWJjYWFjODg2NGJmMThmNDI2NjUwOTM1Y2Y3MGZiOWNmZjZhOTcwYzE2YWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhMDdhNjVjMzliOTc5MzQyMmI2ZTg1YzJkMjViNDc2MTA3ODdiN2MyZDc3ZGZhYmUxYTMxMDRlYzg4NTQxNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjNmFiNGU2MTkyYmE5NWUzY2FkMmEwMTI4NmFmNzAzY2NmNTRlYWMwYjk0MzFkMDNiMGQ5YTM5MTZjMThjZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1MWE5MGZmMDM2Y2E0OGI2YmJhZDUyNDY5NWM3M2I3NzRlNjRhN2UxM2EwN2VmODRlOWFhYTk4YTk0ZmQyNzAifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L709-L781",
+          "version": "repo-lines-v1:sha256:75fb85c5c541131fff5bfea5af505f36416b73d59d676af031332d37bedaf418:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZjdkN2M4MDI0MzllMmU5NGY4YWMxMWZhYTJlNWQyNjY5OTI2N2ZjZGFiMTI0M2Q3ZjEyOTJkYzg0MjkzOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxNDU1NjE2ZDNmNjQwYmI5ZjAwODRmYzNmYjZlZjZhM2JjNzNkYzUwMzhhMzQ3NWUxMTM2YTliMWJhMmIxMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2MGM2MjM5ODMzYWVkYzY3ZjkzM2VlZjVhYWE5YjU4ZmIzNjQyYTJkMzk3NzgzNWYzZjI5YTM5NjkwMzliMjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmMTQ5NjVlOTM3NzAzNThjNzA0OTU2YWYwY2M4MjFiMTIwYWRlMGViMDI1ZjBmYzY3M2QyYjhiZDEwNTUyMzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_017bf5c433674ff8bbcbac3424d5b44c",
+      "statement": "must compliance is checked by _check_must_compliance() inside a retry loop of up to 3 attempts in run(); each correction restarts a full _run_tool_calling_cycle() chained from cycle_messages and re-runs must_not checks afterward. Rules are classified as filename (AND file-existence under AGENT_WORKDIR), quoted-phrase (substring vs output and full tool evidence), tool-mention (satisfied if the named tool is in tool_results_log), or open (LLM judge with truncated evidence).",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1045-L1146",
+          "version": "repo-lines-v1:sha256:f07785c910e74836c02238c53a60a75b82a991a8e50fef770510de35ceedf8e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkZTJiODMxN2YxYjE0NGUzYjdmMzA1Njg0YzdhYmFiOGIyOTJlNTcxYzI1MzcyMmU4NDJkMjZlMWQxYjhmN2E3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkMDAxMDVlMGE2ODUyMWMzZDMzMjYxNTM5MGU4NTllMzljZjI0MTI3NGE3ZDc4MWQxOTZhM2FkYTA3YjEwZmQ3IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkZmJmNDgxOTA5YTAzNDJlNzdiY2JlMTIwOWY5NzNmZDJkYjY2ODI0NGNmYjdmYjVjNmQ4MTlmZTU2NjQxNjU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0ZmVjNDE1NTUyYzQ0OWUyYWYxNzA5YzdkZTU1Y2Y0ZmY2NjRkYTg1YzFjOGNmOGVmN2EwNDMxM2NmN2RjNTIzIn0"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L556-L679",
+          "version": "repo-lines-v1:sha256:4ffc9f30eda97a5aca9f3f88531b415b41373b0c7e71288d69174a4d4eb3749b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkZTVjMDM1MDk2OTY0ZDU2ZmE4ZmZlMTI5NTQ3ZTEzZmZmMmE1MzQ0Y2NkMzE5NzI5YzhkNmI0NTU4Yjg4YjQyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiZWI3ZTBhMDk3MGNhNWY5OGMyYjhiNTllMGRkY2E0NmIyZDRiNjAxMDNmYzM3ODU2YTY2NzdlNGMyMDlmMmUzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmODM3OTVjYTEzNGMwODdjNTY2YzI2ZDkxZGRiNjE1OWY3MzQ1OTFlY2U5N2FiNzk0ZDdhNGY1OWU2MTkzYTUxIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxNGM0ZmJlMjBiODM3NjA4NGEzYWY2YjRmOTBjNDYwY2EzN2ZiNGE4Yjg3ZThlMjRiYWI3NTc3YmEwMmJhMmVmIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_99c2a9d78f6e4a4bb4a81a80ef0032a9",
+      "statement": "LLM judge calls (must_not detection and open must rules) use _judge_model(), which honours the AGENTFORGE_JUDGE_MODEL environment variable and falls back to model_default, deliberately decoupling the judge from the candidate model under test.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L511-L527",
+          "version": "repo-lines-v1:sha256:69169a457546fe6c60bed84cccfc5f7c5de51aca6a65f5441f6027e843a418ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyZTBjMzQ1NGE3NWU1NmM0OGE3MmM4OTVjODU0NmMwMGYwMzA2ZDc5Njg2Mjk5NDczMmRiYjFlYjE0MjY5YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMWM2MmFmOWVlN2Q1YTM5NDVjMjIyNmE5ZDg4ZmYwOGRlZDBkMTg0YTM1M2M4ZDIxNTYyZDI4OWRhMDY1OWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ZjdmNTQwMjM3M2Y3MTExN2NhOTIxMGJiYjJiNTYxYzFkZTIwZmNkOGEwYjc3NGFjMTNkZTllYzhiNWFmNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4NjBlMTUwM2QzMTk4NDc0NGZhZWZlNzM5YTdiYThiZTUwMzZhY2NhNmMxNmVhZDY2OWYyZmEyYWNkNWFiNWIifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L666-L673",
+          "version": "repo-lines-v1:sha256:20acc4bad1ed3fd7f4a6fb6ea3709237e157d65d1157f0e6372d5ebf5c5dd075:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2ZlZDRkZWY5MmQ4OWZkOTkwYzRjYjg3NGNhZjczNDgzYzgxNTA2MDcyOTM2OTIzMjdhOGJjYjQwNzE1MzdhZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUwMzJlOTY0ZDA5MzIzNTFlNWQxODUyNjkyODFiMTcxYTNhMDliMDhiMjg2ZTY2MWVhNDcwMzIzYzgyZWI0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2YwYmI5N2JlYmM4Y2I3YThlNjAzNTk0OWI3NDNjNzc0NjZkY2M3OTdjN2FkNjU0MGNlODhjMjNhMjU2NzIxMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjEzMDE0MmUxOTQyYzM1MGRkYmEyZDViOTM4ODRkOTMwZDliYWQ3YTFmNmI2MDk0ZWZkNTY1M2YwMmQxMzBlNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e74aa52d514b4aba9a21a099c2788fa0",
+      "statement": "Multi-turn memory loads history.json via load_history() at init and re-applies apply_window() (truncate or summarize per memory.policy and max_turns) before saving via save_history() at the end of run(); single-turn runs start with empty history and skip persistence.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L101-L111",
+          "version": "repo-lines-v1:sha256:b1b17e817fd8cf9f6ad97356c9774eac6548e8680fa694d1e1167c4e8cb410f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxNmRlYTQ4Y2NhZDZhOTJjZTM4ODk0NjNhMmQwYTc2NGUwZTVkOGEwOTM2ZTAxYzk2YmZkYzVmMzc0OTdhNjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMTVlMDFkYTk0YzNmZTZhNjMzN2UzYWU5ZGIwNGI0MjA2ZWE2YmU1YTY5MjQ5ZWZhOGQ2NjBiNzU2MjMxNjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkYWI5NGJkYjI2ZjRjZjVkM2EyZmEwOWYxMWY3NDI5YmYyZTRlZGU0YmJmOWQ4N2M0OTY4MTY3ZDhhZjBiOTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0NGY0ZGViOWMxZjI2MTE3MDhjMThmYTFhZmZiYTVhMjNlNTFkMmI5YmU3ZTBhZTVkM2RmYzMyODA4M2I1MTMifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1148-L1158",
+          "version": "repo-lines-v1:sha256:e856b94b7c03f2f01242e4bd15605faf4e9411fed3d821f9e2a555d583a6cc5e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiYzA0MDYzNDk0ZWJkNGUwOTA4MGM1MjA0YmUxNGFiYmU5MWQ0MjlkOWM3ZDU3MzIxYmZkMGY4ZjJjOTVlZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZmJmYjlkMDZhMzkwYTIwMWI0Y2I3OTllYWJkOWY5OTE4NTAxNTllNjdhYjU1MTJhYjAwMWUwYWY5ODdkNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1OTMwZjBkMTM5OTQ3YzFmYzdhOTIwMTdhNmFhYzk3ZTc3OTVhN2I3MTQ1M2E3MDI3Y2YyZjNhNTY4Mzk5NTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3NDhlZTJjOGIwOWFlNzMwYjUzOTg2NTk0Y2ZlMzZlYTI1ZDY4NjdlMDNjYWYyNTVlYmE3NjZkZjBiMjNkZGYifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/memory.py#L36-L126",
+          "version": "repo-lines-v1:sha256:026589e6b55811c7c43eefd5e908bd126c9bd575de95944fe78d41edf945cafb:eyJzZWxlY3RlZExpbmVDb3VudCI6OTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNGJmYmMxZDgzN2RhOWMzNTBjNjM5NzdjYmJjYjk3ZWEzM2Y1MGEyZWU2ZTM1NTE1Y2VlNDFhOTE4ZmUyNDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1ZGE4MjI1MmI3OGMwNGMxZWMwMGIyNjAzNDg0YmQwNmZjODQ2ZmE0NTAyMmIwZjhmMDE3NzI2MGRlZTg2NGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMWQ3YjQ3ODQ0NjA2YTI0OGYzOWE1Y2EwNzg4YTIzOTcyNmJhMzQ1ZTJlMWE1ZTUxYTBhYjllNWZmYjMyNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bfa2c79e224c41c981155b6f1e59bd34",
+      "statement": "The memory.feed_mem0 flag triggers mem0_hook.feed_async() after the run is logged — a daemon thread that builds a structured content string (agent tag, user input, per-tool 300-char result previews, agent output) and calls mem0.Memory.add() against a local mem0/Qdrant config, never blocking or raising.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1188-L1195",
+          "version": "repo-lines-v1:sha256:3369c9d4bbbd74681126fdd6a99409fb97386ba37383a45116feda84391c6268:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjE3MWE5MmQ1OWFkYTJhMjhjZTk2ZmFmZjUxYTg4NmM0NGM5MTYwOTc0N2U0YzkxNjViZDk5OGMyMjVjOTAxZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUwMzJlOTY0ZDA5MzIzNTFlNWQxODUyNjkyODFiMTcxYTNhMDliMDhiMjg2ZTY2MWVhNDcwMzIzYzgyZWI0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWI4ZDIxNmU3YThkYTAzYWI0YWUwOTU0ZTc0YjlhZTdkOWE5YTY4YjlhMDllZTczNTlkZTE2OTUxYWNkYzFmZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDZkOWQwM2UwMzc3YWEzMDgzMjk1YjljOTU3MmYxOTA3MDdlNjljYzU3NTU1ODBiM2U1NGJmM2IxYTQyN2VjNyJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/mem0_hook.py#L1-L91",
+          "version": "repo-lines-v1:sha256:1137e88a403cae04ea0ab50a5cebedacd1f7d4c08ea71687842235e63d40751d:eyJzZWxlY3RlZExpbmVDb3VudCI6OTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmZTFmNTI4YWIyZTdjMmM3NDdiMDg3NDYzMWVjNTIwNTRmMGJhMTk1MDNjZDg1YTYzNDBmYzdlNGUyYjBlYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NWVlZWViNTVkNjBlYmFlYjI4MTllYmE4ZjJmYjRiMjZjYTAxOTVkODBkM2NiMzc3YzM0ZWE0NzI1MjNjZGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dfd877fd753244feb0b090447f431a31",
+      "statement": "run() returns a dict with agent_id, provider, input, output, a metadata block (workflow/channel/model, timestamp, latency_ms, tool_executed, tool_data, tool_calls_log, conversation_turn, guardrail_violations, plus any caller-supplied metadata), and a provider_response block; _log_run() appends a compact 500-char-preview entry to runs/runs.jsonl in the agent directory before returning.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1160-L1197",
+          "version": "repo-lines-v1:sha256:22cc0e2c126e23d887bfa2c501259eb8ba94e10a693e0b299694937ec641b29f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhNmM5MmFjZWU2ZmU5MTYwMWQwMjJkM2Q1YjY1ZTA1NTFkM2Q4NjVkNjZiZmZiYWIwOTM4ZTU2MzZmZjljMTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc3MmY5Njk1Yzc0NjdjNzQ3NzNjOWNlN2ZjNDI5YzVkMGQwZTQ4N2YzYzUxZDE1ZDY2NjhhM2QyNDA3MmJiOTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2YjI5ZTIzNWE0MjM2MDY1ZGFlYTYzMTE1ZDY0NDYyNGNhNmMxYjliODlkYzdkNGVhNTI2NDhkOWVhMGIwY2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiMGM4NGI3MjkxOWUzZTZmYzFjMzRhNWY0MmEwODU3NTk4M2FlYWZlNjA3N2Y4ZTIxYTNlYjFjZjZkMDVlMmQifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L908-L921",
+          "version": "repo-lines-v1:sha256:c98a71d7b8548f10a9d063eb73c45de3edc37fb64f8438a8e55aa7eceba64aab:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhZDc3YjY3ZTU5MTFmZGFkZWI3Mzk5NjAxZjgxZGM1ZGZiZjc4ZGRmNTk0ZjAwY2UwNmUzNjVmNDY4ZGE2MTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3YzgzMWVmZjkwY2VmNDhiYmYyNjFkYzllYmRjZTQ3M2VhMzhhNjM0NzBjMTk1Nzg5YjllMDQ0OGMwNjA1NGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5NjE0Yjk1YjQ5MjJlNjE0ZTIzNWQyNzY5NDYxMzFjYTIzNjhkNmNhNjliMDI0ZmUzM2VhODk0YmIyYTg5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwYTQxZDFmZmUxZjZhMGY2MWJkODFlNzI1YThkMDVkZmM4ZDU2ODlmMDI0OWJmMmYxNDQ3ZDIwMzJjNmMyMTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f4ff2de8ba734b6ab0c9c5c3c7969033",
+      "statement": "File-touching tools and the engine's filename compliance checks all resolve paths relative to the AGENT_WORKDIR environment variable (default '.'), so files the model writes are the same files the guardrails verify.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L544-L554",
+          "version": "repo-lines-v1:sha256:a30aa4f54bbdc85becf5f35270dddc8df6bf6280daac03d623be7c7fd23c0be9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyMjBkODdhNGNkNTgwOWYwMTcyZTc2MTk4NGQyOTcwZjRhY2ViNGM1MzY2MDI1OTcyM2IxNGU4YmNmYjQzZjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmZjMxNGNjYzhhMTI2NjVlMzE1ODY1M2Y3MTE3NTA3NDBiODI1ZWM2OGJiYTc1NzBmMWY2OTljNmJmNDBjN2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ0YzA4NjA3ZjdhYjA1NmE0N2M5ZDBkMDk5OTIwOTdhNTFiY2FkMjkwMzYwYmY1OTViNGM5OTIwMzgxZGYyNjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjODM1ZDkxNDE0YmJhZTY3OWM2YjYyNWI1YmUzOWM4MDM1ZGY5YzkzZWVhOTE3N2QyNDZlMTJjMjVkZmY5N2YifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/write_file.py#L7-L18",
+          "version": "repo-lines-v1:sha256:b50d26881b571beee20001a213c48306bf8ef25ce6f76d4fd671105a4e403fcd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0ZjA5MjFlMjczMDEwM2NkYTM4MmZlYTViMjNkNTI2ZGI0ZjczZDAzZTY5MWI4YjRlMzNjZGFjNDMxMzhhMzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlNGZkZjM2OTU1ZDZmMjFjNWEwNGNhMzU3NTU3ZDllN2QzMDllZDU0OGVkOWYwYzE2YWFhNTgzZWQzMDk4ZDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5MWJmM2Q5NmYxYjExOTY4OGRlZWE5YTAwNGIyYjNmZWJiMTgwYmI4ZmIyMzQ0NjI1NjE0YWRjODU5NTYzYWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlOGRiNjc2NDhmNTljZTIwY2FhMTIxMDUzNTg5NTM3NzcyOTU1NDJiZTY5OTY2YTE2ODBlOGNkZmIxZTE5OTMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-09T12:43:13.007Z"
+  }
+}

@@ -1,0 +1,336 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:03227b7edc5ff81a99b3f167304bf684a93c68c5c6453b9415386b5e46e7cc11",
+  "claims": [
+    {
+      "id": "claim_4dccb93675574d5395871cb015fe78d6",
+      "statement": "AgentForge agents are catalogued under agents/<id>/ in three roles: reference (lab-ops, tool-builder, orchestrator), benchmark (forge-f*, real-p*, gap-g*), and specialized (claudio, fox-health, infra-specialist, link-reader, vault-pilot, wks-worker, media-generator, mock_agent).",
+      "evidence": [
+        {
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:c88ec880e0c4b151ee17cc6fbdeab08cafa2b4987d24907074045c5b02e8b5a1"
+        },
+        {
+          "resource": "repo://agents/orchestrator/agent.yaml",
+          "version": "repo-file-v1:sha256:b5c83e95119eff65021124ab1323132e04242fd62e5a30fcd6bad827cc433cc3"
+        },
+        {
+          "resource": "repo://agents/wks-worker/agent.yaml",
+          "version": "repo-file-v1:sha256:6ce2da654f4ac8c330cb048744c97417d641eabbb53175ed781c248aecfa16ea"
+        }
+      ]
+    },
+    {
+      "id": "claim_72a791217c5740858abf8a057d653445",
+      "statement": "The AgentForge 4-stage certification funnel (ABS → LOP → FORGE → REAL) filtered 19 models over 4 months; 7 reached FORGE and 4 reached REAL. The funnel's thesis is '20% is the model, 80% is the runtime'.",
+      "evidence": [
+        {
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:c88ec880e0c4b151ee17cc6fbdeab08cafa2b4987d24907074045c5b02e8b5a1"
+        },
+        {
+          "resource": "repo://docs/MODEL-STRATEGY.md",
+          "version": "repo-file-v1:sha256:5243149c17c2bc286fa75eea381dfcd4d0c200d9d8f425131b3c3b9a565e8da0"
+        }
+      ]
+    },
+    {
+      "id": "claim_9c4eb7b2057347a9b7d1da8522608f53",
+      "statement": "lab-ops is the canonical reference agent: model qwen3.5:27b, mandatory collect_system_health plus read_log_tail, session_summary memory (6 turns, summarize), guardrails forbidding metric fabrication and access outside the server log directory.",
+      "evidence": [
+        {
+          "resource": "repo://agents/lab-ops/agent.yaml",
+          "version": "repo-file-v1:sha256:06d38e203a32ef2b68b33b32a8d24f475f27351885f2243d4750e05fc10171c5"
+        }
+      ]
+    },
+    {
+      "id": "claim_08455f1bf7a647df9969ee34a937e852",
+      "statement": "tool-builder implements the Voyager pattern: writes a Python tool, re-reads it, writes tests, runs pytest via run_bash, and calls register_tool_file to persist the tool in tool_registry/ for all future agents. Its workflow max_tool_cycles is 20 and it must end with the exact phrase 'TOOL REGISTERED'.",
+      "evidence": [
+        {
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:c88ec880e0c4b151ee17cc6fbdeab08cafa2b4987d24907074045c5b02e8b5a1"
+        },
+        {
+          "resource": "repo://agents/tool-builder/agent.yaml",
+          "version": "repo-file-v1:sha256:26b86f7b962cae205f13446e92183a1af331af87b52aa5800d5555be9b6c2fcf"
+        }
+      ]
+    },
+    {
+      "id": "claim_85ad09e96d124438a35d1ecc147833b2",
+      "statement": "The orchestrator declares its workers in workflow.agents; when non-empty, AgentRuntime._build_tools_schema injects a run_agent tool whose description enumerates the declared workers, so the model cannot delegate to agents outside the spec. The shipped spec declares only lab-ops with agent_dir agents/lab-ops.",
+      "evidence": [
+        {
+          "resource": "repo://agents/orchestrator/agent.yaml",
+          "version": "repo-file-v1:sha256:b5c83e95119eff65021124ab1323132e04242fd62e5a30fcd6bad827cc433cc3"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L179-L205",
+          "version": "repo-lines-v1:sha256:7f04b931f7690c3cd71c46608a64d9f1f4f2c025c735cfb0f61292cfdb90d3a3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMGJhZTljODgzNTA3ZTYxNzEwNmU2ZjVmNmNjZDcyYzFmODMxZjQwNDVmYTE0Mzk3OWY5Y2ExMDJiMzczZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5OWQ4OTRlNjg4YTdhYTU4M2YyM2U1NWY1ZTc3NDEyZmEzMDlmOWQwZjE2NTJmOTQ4ZTVlYjY5NTAxMmQ2NGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxMTkwM2NmMDM5ZjMwODc3NjIxZjUzNzhiNGVmNTY0NmIzMDJhM2EwZTdmMWRkMjk1ZDA0MjYzNmMzYjUxYTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzYWJhNTRiMjc4NTdiMzcwNjQ2Y2I1M2QzNmFhNDI0NmU1MGUyNGRiNmNmMDcwOTU1YTRjOWIzYTNjYjI4ZWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cf7815d0c9a14fd894b5ef129224b3cd",
+      "statement": "run_agent (src/agentforge/tools/run_agent.py) loads the target with AgentRuntime.from_agent_dir(agent_dir) and executes runtime.run(input), returning {agent_id, output}; the output is injected into the orchestrator's history and synthesized into the final response.",
+      "evidence": [
+        {
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:c88ec880e0c4b151ee17cc6fbdeab08cafa2b4987d24907074045c5b02e8b5a1"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/run_agent.py",
+          "version": "repo-file-v1:sha256:501ac8be629af997426e4c908da343bec8bacfea26ffbd4f32d01439383903fb"
+        }
+      ]
+    },
+    {
+      "id": "claim_5c6d8153a9a84f81b81eec4f07c71056",
+      "statement": "FORGE benchmark agents forge-f1..f5 are single-scenario multi-step agents on qwen3.5:27b with memory disabled; each pins an exact final phrase used by auto_checks (e.g. 'ANÁLISE CONCLUÍDA' for f2/f3, 'PÁGINA PUBLICADA' for f1, 'REVISÃO CONCLUÍDA' for f4/f5).",
+      "evidence": [
+        {
+          "resource": "repo://agents/forge-f1/agent.yaml",
+          "version": "repo-file-v1:sha256:e0af883450a0487f599f7e7dc7e0dd2ec7cfd19781da130c4779870548304ad7"
+        },
+        {
+          "resource": "repo://agents/forge-f2/agent.yaml",
+          "version": "repo-file-v1:sha256:4c2ab95992efd29472c804c35dda722ce239d0c570be526283e2a5da2266caea"
+        },
+        {
+          "resource": "repo://agents/forge-f3/agent.yaml",
+          "version": "repo-file-v1:sha256:cc90f163216480a28c6b50278b374a52747de6f36888d256b80014e4453f0acf"
+        },
+        {
+          "resource": "repo://agents/forge-f4/agent.yaml",
+          "version": "repo-file-v1:sha256:36129c14a2386df8eb3f531f3f883132fe674e41aa18147fd75278e259966085"
+        },
+        {
+          "resource": "repo://agents/forge-f5/agent.yaml",
+          "version": "repo-file-v1:sha256:c429f7812350a115eb5c5440377b49e5e9d97641c27e91fa2a0e1637cb3bcb4f"
+        }
+      ]
+    },
+    {
+      "id": "claim_b9afd4c3efe3431abf9087f67ef667b1",
+      "statement": "forge-f3 (Market Analyst) uses http_get, write_file, and send_claudio with max_tool_cycles 12; its guardrails require real quotes before the report, specific PT-BR sections, a send_claudio summary, and the ending phrase 'ANÁLISE CONCLUÍDA'.",
+      "evidence": [
+        {
+          "resource": "repo://agents/forge-f3/agent.yaml",
+          "version": "repo-file-v1:sha256:cc90f163216480a28c6b50278b374a52747de6f36888d256b80014e4453f0acf"
+        }
+      ]
+    },
+    {
+      "id": "claim_ffa6ce7147e443459183e197ffdf25da",
+      "statement": "REAL benchmark agents real-p1..p4 are scenario agents on qwen3.5:27b: p1 Hacker News scraper via browser_navigate, p2 SPA data extractor using browser_execute_js against window.__AGENTS_DATA__, p3 Python tool developer (max_tool_cycles 15, ending 'TOOL CRIADO'), p4 Claude Code skill generator (ending 'SKILL CRIADA').",
+      "evidence": [
+        {
+          "resource": "repo://agents/real-p1/agent.yaml",
+          "version": "repo-file-v1:sha256:9bd30128db42d93c110cb10ea655269fa18200522d41e84579e0c43526f051d4"
+        },
+        {
+          "resource": "repo://agents/real-p2/agent.yaml",
+          "version": "repo-file-v1:sha256:fe96e4686d8593fd4b78bf7d7eaf59b8af6f4f78ad16291e46287d20bd460041"
+        },
+        {
+          "resource": "repo://agents/real-p3/agent.yaml",
+          "version": "repo-file-v1:sha256:77f819489bca00435d5e5bb7317c2f8a748340a40af929c11361ccc72d4030f1"
+        },
+        {
+          "resource": "repo://agents/real-p4/agent.yaml",
+          "version": "repo-file-v1:sha256:c30a4661771d448f5b3a70d7df9b6f4c52d1a25c3717580fc6832214084b0840"
+        }
+      ]
+    },
+    {
+      "id": "claim_cf133ac046494673bd1fcac9725811a0",
+      "statement": "Gap benchmark agents (gap-g1, gap-g2, gap-g4, gap-g5) probe failure modes rather than capability: underspecified requests (g1), protected files under a matching glob (g2), missing Python dependency discovery (g4), and remote ComfyUI/OmniVoice tool use on fox-wks (g5).",
+      "evidence": [
+        {
+          "resource": "repo://agents/gap-g1/agent.yaml",
+          "version": "repo-file-v1:sha256:5e95503b54bec29ad4a0a4289a5f4cb2762dd7ed6941c75296b73b1bf8ca5d4b"
+        },
+        {
+          "resource": "repo://agents/gap-g2/agent.yaml",
+          "version": "repo-file-v1:sha256:1f03ebc0a9041bc34c46380ccb6d61053d6b207cb41172cf4b11f77b5cd8e07a"
+        },
+        {
+          "resource": "repo://agents/gap-g4/agent.yaml",
+          "version": "repo-file-v1:sha256:158898e909d26fd6ac188e8baf1ba65e49cf24ec6bced601059019dfeff6ea45"
+        },
+        {
+          "resource": "repo://agents/gap-g5/agent.yaml",
+          "version": "repo-file-v1:sha256:21b26f97d28d6b091960f05dadb9223f3916c384428a7b269e34a621bcbab1e4"
+        }
+      ]
+    },
+    {
+      "id": "claim_2a6f2ac3b3ec45ccaa683eff49187892",
+      "statement": "Specialized agents are production or lab-specific, not benchmarks: claudio (CLI lab assistant, gemma4:e4b, no tools), fox-health (fox-server health, gemma4:e4b), infra-specialist (Docker deployment on fox-server), link-reader (fetch_social_url + local LLM), vault-pilot (staging vault analysis, gemma4:e4b), wks-worker (Windows workstation), media-generator (reusable image/audio via fox-wks ComfyUI), and mock_agent (test fixture with the mock provider).",
+      "evidence": [
+        {
+          "resource": "repo://agents/claudio/agent.yaml",
+          "version": "repo-file-v1:sha256:b67015925906742f13b5cde8475f1f8034ca19cabdf3e81088b9c5c972d1db48"
+        },
+        {
+          "resource": "repo://agents/fox-health/agent.yaml",
+          "version": "repo-file-v1:sha256:af8ba0cf9f64be44f3f40b95ad38f28672655ef3182afa65e13738ebab9cad32"
+        },
+        {
+          "resource": "repo://agents/infra-specialist/agent.yaml",
+          "version": "repo-file-v1:sha256:64aa515d3c5ef168fae3958bea02ae92f4bb7c9efcd05e58f4dc2edb253ab068"
+        },
+        {
+          "resource": "repo://agents/link-reader/agent.yaml",
+          "version": "repo-file-v1:sha256:31ce16a3ecc7b668b2663b11587e0402a8d982b7faef907355055ff7298428d2"
+        },
+        {
+          "resource": "repo://agents/media-generator/agent.yaml",
+          "version": "repo-file-v1:sha256:26e74c105fcc3589c3f24ca7c894281c73f776a8e77b01e71627aa9c211e123f"
+        },
+        {
+          "resource": "repo://agents/mock_agent/agent.yaml",
+          "version": "repo-file-v1:sha256:482eac78c48ae8e654648372920a65f2eeeb55f1ae10a96ccedf8a5f5f83f46e"
+        },
+        {
+          "resource": "repo://agents/vault-pilot/agent.yaml",
+          "version": "repo-file-v1:sha256:b5e655734318787e45b407ae246573ae1ab353fc5ff684659307cb6150ec8b0f"
+        }
+      ]
+    },
+    {
+      "id": "claim_49f9c4adca6c4f08aedbc5120c54ba63",
+      "statement": "wks-worker is the only agent in the catalogue backed by a local llama-server (deployment.provider llamacpp, default_model qwen3.5-9b on 192.168.88.202:8082) rather than Ollama; its declared tools are collect_system_health and collect_wks_health (both via SSH).",
+      "evidence": [
+        {
+          "resource": "repo://agents/wks-worker/agent.yaml",
+          "version": "repo-file-v1:sha256:6ce2da654f4ac8c330cb048744c97417d641eabbb53175ed781c248aecfa16ea"
+        },
+        {
+          "resource": "repo://docs/fox-wks.md",
+          "version": "repo-file-v1:sha256:ac477ccad4625ae6ad933d3f1ba6a006c273a73033d027d175a1f1f3d081eae9"
+        }
+      ]
+    },
+    {
+      "id": "claim_623e20d7f23f4aa3940c1d6759a4d1b1",
+      "statement": "agents/wks-worker/ ships three FastAPI/uvicorn servers beyond the agent spec: system_tool_server.py (port 8091, 15 endpoints for health, D:\\-gated file ops, PowerShell with blocklist, SSH to fox-server, agent-mesh read/write, image analysis via TurboQuant, audio via ComfyUI), fox_terminal_server.py (port 9900, WebSocket + Bearer-auth PowerShell terminal), and image_tool_server.py (port 8090, ComfyUI + SDXL with ReActor face swap).",
+      "evidence": [
+        {
+          "resource": "repo://agents/wks-worker/fox_terminal_server.py",
+          "version": "repo-file-v1:sha256:e302515bfa6f19a30f10f3302fb983095c11550f5697474576ef257c721c65e4"
+        },
+        {
+          "resource": "repo://agents/wks-worker/image_tool_server.py",
+          "version": "repo-file-v1:sha256:825501764589a6f63a8e79736c11cd4a4f83cec263ece57e303713dd81df17f7"
+        },
+        {
+          "resource": "repo://agents/wks-worker/system_tool_server.py",
+          "version": "repo-file-v1:sha256:4105db566480dd0301f86f0505e3cb638d9cd9d61a75771230e8eda6e0b89486"
+        },
+        {
+          "resource": "repo://docs/fox-wks.md",
+          "version": "repo-file-v1:sha256:ac477ccad4625ae6ad933d3f1ba6a006c273a73033d027d175a1f1f3d081eae9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b4b8fe035344cf6a83458dcb2979d92",
+      "statement": "The agent mesh's shared tool registry is tool_registry/ + registry.yaml; load_dynamic_tools() in src/agentforge/tools/registry.py loads every entry into the process-wide _ToolRegistry at startup, so tools registered by tool-builder (or ported from the real/ runner) become available to every agent without a restart.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/registry.py",
+          "version": "repo-file-v1:sha256:c5dcd7eb55060108325bafe25c05867aecb7fd6a14c6c584ff4c215b8940cb76"
+        },
+        {
+          "resource": "repo://tool_registry/registry.yaml",
+          "version": "repo-file-v1:sha256:446e70194bdfb1209a08820810300b701eda3bcea5d93cde566f22aa94a6566c"
+        }
+      ]
+    },
+    {
+      "id": "claim_f007ae949d3e4eda95cd18bf3c0770ea",
+      "statement": "The agent mesh's shared memory lives in ~/.agent-mesh/state.db (SQLite shared_memory table with key, value, agent, updated_at). The search_memory tool first tries mem0/Qdrant semantic search (threshold 0.60, top-3, nomic-embed-text) and transparently falls back to a SQLite LIKE query returning top-3 rows.",
+      "evidence": [
+        {
+          "resource": "repo://tool_registry/registry.yaml",
+          "version": "repo-file-v1:sha256:446e70194bdfb1209a08820810300b701eda3bcea5d93cde566f22aa94a6566c"
+        },
+        {
+          "resource": "repo://tool_registry/search_memory.py",
+          "version": "repo-file-v1:sha256:f3d9aa5bd7c56e4138931475d6a3dab787e846883b205a4055c7958d9896e26a"
+        }
+      ]
+    },
+    {
+      "id": "claim_f6e7cf4af79f430a9671a08345e3897b",
+      "statement": "wks-worker's system_tool_server.py reaches the same ~/.agent-mesh/state.db on fox-server over SSH: read_agent_memory runs sqlite3 SELECTs over the shared_memory table and write_agent_memory invokes python3 ~/.agent-mesh/write-memory.py, so fox-wks participates in the mesh without a local copy of the state.",
+      "evidence": [
+        {
+          "resource": "repo://agents/wks-worker/system_tool_server.py#L296-L313",
+          "version": "repo-lines-v1:sha256:b95eaeca23b04ffdc693b909c9788317892edb59975801df3d0e7005c2958057:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzNWY1ZjE3ZTYxMmFjNzAyYmM5ZjU3NWZjOTc3NTQwODcyNTkyYWI2MmQ4ZTQyOTY3OTRlYzUyNzU2MTEyODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwOTViOWYwMTAwY2E5ODMzZTgzODZlMjcwZGU2NDFkZTE0YzUzZjE1NDVjY2RkYTdhZDg1ODNiZGMzODBlY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlMzNhMjU5ZGE5YzYyNDBkZGZlODcwM2Q1Y2MzOGExM2Q0N2RmMjJmYzFkZWZlOTFlMjllYmJiMjExZGJjNmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYzM5ZDU1YjFjNDA5YWVlN2MzMThhZThmZWU0ZjEyOWVlODM1OWViMjczNjU3NWJlYmI4MDcxN2E1Mzk2OWQifQ"
+        },
+        {
+          "resource": "repo://docs/fox-wks.md",
+          "version": "repo-file-v1:sha256:ac477ccad4625ae6ad933d3f1ba6a006c273a73033d027d175a1f1f3d081eae9"
+        }
+      ]
+    },
+    {
+      "id": "claim_bc6ddf995ef143e4bba6a47d39cb5037",
+      "statement": "The Claudio Telegram relay is the send_claudio built-in tool in src/agentforge/tools/send_claudio.py: it POSTs to https://api.telegram.org/bot<token>/sendMessage using credentials from ~/.aurelia/config/app.json (telegram_bot_token + first telegram_allowed_user_ids entry). The claudio agent and the send_claudio tool are separate components; the agent is a CLI-only assistant with no tools.",
+      "evidence": [
+        {
+          "resource": "repo://agents/claudio/agent.yaml",
+          "version": "repo-file-v1:sha256:b67015925906742f13b5cde8475f1f8034ca19cabdf3e81088b9c5c972d1db48"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/registry.py",
+          "version": "repo-file-v1:sha256:c5dcd7eb55060108325bafe25c05867aecb7fd6a14c6c584ff4c215b8940cb76"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/send_claudio.py",
+          "version": "repo-file-v1:sha256:da215228f0092cfc9775ac0052330851a50c67331c93cf11a2e1cafe4dd1a636"
+        }
+      ]
+    },
+    {
+      "id": "claim_67633b8dd8fb49d58b4c50c56cdd4b63",
+      "statement": "Each agent directory follows a fixed layout: agent.yaml is the primary spec; system_prompt.md, runtime.yaml, tools.yaml, eval.yaml, and README.md are generated from it; history.json persists session memory when enabled; eval_runs/ stores timestamped evaluation results.",
+      "evidence": [
+        {
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:c88ec880e0c4b151ee17cc6fbdeab08cafa2b4987d24907074045c5b02e8b5a1"
+        },
+        {
+          "resource": "repo://agents/real-p4/agent.yaml",
+          "version": "repo-file-v1:sha256:c30a4661771d448f5b3a70d7df9b6f4c52d1a25c3717580fc6832214084b0840"
+        }
+      ]
+    },
+    {
+      "id": "claim_92cd93b58c5f46fea4ebfe143457688d",
+      "statement": "The agent creation flow is wizard → generate → run: 'agentforge wizard' writes agent.yaml, 'agentforge generate --path agents/<id>/agent.yaml' derives the prompt/runtime/tools/eval artifacts, and 'agentforge run --agent-dir agents/<id>' validates the spec and creates an AgentRuntime to execute the pipeline.",
+      "evidence": [
+        {
+          "resource": "repo://README.md",
+          "version": "repo-file-v1:sha256:c88ec880e0c4b151ee17cc6fbdeab08cafa2b4987d24907074045c5b02e8b5a1"
+        },
+        {
+          "resource": "repo://src/agentforge/cli/main.py",
+          "version": "repo-file-v1:sha256:5575ee8343094b9b769875c83940591d986647fdf8eb443f7648d680b978e8f8"
+        },
+        {
+          "resource": "repo://src/agentforge/wizard/flow.py",
+          "version": "repo-file-v1:sha256:fa44e80ebf2ae33e0c87c1a8cbe9da478f6e043cc0a33fd907984c0abccad44d"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-09T12:43:13.007Z"
+  }
+}

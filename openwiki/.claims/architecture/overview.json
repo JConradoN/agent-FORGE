@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:f1d69110abe204adfdb7ddd7918e38fd14fa3eda2fae159ed5b5787560715a56",
+  "claims": [
+    {
+      "id": "claim_ace5e5ee2b86413392b6e0fa49af35c4",
+      "statement": "AgentForge's central design thesis is '20% is the model, 80% is the runtime': agent quality depends more on how the runtime manages context, tool use, guardrails, and evaluation than on the chosen model.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L21-L25",
+          "version": "repo-lines-v1:sha256:19c66e8214f87352e903d02093b61434ad7a9f0147663fa6ca0dba6ff5f3c6b6:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDljYTZjZjAyNDA1ZDYxMmMxNDFiZWZjMzAxMThhNmRjZTcwNWFiYjU3NGQ3MDU2MzY5MWNmYzAzMzNhZDhmNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzhlNWI0ZTVhNjRiYzk5NjZlMTE3YmNiN2I5M2RlMzMwYmUxNzY3N2JlMmEzODFlZDlhODljNGMyYzY0MjRmMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzhlMWVmYTYwNGIwZDQ2ZWEzNjE2NmE1ZjUwODgxYjUyMDgyOWFjNGQ1YzYxNDA4YTg4N2RkYjU1Y2RmYTNhMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDAxZjJlYzE3NTkzYzEwNTRlYjQ2MzY3ZDg0NTNlZjI0YTE3M2NlOTZiNzExN2Q5MWY5YTY4ZDQ0ZmVmOGIwMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c764184d46744eac9998f4977c61b93c",
+      "statement": "AgentSpec and its sub-models (identity, persona, channel, tools, memory, output, guardrails, eval, deployment, model_policy, workflow) use Pydantic extra=\"forbid\", so unknown fields in agent.yaml are hard validation errors and the spec remains the single source of truth.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/core/agent_models.py#L8-L123",
+          "version": "repo-lines-v1:sha256:a6ffc55130c9ef9ef391b2dbd84e4f61c867b66be4004fa3c6da40da720f34fc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3YjRlODNiZWZmMDk0MTk2OGIzYzAwMjFkOGFiNTM2YTM5MzEyNGI4NjJlNTgxYzRjZWVhOTkzYzViZmQ5M2Y3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxNzljNmQyZWNkMGM0MTY2OTdmOGU3OGZiNDgwZjMzNTMxZmM5ZGRiMDU4YjZkZjU1YmFiYjdiMGQ4MjZiMjZkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlMDQyOTNkOTcyNDMwN2Q5YTg0MmI1NDdjZTk0OTUwZTNjY2ViN2VhMzY2NzJlNDE2OTZhNjQzM2JjNWU4MDNlIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmN2Q1MmZjNDc1ZTgyNzAxM2FmYjI2NjVkZWI2OTU2ZjJjZjEzYTFmYTYxODYwNmIxNzEyZDU2MDE5ZDMyMTg0In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_6b6cf811b2994e72a1a17ad006ced990",
+      "statement": "validation.py provides load_yaml_file, validate_agent_spec, validate_framework_spec, validate_orchestrator_spec, and validate_all_specs; the latter walks a project specs/ directory for framework.spec.yaml and orchestrator.spec.yaml.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/core/validation.py#L16-L45",
+          "version": "repo-lines-v1:sha256:8435bf3f9a8d9eaacce26f03b1a469b26dbf9bc82ba3dc640fa3463720ac1332:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5NTVhNDBlZjA5MmZiOGY2YWQ4ZmFlZTYwZTY3Mzk3YWIzOGU0YTcwN2FiMzU4MjNlZmRjNzhlYWFhMzM1MzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYmE3Yjk4Y2M1NjIwNzljMjY5ZmQyYWQyMzVlMzk3MWFhZDI4YjE0MTVlYzhiZGI5N2YwMDk3NjI1N2I0YWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlYWM5Nzc5Njc4ZDE0N2I0NDU0MDI4MmJlMDAwZWZkMTJjN2UwYWNlYjMxZWEyN2ExZTgxZDAwM2MxY2I0N2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5ZWQzZWExY2U4YjI5ZmYxZDM3ZGI4N2UyZjVjNTBiZjQ2ZDExYmY2NGRkYzk5NDU1MjE2NGFkYjE1NWZiMmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_021c6b558c074ceaa5494d34c6eb333c",
+      "statement": "AgentRuntime.from_agent_dir loads agent.yaml, runtime.yaml, and (optionally) tools.yaml from the agent directory; RuntimeConfig is a flat projection with a model_validator(mode=\"before\") that flattens nested model/workflow/memory/output sections and honors AGENTFORGE_PROVIDER and AGENTFORGE_MODEL environment overrides.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L34-L135",
+          "version": "repo-lines-v1:sha256:cbf6da5efbc22f37e0de1bbd1d4bf4ab34fde592fec298d4f5706d6b4663870a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwYTYzM2ZiNzZhZjI5MzdhMjdkNzgxNThmMDg4NzdjMmRiOThlNmM1MTUzOGQ5NWM5M2IwYjFkNWZkZmM2ZmIxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1OTA5YTUzYTYxOGQwMjhlMWQzMDAwYzBhN2FiY2VlY2JlNWZiMzdmNGU1MTFlZmU0NjY0M2ZhZDZlNjY4NzJmIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIzOGFlNjBhMDlhNzg0YjQ3ZWEwODUzMTZiZmY5MmM2ODAxMWRkNjcwZDg5ZjI4ZGFmNWRhOWJiNmFlNDFiYzQyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmYTY5MjNjMzFmOTY0YWUzMzVlNDBiMGM4YjFkOWJkYTBmODY4NDE5ODVmZTI5ZjcwYzRmNmJjYjVmNzhiNWJmIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_5229336f221d4d2b8ef364e7937de24d",
+      "statement": "AgentRuntime.run() routes by workflow_mode: respond_or_tool runs the tool-calling cycle, any other mode issues a single provider.generate() without tool schema; both paths are then followed by reflection (if reflection_rounds>0), must_not guardrail check/correction, must-compliance loop, history update/persist, and append to agents/<id>/runs/runs.jsonl.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L935-L1197",
+          "version": "repo-lines-v1:sha256:f588fadfd38eef3587c12f45f65ad21ac95c48d2896ae382387a15caed4a2284:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3OTBjOWFhMDZiOTg3YWQxNzdjYjhhYTg5MGQ3NjMwNGJkMTFhNzE1NjBhNDE4NmY5MWU0NDdmYjI2NjJlZWU3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3NzJmOTY5NWM3NDY3Yzc0NzczYzljZTdmYzQyOWM1ZDBkMGU0ODdmM2M1MWQxNWQ2NjY4YTNkMjQwNzJiYjk1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIxNWQyODUwNmZjOGQ5NTZlY2U5YmQ1Zjc1MDUyYTgwOGFkNDYyZWM3YmNkMWU5N2RiMzUxOGJhZTQxN2I4Yzg2IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0YjBjODRiNzI5MTllM2U2ZmMxYzM0YTVmNDJhMDg1NzU5ODNhZWFmZTYwNzdmOGUyMWEzZWIxY2Y2ZDA1ZTJkIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_b0b868deb86446eba1d4b8102bb4e3bb",
+      "statement": "The tool-calling cycle iterates up to max_tool_cycles rounds (default 3); the loop guard aborts only when the last 5 (tool, args, result) triplets are all identical, so legitimate polling with evolving results survives; a no-tool pushback (up to 2 redirects) and a separate one-shot provider loop_detected redirect exist to pull the model back into action.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L213-L424",
+          "version": "repo-lines-v1:sha256:4c3381877bfeced60246e2cfb6ec2256c24346a997602f30c6b532f1c3809845:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0ZWEwM2IxOWFkMmYxMDI0NzQyYWIzNGM0NjZiZjE2YmRlZTU1OTBiMDhmNjdjZTkyNzU5YWE4NDk4ZjNhODExIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3MWJkNTliYWYxMDk4YWU5NmZkNzg2NGYzNmU4ODIyYzUxMTFhZTBmZDcwZjZhYjgyNjM2ZmVlMmU4NWY0YWI0IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwMjdiNzI2Zjk1MWIwMzU1MzRkN2EzNDFmYjU1OTBlNzk5YjM2ZWU0ZmQ0ODA4OTAyYmY1ZjlmM2U4MTNlMjk0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzMDZhZTA4MzI5ODA4MzRiZjIxMjBmNTQ4MDQ4NzMzNDU5MjkyNmJkYzJiM2JkMTViZWNjZDY3MTkxODdhYjdjIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_3ffe29a733894392a0a58cd9ad013c88",
+      "statement": "When max_tool_cycles is exhausted or the loop guard trips, the engine runs a final inference with a completion hint (executed-tool summary plus first three quoted must phrases) that still offers the tool schema, so the model can persist anything it only described; returned tool_calls are executed followed by one closing text pass.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L426-L502",
+          "version": "repo-lines-v1:sha256:fe225cd40c7040d0a865b7df6ababf1baffc553fc33bd6ddf93ba92ba220e52a:eyJzZWxlY3RlZExpbmVDb3VudCI6NzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjZmU5NzQ5MmVjNzBhMmM4YmRmNWVlZDM5NjI4ZDJlYTdiNDlmMGNiNGJmYTQzZmYzODNiNzQ1M2UxMGYyYzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmYThmMmE2MWI0YTNmMjdlMTRjMzI3MmM3ZGE5OWFhM2IzNTI1NTlhNjNlYWY5YWNkOTlmZTMzOTM2YzAzOWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxMTBkM2IxMmUzZGRkMzFlYjEzM2Q4ODgxNjFjNDhhNWQ5YzNiNDYwM2U4MTdkMDY4Y2FhMWM0OWZhNzc0OGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmYjRhMTg0ODE0MzlhODExY2FmMDRkYjMwYTQzOWE4NWY2NThlMTA4MzZlZDY4OTFkNmNhNDQyMzk3NWNlZTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_12b9e0051a5e43d2ae62d722bda8a14f",
+      "statement": "must-compliance runs up to 3 retry rounds: _check_must_compliance mixes deterministic checks (quoted phrase in output or tool evidence, filename-shaped terms checked on disk in AGENT_WORKDIR, rules naming a tool that was actually called) with an LLM judge for open rules, and on failure chains a new tool-calling cycle from the accumulated cycle_messages so previously-read file content stays in context.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1046-L1146",
+          "version": "repo-lines-v1:sha256:094a04d09bbab20431327bf04e8f42c7ff91133e9fd5118fdad50f3b5f48c4ec:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2MGUyYjY1ZDU1N2I1NWQzMGRiZjZmNzIwYWRiZmMwZTA0NWYxZjBkODhhODFlMGRkMDU3ODI4NDI5NDRjODQ5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkMDAxMDVlMGE2ODUyMWMzZDMzMjYxNTM5MGU4NTllMzljZjI0MTI3NGE3ZDc4MWQxOTZhM2FkYTA3YjEwZmQ3IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI2ZTEwODAyMmNjMzdmNzQ4ZGE5YmFlNjdiNDAyMWNiZTBjMWMxMTIyMWQyYmMxZGVlYzczYWVjZjBmNDlmMTQyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0ZmVjNDE1NTUyYzQ0OWUyYWYxNzA5YzdkZTU1Y2Y0ZmY2NjRkYTg1YzFjOGNmOGVmN2EwNDMxM2NmN2RjNTIzIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_65b214d67374423c9a695048d37152e6",
+      "statement": "_apply_guardrails checks must_not with the model as judge and, when a write_file tool call produced the deliverable, checks/corrects the file content and re-writes it to disk via write_file, so the on-disk artifact is fixed not just the in-memory text.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L709-L781",
+          "version": "repo-lines-v1:sha256:75fb85c5c541131fff5bfea5af505f36416b73d59d676af031332d37bedaf418:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZjdkN2M4MDI0MzllMmU5NGY4YWMxMWZhYTJlNWQyNjY5OTI2N2ZjZGFiMTI0M2Q3ZjEyOTJkYzg0MjkzOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxNDU1NjE2ZDNmNjQwYmI5ZjAwODRmYzNmYjZlZjZhM2JjNzNkYzUwMzhhMzQ3NWUxMTM2YTliMWJhMmIxMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2MGM2MjM5ODMzYWVkYzY3ZjkzM2VlZjVhYWE5YjU4ZmIzNjQyYTJkMzk3NzgzNWYzZjI5YTM5NjkwMzliMjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmMTQ5NjVlOTM3NzAzNThjNzA0OTU2YWYwY2M4MjFiMTIwYWRlMGViMDI1ZjBmYzY3M2QyYjhiZDEwNTUyMzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_107ceed82de4479b94fd3ca020ffd89b",
+      "statement": "LLM-judge calls (must-compliance and must_not) use AGENTFORGE_JUDGE_MODEL when set, falling back to model_default, so a candidate model cannot judge its own output and contaminate its verification.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L511-L527",
+          "version": "repo-lines-v1:sha256:69169a457546fe6c60bed84cccfc5f7c5de51aca6a65f5441f6027e843a418ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyZTBjMzQ1NGE3NWU1NmM0OGE3MmM4OTVjODU0NmMwMGYwMzA2ZDc5Njg2Mjk5NDczMmRiYjFlYjE0MjY5YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMWM2MmFmOWVlN2Q1YTM5NDVjMjIyNmE5ZDg4ZmYwOGRlZDBkMTg0YTM1M2M4ZDIxNTYyZDI4OWRhMDY1OWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI5ZjdmNTQwMjM3M2Y3MTExN2NhOTIxMGJiYjJiNTYxYzFkZTIwZmNkOGEwYjc3NGFjMTNkZTllYzhiNWFmNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4NjBlMTUwM2QzMTk4NDc0NGZhZWZlNzM5YTdiYThiZTUwMzZhY2NhNmMxNmVhZDY2OWYyZmEyYWNkNWFiNWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_95e0922cf1b0464ea4ebc75786e86f5b",
+      "statement": "BaseProvider is a minimal ABC with generate(ProviderRequest) -> ProviderResponse; ProviderRequest/Response are Pydantic models with extra=\"forbid\" carrying agent_id, input_text, system_prompt, model, history, metadata, tools_schema (OpenAI function format), and normalized tool_calls.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/base.py#L9-L40",
+          "version": "repo-lines-v1:sha256:2634b35931862e4cb4c45658dd5cd037ca789a94e14f41b2523c28720b13107b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjQyNTkzY2RmNGY4YzU4NzM3NGYyN2RhN2IwYmYxYmMwNWZhNzk0YWI2NmRlMGI0ZjIwMzcxNDAyNzM2YjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3Y2EyZWU3MDQ2MGZhZmI3MTU4ZTczM2M5NmQ0MDhhYmE3ZmIzOWQ0Y2Q3ZTg3MWIxZjc0NWUzOWIxYzgzZGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0NDU0NGIzMzI1MWYwNmY5MDAxOWYyYzBmNjhmMTkzZmUwYWFkNjM1ODQ2MjUyNzY3YmViY2JhMTI4MzcwYTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_187e86036f98439eb5f2121ba5226f73",
+      "statement": "ProviderRegistry is a case-insensitive name-to-class dict; get_default_registry() pre-registers mock, ollama, and llamacpp, and unknown providers raise ProviderNotImplementedError.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/registry.py#L10-L43",
+          "version": "repo-lines-v1:sha256:650c0090fc1221474142d4315284f7556fe181fe03804510d64b0f9a834371f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiMTFhZDQ1YjI2ZmJiZThjZTI3MDY0OTA1MDRkMTQ5OGI2MzgzMzZhYzRiNzBjMjlmNzViZGY2NGQyZDFmYmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjNTFkNmI2NmEyNWM3NDYzYWEzMDA2YjY1YmRhYjdjNzNkZmRhZDg4ZTEzZDMxMjU4ZDI2NjRlOGZmOWJiMjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1NDEyNzMwOWZkZTJiZWUxOWQzODY1MWRkOWU5ZmJiZmQzM2E5MGM2Yjc1ODk4NjY4MzM3N2U1YmNjNzUyOWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7a22369f25634424a18e1db615358ae2",
+      "statement": "The tool registry is a module-level dict; execute_tool returns None for unknown tools and catches TypeError to return {\"error\": str(e)}, so a bad model tool call cannot crash the runtime cycle.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/registry.py#L6-L36",
+          "version": "repo-lines-v1:sha256:9c225bf1b42d3d8471bf1de0c49bfb201c95c742ce12e620a4392e2558d185c7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkMDYyODI5NWMyOGVmODNlYWY2YTc1MDNlOTQxODBhMWZiMjMzZjZkZjIyMjNhMTUzZTU2MmJhZjdjYzVmOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0MjIzNjJiMWRhOTY0MGE4MDhjNzQ2YzM2YWIwYzcwMzdhZGJiMWI3OWMwZDVhZDcyMGE0NGU3M2JjOWExYTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRjYWNmNGY5ZjMyNjIyYTZiOTZhYWZhOGRkNWIwOGI4MzljNTg4Yzc1NjMxYTc4MDk3YjY0NzhjYmUwMjUwNjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhMGIzNjI3YjM2Zjc5Y2ZhMGNjNjY1MzY5MDdiMzBlMzk0YWIxNDkzYzQ2NTFjODBiMjg4NmRkMjIwNGNjMjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bda8d0d67d0743bd9f0d8ccaab1afad3",
+      "statement": "dynamic_loader.load_dynamic_tools() reads tool_registry/registry.yaml and imports each listed module via importlib under a _agentforge_dynamic_<name> key, registering its exported function; failures are swallowed. This persists agent-authored tools across sessions (Voyager pattern).",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/dynamic_loader.py#L14-L53",
+          "version": "repo-lines-v1:sha256:f3c3d7de6ef0330bd48545661a42d3f8b2226c5ecb49771a316f9b634d8be224:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkOGE2MzdiMTQ4ZDAyZTQ1ZWJlZjRjYjRkODJjMWE3MDc0ODRlNjc3NmQzMzQ0ZTM1MTgyYWU0OGMxZjI2ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMDg2OGQ4NjJlNTk2ZTFmYTBhMGE1ODc4YjA1MGVlYWZjNmUzNGQwZTE2MmJlMzhjNmFmM2IxY2JhY2U4ZmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjZGY0MzVhMDViMGJiNjRjMDE4YjNkMzY3ZDc0YmZjZjUwZGQyNzAzMTQ5MzBhYWIzYWEyYzRlNjU4ZGM5ZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxZjI3ZjJiOWE3ZjZjNTFjYTIwYjNlMmI1YzU2YTFjMWE4OGRkZDgzODYzNTMzMGRlMjVjYzM5MzFmZTBmOWUifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/registry.py#L39-L100",
+          "version": "repo-lines-v1:sha256:281f4f9d2892fb65a1ace6fcdbe3bd1328ef0ee26900531677f1ad3b28d613cc:eyJzZWxlY3RlZExpbmVDb3VudCI6NjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMzM5ZTg5NzNkYjIzMDhjMzQ4NDY4OTkzNDVmYzhjZWUxN2IyMjgyNDc1NDBmODM4MmM3NmVlZmQ3ZDA3MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzYzE5YzhkYzc5ZTlkMDU3MTRmYWRmZjFmMzIxMDI2ZTQyMDNmNmU2NjUxZmRjYTY3ODQzMTMzYWE3YTM0OTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3MjFkNjBjYTVjNzM3YTg5MGEyMDQ4YTRiMjc0OTA5NDYyMGUwYWQxMTc1ODA0OGU3YWJkOTdjMjdjOGE0MTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0YTQ5ZWU1N2E3ODIxOGU2YjNkNjQ3NjljZmIyMTQ0NjI0YzI3ZTY1MDZlMTFmOGIyYmVhNDA0MDQ1ZDY1NzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a8eb7b8c2e8d4a2984c3c5e9ad1e107e",
+      "statement": "_build_tools_schema converts each ToolSpec into an OpenAI-style function schema; when workflow.agents is non-empty it additionally injects a run_agent tool whose description lists the declared workers, which is how multi-agent delegation is wired without engine hard-coding.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L147-L211",
+          "version": "repo-lines-v1:sha256:16b048acaf0b316d8fcf19e1bc56f17a4b3eaeac9754d8e3b3e2c76a358f14d5:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4YWMyZjI0NTdkNGVjYTA2MjZmNWI4MTRjOTRjOTI1ZjAwMGQwNWM1NWU4NjAyZWQ5NDNmMzZhNWNjYWNjZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlMDc1ZjNjMWYzNmVkMmMyNDFlNzAzMzY1N2VlZjc0NGE0Yzc0YzBjZTIzNTZhZmFiZjI3ZTM4Y2M3Y2Q2ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwZWMyOTcwNjcyZjUxNmU2NThmNWMyNGFiZjVhMjNmYmZlNjZjMWI3YTQ5MTVkOTE0ZWE5NTg5Njk2ZGFkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlM2NkMjI1ZDBmMGFkMjMzNmJmNGJhN2M2Zjc0ZWExNThhNDQwNTU1ZmQ2OGY3MTAwNzUwMTBmNDU0NTJlZmUifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/run_agent.py#L4-L12",
+          "version": "repo-lines-v1:sha256:612abb79f7e64b4582e723d2cbb3548ff13892a699263d3ef832696449261394:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjM1N2U5N2E4NDY0NjVmYzNkYzZkYjIwYjZhMDUzODExMGEzZjViMTliNmMzYjg0YTBlMDY4YjljOGIzNGQwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTBiYTY5MjYzNTgwZDAyNDM1NWM0YjljOTE5ODJmOTI0M2ZhY2UwZmJmYmQ2MjMxNzZmMjEwNzUyY2E2MjBlMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWRiNDM2MzQ1M2E0NTgwMDZlZjgzNjdhZjJlMzEyZWE4NTQ3Njc5MGM4NDE4NWI3ZmJjZjU5NjQwMjc4OTRlYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_55014dc3f6a14347ba76a5186cd69473",
+      "statement": "Memory is file-backed (history.json) with two policies: truncate keeps the last max_turns*2 messages, summarize keeps the same window verbatim plus a single system-role message prefixed 'Resumo da conversa anterior:' (customizable via a pluggable SummarizerFn used by mem0_hook.py); apply_window dispatches on RuntimeConfig.memory_policy.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/memory.py#L36-L94",
+          "version": "repo-lines-v1:sha256:8f3fbb7535f037504bd79e1046f46cfc6ba67dc2a146309ba91e78a0b9fb3f14:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNGJmYmMxZDgzN2RhOWMzNTBjNjM5NzdjYmJjYjk3ZWEzM2Y1MGEyZWU2ZTM1NTE1Y2VlNDFhOTE4ZmUyNDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhOWZiN2RjYzZhMjY1ZGNhNGFmYjE5YmJhMTEzNGU4ZmI4ZTcxZWY3NGUzMzE4OTgyOGFiOTc3YzdjYjRmNWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMWQ3YjQ3ODQ0NjA2YTI0OGYzOWE1Y2EwNzg4YTIzOTcyNmJhMzQ1ZTJlMWE1ZTUxYTBhYjllNWZmYjMyNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2ZGRmN2NkNTgzNDgwODdhYjdlZjhiY2NjOWRiZmZkZTIwZWZiM2QxNmRmZTExMGM5ZDdiZTJiZWY2ODcyMTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_69554f5fde4a458ea1880dc76bf5980a",
+      "statement": "AgentRuntime loads persisted history only when conversation.multi_turn is true; single-turn runs always start with an empty in-memory history even if history.json exists, and only multi-turn + memory.enabled runs persist back to disk.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L100-L111",
+          "version": "repo-lines-v1:sha256:f34e3cc330989f689a3a0715d122ebad4616a8b688b6dd18f6874a24223bb821:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMTVlMDFkYTk0YzNmZTZhNjMzN2UzYWU5ZGIwNGI0MjA2ZWE2YmU1YTY5MjQ5ZWZhOGQ2NjBiNzU2MjMxNjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmNDYxYTg5YzFkYjQzY2ZmYmU4Yjg0ZmQwNDM3YWU5OTNhMzRiMzJhMmRhN2E1OWFkODhjZDQyN2ZmYzUzOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY0NGY0ZGViOWMxZjI2MTE3MDhjMThmYTFhZmZiYTVhMjNlNTFkMmI5YmU3ZTBhZTVkM2RmYzMyODA4M2I1MTMifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1148-L1158",
+          "version": "repo-lines-v1:sha256:e856b94b7c03f2f01242e4bd15605faf4e9411fed3d821f9e2a555d583a6cc5e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiYzA0MDYzNDk0ZWJkNGUwOTA4MGM1MjA0YmUxNGFiYmU5MWQ0MjlkOWM3ZDU3MzIxYmZkMGY4ZjJjOTVlZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZmJmYjlkMDZhMzkwYTIwMWI0Y2I3OTllYWJkOWY5OTE4NTAxNTllNjdhYjU1MTJhYjAwMWUwYWY5ODdkNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1OTMwZjBkMTM5OTQ3YzFmYzdhOTIwMTdhNmFhYzk3ZTc3OTVhN2I3MTQ1M2E3MDI3Y2YyZjNhNTY4Mzk5NTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3NDhlZTJjOGIwOWFlNzMwYjUzOTg2NTk0Y2ZlMzZlYTI1ZDY4NjdlMDNjYWYyNTVlYmE3NjZkZjBiMjNkZGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c7921e0723f3412fb7fb509bc4549070",
+      "statement": "All four channels (CLI run, FastAPI HTTP, MCP server, Telegram polling) are thin adapters that build an AgentRuntime via from_agent_dir and call run(); the same agent directory runs unchanged under all of them.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/channels/http.py#L33-L56",
+          "version": "repo-lines-v1:sha256:5077381aae70dc45f8bcef9977be0db3b90f4d8e42628f42dc9f1d955346c372:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4OTE2MjQzNmI5YzRjNmIwNTU0NWRkMzIyZWU5OGY1MmU0YzE5NmM4MWM4Yjc2ODlmYmQ3ZjAyZjEzZGYzOGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjN2JjZWM3ZjNkMTgxZDhkNTJlODc4N2EwMDkzOGYyMzE0M2FkNzk1ZDQ1N2E2YmFiMjk0M2EzYzYxNWY2MWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiYzVjZTQ5NDRiNjQxMDNjMzU0ZTYxZjc2NmQwNGM4MWY0ZmIxMWE5N2NiZTBkYTI1Yjg5NGFkY2NiNjU5NzkifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/channels/mcp_server.py#L59-L80",
+          "version": "repo-lines-v1:sha256:ff6d5d5c2785df3c7c5578a6bf5b9dacd91e6b8fc79b7f2b1be917b151eda303:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzNjYxOWQ2NzhjMmMzNjBmMDIxZjY2ZTRmZGZjN2UzMDExMzZhY2Y5YzI4MWVlYmQ2MDhmY2QyZDdhYzc4NDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5N2VjODk3NjU1YThkODI2YjBmYTUwY2JjN2NmODNmOTVkOGZiOTFiZGU1N2FlODk2NjkyMTgxZjkzMzlhZjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyYzAyMzdiOTIxN2ZiNjhkZDJiODNkYWRhZmNiYjgxNzg0M2VmYzc5ZTc5OTRkYzM4NTc4MWQ1Y2FkYTZmMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3Yjk0MWVlOWM3YzgxMmU4MTVmNmEzODIwZmYxNmMwZjMzNTQ1MDU2MmZlYzc5OTkwYTgwNjk0NzM3NGM1NjkifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/channels/telegram.py#L13-L60",
+          "version": "repo-lines-v1:sha256:4511fafa41bc864b623255737da15f7c9508a675b7f2d6e2a1def9d5395b4b1b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxYTNiYTg0YzhmMWJmZmY4YzEyODJmNzI2ZTQ5YzcwNGVhNjBmODg0NzQ4M2MwYjlkMTczNzM2MzQ2NTFhN2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNTA1NDMxYjMzZjM0NWU5ZjIxMzgyM2M2NjkwYTY4NDk1OTAzNDMzMDRhMjUwZGY2M2Y2NDcwNDAyNzE3YTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyMDA5N2U0YWE1MDA2OGJhMTU3ZjlhMjczOWZhZDg2OTk1ZTFlMGNkY2NkYWRjNTg5N2MyMDM0Yzc0ZDNlZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L102-L310",
+          "version": "repo-lines-v1:sha256:73288c3f77768f91feb40999aec687794719292238b5a9350063e4198b866e39:eyJzZWxlY3RlZExpbmVDb3VudCI6MjA5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0NDQ4YmRlY2RiMGZlYWQ2ODNmMGNiODY1ZDZjOWE4YmQ3MmEzMTc2YWE4YzlmOWFjNmVlOWVlNzg4ZGI2NTU3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyYjNiNjU0MjJjYjQwNDY3NjZkMzk1MTk0YTRmYzUwNDE3YzIwMTliNDg1NTI3NmRjMjllYjNkZDE4Y2QxOTIyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJjYTljNGU0YjBlNzk3MDFkYmE0ODdmM2Q2N2UxYWE5ZTdmNjlhNzBmZDBiZTI4YjM1ODM5Yzk3OWQ5NWNiZDY0In0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-09T12:43:13.007Z"
+  }
+}
