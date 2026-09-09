@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:81858e6cbd456b341b62b61213686ab80e54b0833f7f85b6bcb12ed56a34cd0b",
+  "claims": [
+    {
+      "id": "claim_4dc220e45c764167b2085da090958a0b",
+      "statement": "WorkflowSpec carries the worker list as agents: list[AgentRef], where each AgentRef has name, agent_dir, and optional description; the orchestrator declares workers via this field in agent.yaml (e.g. agents/orchestrator/agent.yaml declares lab-ops with agent_dir agents/lab-ops).",
+      "evidence": [
+        {
+          "resource": "repo://agents/orchestrator/agent.yaml#L38-L45",
+          "version": "repo-lines-v1:sha256:a22f9d3a9d84d586aec3de1b3cdfe41cdf75e4d3a4907337c73fcc6c56021c84:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTExNzkxNTdkMTM3MjM1YjMxOGM5NGNkYzYxNjFjNWVhNjdjYzJkMDg0YzcwZGEwODAxNzM2YTY2YTYyMjkxMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDJlMzdjMzcyOGU3YjUwZjU1OWU0Yjg0MzNkNGQ5Y2MzNzQxMWM5ZTcwZGNjOWRlNTE2ODE0MGRkMDg3MDVjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTNhYTVjMDFlZGQ0YTczNmFhZDkxODMwMmNjOTQwNmEwYTBmODhiYjM1NDVkZDUwMjk3MmUxMjJhNzk4Zjc5MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/core/agent_models.py#L91-L106",
+          "version": "repo-lines-v1:sha256:d62220e9a196f34535bf442eb7b2315554990a31b22a67ccf840d0e56f6cb0db:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjMjJlNDRkZDBhYTY5NTE0N2JmODIyZTFjNGJmNTllZjBiMWIyN2U3ZTYzYTliZjE2OGFjYTExNGM5NzU3ODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5OWE0NzA3YzIxMjlhMzg3MGFiYWQ3YzBmMDFkNTUyZTc1N2IwMTVjMmZkZWU1NTY3MTRmYjIwN2E5YzM1MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxMjI1MGUzOWY2NGM0MGU0YzA5YmY0MzRmMWU2OWRkODBlMjU4NjEwODg2NjhiMzQxYTU0YzIwMTVlMTYzYzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIzYzU2ZTdmNzQ4NmVhYzU2OWFlNDg2NzVjOWIzNjc0OGI2ODE3MjlhNWRhN2M4ZGFmOTg3MTg4ZTcwNDQ0MjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e2f0ba2a1a2d43a1a68ba24bde3e528e",
+      "statement": "AgentRuntime._build_tools_schema appends a run_agent function-schema entry only when agent_spec.workflow.agents is non-empty; the entry's description lists every declared worker as '- <name> (agent_dir=<agent_dir>): <description>' and its parameters are agent_dir and input, both required.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L147-L211",
+          "version": "repo-lines-v1:sha256:16b048acaf0b316d8fcf19e1bc56f17a4b3eaeac9754d8e3b3e2c76a358f14d5:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4YWMyZjI0NTdkNGVjYTA2MjZmNWI4MTRjOTRjOTI1ZjAwMGQwNWM1NWU4NjAyZWQ5NDNmMzZhNWNjYWNjZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlMDc1ZjNjMWYzNmVkMmMyNDFlNzAzMzY1N2VlZjc0NGE0Yzc0YzBjZTIzNTZhZmFiZjI3ZTM4Y2M3Y2Q2ODgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwZWMyOTcwNjcyZjUxNmU2NThmNWMyNGFiZjVhMjNmYmZlNjZjMWI3YTQ5MTVkOTE0ZWE5NTg5Njk2ZGFkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlM2NkMjI1ZDBmMGFkMjMzNmJmNGJhN2M2Zjc0ZWExNThhNDQwNTU1ZmQ2OGY3MTAwNzUwMTBmNDU0NTJlZmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d3fdc2b03154429fb6651e3693dbbdbf",
+      "statement": "A worker is delegable by a given agent only if it appears in that agent's workflow.agents — the run_agent schema description is built exclusively from workflow.agents, and when the list is empty run_agent is absent from the tool schema entirely so the model cannot invoke it.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L179-L209",
+          "version": "repo-lines-v1:sha256:530b4774652464f9200a0eefe97252cc15c7112fa5c8ac66988a2533e70594a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMGJhZTljODgzNTA3ZTYxNzEwNmU2ZjVmNmNjZDcyYzFmODMxZjQwNDVmYTE0Mzk3OWY5Y2ExMDJiMzczZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmNjA3ODI4ZDQxZDU5YjhjM2Y0YmZmOWQ0ZWQyZDRkODYyMzRlOGZmOGE4M2U5OTQ4OGYyMjhjNWQzMzMzZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxMTkwM2NmMDM5ZjMwODc3NjIxZjUzNzhiNGVmNTY0NmIzMDJhM2EwZTdmMWRkMjk1ZDA0MjYzNmMzYjUxYTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyN2I3MjZmOTUxYjAzNTUzNGQ3YTM0MWZiNTU5MGU3OTliMzZlZTRmZDQ4MDg5MDJiZjVmOWYzZTgxM2UyOTQifQ"
+        },
+        {
+          "resource": "repo://tests/test_runtime_engine.py#L1026-L1045",
+          "version": "repo-lines-v1:sha256:01c162a907b716be9336d34183086aa06f935e5645a21983c0197c62a6e3d5b3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzYTFkZDA0ZDk1ZmIyYjFkYmQwN2I1ZDE5OWMyNGFkNzNmZjAzNWMyMmQ0NGJjYTJhODc0YTljODJmYTUxYjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmMmQyYzU1OWI4MmEyYTYzYzUyZTgzMDc2NTk2OTExOTIzYjU2NzVlOTQ5NzA2ZjU5OTkxMWNhYWYyNjdkZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2YTg1ZWFjNWU2NTZkYjgyNDU3YjdjZTc3NTE2OWYyZmE1NmJjZTkzMjkwNDZkYmY5ODNmMWRiYzAwNDZmY2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiZWViNDI4YTM2YmYxNjhjZDI0YTVjNDY2YTAwZGYxZGYzMGViMWUzYWJlZjg5NzNiNmExOGRhZDAyNjBlMDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_38912d13281d49ac8715f85369add7c9",
+      "statement": "run_agent is registered as a builtin tool in tools.registry via register_tool(\"run_agent\", run_agent) and executed through the same execute_tool path as any other tool inside _run_tool_calling_cycle.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L390-L402",
+          "version": "repo-lines-v1:sha256:43bcae8f4f22c1da364aaa705ce90455d23dc81989c7aded922ec7d0fa2ddc96:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhYzdhY2EyY2E2ZTQ4MzFhNWM0NDUxMDEwNzJkZjMxOTg3NWIwNzczMDFmNDE0MzlkYjY4NmFkYzk0ODQ3OTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0MjQ0MDYyZWQ3ZGUzZTU0YzAyZTU3OWIzNGJhZTI0ZjBmYjZhZTE1NGY0MjVkODdmYzVjZTQ4MmQ5YjcyODIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjOGYzZjRkYmU2NTkyNTM3NTJlNmIyOTRhN2VkZThiOGQxOTA5ZDk5MDI5NTYwZGVkMGEyOGM3ZWFmNTk3YmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4ZDgzMjhjMzgwY2Y0N2YzYzhlYjcwMjgyOTI0MTlmMDI4ODE5Zjk1ZWJhMDI5YmVkNTM0MzMzYjA2MmI0NDAifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/registry.py#L39-L62",
+          "version": "repo-lines-v1:sha256:43b991ba1322f67ea4557bb72ca68c08cb1ae61fef3dc734aa100dc617a3319e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMzM5ZTg5NzNkYjIzMDhjMzQ4NDY4OTkzNDVmYzhjZWUxN2IyMjgyNDc1NDBmODM4MmM3NmVlZmQ3ZDA3MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwY2Q3OGQ2YzM2YTVlNGI4NjBjMDE1MTBmYjFhYTAwNjZiMjY4NmUwNjQ2ZThjNzY2MzJlMjcxYjBjZDU5NDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3MjFkNjBjYTVjNzM3YTg5MGEyMDQ4YTRiMjc0OTA5NDYyMGUwYWQxMTc1ODA0OGU3YWJkOTdjMjdjOGE0MTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxZWMzZTgwNWQ0MTlkMWQ1MTQwY2NkNGM5ZWI2NTFjM2MyMDcyZTM0YWE2YTEyMTk3MDk1MmUzYWI4ZGI3N2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5025855488164f1493082c14483e2237",
+      "statement": "The run_agent tool (src/agentforge/tools/run_agent.py) loads the worker fresh per call via AgentRuntime.from_agent_dir(agent_dir) (no caching), executes the worker's full lifecycle via runtime.run(input), and returns a flat dict containing only the worker's agent_id and final output text.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L113-L135",
+          "version": "repo-lines-v1:sha256:60361000fda4f6e362dd31357fc9afa19bbb463f9bbc81b1469e0fad7e851225:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyMGI0NTNmNWUwYzkyZDVmNmMyNTFhNWVhMTk2MGQ3MmYzYmQwNzk1NmFlODU3ZGEyMGUzMWE4OGM1NTk2OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkNWFiODVjYTkzZjZlZWNmNzlkNWI2YjFjMGQ2ZDYwOWZhNjk2YjRiZWIzOTgwM2JlZTYyNjM4MGY4NGYwMjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhNjkyM2MzMWY5NjRhZTMzNWU0MGIwYzhiMWQ5YmRhMGY4Njg0MTk4NWZlMjlmNzBjNGY2YmNiNWY3OGI1YmYifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/run_agent.py#L1-L13",
+          "version": "repo-lines-v1:sha256:501ac8be629af997426e4c908da343bec8bacfea26ffbd4f32d01439383903fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzODRiZmRiMmRmMzgwYjY1NTdjYzdhNzFkMTY4OTE0MTViY2NhYTg3Njk5NDA2ZTIzNmY3NTJjNjQxNTM4OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ca1743d96348470082dba6ef63db7fd9",
+      "statement": "The worker's runtime.run(input) runs the same pipeline the orchestrator uses (input preparation, tool-calling cycle, guardrail checks, reflection, memory persistence) scoped to the worker's own runtime_config and root_dir, so the worker's max_tool_cycles, memory, and required tools are honoured independently of the orchestrator's.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L935-L1018",
+          "version": "repo-lines-v1:sha256:db53c14bbdea60f9c70492eb21b863f36cd31ef12de0df95636938e1b678268a:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5MGM5YWEwNmI5ODdhZDE3N2NiOGFhODkwZDc2MzA0YmQxMWE3MTU2MGE0MTg2ZjkxZTQ0N2ZiMjY2MmVlZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZmI4NTEyNjNlYmMzZTNmYjI4ZWE5NGQyZmYzMDhhMzZlZjg0MmU4YzQyZGM5ODU3NzU5MmVlNjliZDBkMGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZDI4NTA2ZmM4ZDk1NmVjZTliZDVmNzUwNTJhODA4YWQ0NjJlYzdiY2QxZTk3ZGIzNTE4YmFlNDE3YjhjODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5YTk0NjYzNmYwMmNjYTQ1YWQ4NzE4ODc3NmYyNjM1MTY1YzQ3NDY5NmY2M2QzMDY5YThjODE5ODFlMjZkOTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd632c8e20624ff2a05ad65b17156ddb",
+      "statement": "In _run_tool_calling_cycle, after execute_tool returns the result is JSON-stringified and appended to the orchestrator's messages as a {'role': 'tool', 'content': result_text, 'name': tool_name} message, so the orchestrator's model sees the worker output as an ordinary tool result in the next provider call.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L396-L402",
+          "version": "repo-lines-v1:sha256:7b9bb8b50e3d519db4ca29adc679d4c8ecdfc9996cf01661f3bbcd44be655b77:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzQyOWZiNWZlYTFiOWY5MTdiYjcxMGE2YjEwODFlODY0NGFiNzg4ZjNjYzRhZDY3ZjlhMTk1YzQ3NTAyNTZjMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjQyNDQwNjJlZDdkZTNlNTRjMDJlNTc5YjM0YmFlMjRmMGZiNmFlMTU0ZjQyNWQ4N2ZjNWNlNDgyZDliNzI4MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWM2MDlkZDE1MzQzNzllYzQ0OWY1Y2E4ZDU2MGJiNjE1ZGY0Y2I0ZjA1MjdhNzJiZmMwMTFhMzFkZjExNzQxOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzhkODMyOGMzODBjZjQ3ZjNjOGViNzAyODI5MjQxOWYwMjg4MTlmOTVlYmEwMjliZWQ1MzQzMzNiMDYyYjQ0MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1465e506620046509997653d1142be99",
+      "statement": "The orchestrator's synthesis is enforced through guardrails: agents/orchestrator/agent.yaml must-rules require citing which agent performed each delegated task and synthesizing results from multiple agents, and must-not rules forbid inventing results from uncalled agents or answering server-health questions without delegating to lab-ops; _inject_rules_to_input appends these rules into the user input on every run and _check_must_compliance verifies them.",
+      "evidence": [
+        {
+          "resource": "repo://agents/orchestrator/agent.yaml#L22-L30",
+          "version": "repo-lines-v1:sha256:40deb7fb8ba731f735f2e724b9a402d6d71a3da84b01707a5f1ae877d3393eaf:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTA3ZDkwNjk1ODczZmQ4MWEwNGJlM2I2MTE3NDg1YTkxMzRhY2Q0YWQyZTAyNmI1ZDliNGJjZjNiODAxZDQ1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzVjYmFmYmJlOTcyNjM4ZTY2M2I4N2ExNWMwOWM3YjU2YmVkNjE4YWI1ZjczMTcxYTMzOGZhNmVlYjdhZDY3OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODFlYjdhMGI1NjI3YjQwYTc3Y2M2Yjg3NDU3NDVkYzU3OGIyNDdkOThmZDliOWM0YTYxNTU1ZDFlNTUwMzEyNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2VkMjY0NjBkNjc3MjBhZDg3ZTRlOTM2YTRiZmZjMDNhZGJjMWE1MmM3ZWRmOTk0ZTFhMzQ0Nzk2ZjEyODRjOSJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L556-L572",
+          "version": "repo-lines-v1:sha256:c8c8cbe25e5548f3686d52591049ec1108605704b763ee76763e72668f57839e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlNWMwMzUwOTY5NjRkNTZmYThmZmUxMjk1NDdlMTNmZmYyYTUzNDRjY2QzMTk3MjljOGQ2YjQ1NThiODhiNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwZjEwZjc5NDIyNzE2NzJmN2YzOWJmOGZhODY5NzVmZjFiM2YzYzI0YTRmMTYxZTE3YzY2MTRhYmFlNzc2NWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY4Mzc5NWNhMTM0YzA4N2M1NjZjMjZkOTFkZGI2MTU5ZjczNDU5MWVjZTk3YWI3OTRkN2E0ZjU5ZTYxOTNhNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlOWYzMmUxZTRlNDQwNzBkYzlhZDI2ODU5MGJlYjdkMzIzM2M1M2JiNzA3ZDBjNzQzYmY3MjZlYTlkYjhmOTIifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L923-L933",
+          "version": "repo-lines-v1:sha256:e2e05f7fe964ec7dd555896fd482a2aafa6fabfc1505fc65e81b970e6b04fa45:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyZDdiMjhiMmUyYTdiYWI4ZmQ1M2ZjNmQ4OWNjZTE1OGZiNGQyYmY5MGJhZjgxNjUxMTgxY2M0NTI5ZmU3NTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiM2U2YTYwNGZmNDczN2M3ZjZkYzg4MGRlY2FmMjM0NWJiZmQxMmMwZDUyMWUzNDI0MzhjMjM4ODEzYWQ5MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5MWRjMzU5ZDQ5NWNiYWY3ODNhNDMyODQxZTk0M2UxZWZiODljYWFkNmU0NzU3NGZhZTdkMjJlYmFiMDBlMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5MTQxMGRiZTM5OThjZmIzODQ3Mzk3OTY1YjIwYzYxNWRhYTViZjk0NjhjMzE4MjU2NmIxMmMzMDFmNDgwZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4d834f3413314b04870982c77dac7c4c",
+      "statement": "Tests TestMultiAgent in tests/test_runtime_engine.py cover: run_agent is present in the schema when workers are declared, absent when workflow.agents is empty, lists every declared worker's name and agent_dir, has agent_dir and input as required parameters, and run_agent (with AgentRuntime.from_agent_dir mocked) returns {agent_id, output} matching the mocked worker run.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_runtime_engine.py#L1025-L1105",
+          "version": "repo-lines-v1:sha256:fb58d39fcc16a102c04832f81eca190dc79c82959894f8be0c2f402416134f36:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyNjY0ZjU3ZDBhODBmNDA2OTdkMzRlYWU2M2FmYTRjOGZlNTdkYzFmMTBhYjlmNDE5YmVmY2Y2NDhmMjViZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmODQ2NTZjYTFkODg0ZTAwMzQzYmUwOGI2NDg0MWI3NWEyZWYxYjA5ODk0NjY2Njc2NGYyN2E0MjY0OTZjYzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyYmYyYjYwMzcyMjBiN2Y0NWNmODY1OTRiNzZiYjQyZTk2ZTk3MTQ5NGI2NmJhNTc5ZjgxOTE2NGQ1YmY4OWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYzM5ZDU1YjFjNDA5YWVlN2MzMThhZThmZWU0ZjEyOWVlODM1OWViMjczNjU3NWJlYmI4MDcxN2E1Mzk2OWQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-09T12:43:13.007Z"
+  }
+}

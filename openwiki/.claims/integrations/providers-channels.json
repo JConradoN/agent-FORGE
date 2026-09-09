@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:20acee93111df55d22b2ddc145ae272ed7ca83f1ea40148682e9605816b1227b",
+  "claims": [
+    {
+      "id": "claim_fc02b7f23eac4c6e8d62ac77391dd658",
+      "statement": "All providers implement the abstract method BaseProvider.generate(ProviderRequest) -> ProviderResponse, and ProviderError is the base exception type that provider-specific errors subclass.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/base.py#L9-L40",
+          "version": "repo-lines-v1:sha256:2634b35931862e4cb4c45658dd5cd037ca789a94e14f41b2523c28720b13107b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyYjQyNTkzY2RmNGY4YzU4NzM3NGYyN2RhN2IwYmYxYmMwNWZhNzk0YWI2NmRlMGI0ZjIwMzcxNDAyNzM2YjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3Y2EyZWU3MDQ2MGZhZmI3MTU4ZTczM2M5NmQ0MDhhYmE3ZmIzOWQ0Y2Q3ZTg3MWIxZjc0NWUzOWIxYzgzZGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0NDU0NGIzMzI1MWYwNmY5MDAxOWYyYzBmNjhmMTkzZmUwYWFkNjM1ODQ2MjUyNzY3YmViY2JhMTI4MzcwYTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bac18d078b734909a86a49fe2809c1bf",
+      "statement": "ProviderRegistry stores lowercased name-to-class mappings; get_default_registry() registers exactly the three providers mock, ollama, and llamacpp, and get()/create() for an unknown name raise ProviderNotImplementedError listing the registered names.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/registry.py#L10-L43",
+          "version": "repo-lines-v1:sha256:650c0090fc1221474142d4315284f7556fe181fe03804510d64b0f9a834371f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiMTFhZDQ1YjI2ZmJiZThjZTI3MDY0OTA1MDRkMTQ5OGI2MzgzMzZhYzRiNzBjMjlmNzViZGY2NGQyZDFmYmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjNTFkNmI2NmEyNWM3NDYzYWEzMDA2YjY1YmRhYjdjNzNkZmRhZDg4ZTEzZDMxMjU4ZDI2NjRlOGZmOWJiMjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1NDEyNzMwOWZkZTJiZWUxOWQzODY1MWRkOWU5ZmJiZmQzM2E5MGM2Yjc1ODk4NjY4MzM3N2U1YmNjNzUyOWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ccc7931cc28a49039948ef3d1143015c",
+      "statement": "AgentRuntime resolves the backend on each run by calling get_default_registry().create(runtime_config.provider), so adding a provider only requires registering it; channels and runtime need no changes.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/registry.py#L27-L43",
+          "version": "repo-lines-v1:sha256:138489aef7a97500d9928788eab70c683f87a268a2dbfda9868fab1a8a791709:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmNDM4MmRiZGU2MjQwNTM2ZjUxNmY0NWM3NTBiZDQ0ZmFkOWQzMjQxZDJmYmE0MmNhNzdlOGU1MTE3ZmVhMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjNTFkNmI2NmEyNWM3NDYzYWEzMDA2YjY1YmRhYjdjNzNkZmRhZDg4ZTEzZDMxMjU4ZDI2NjRlOGZmOWJiMjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2ZjM4NDhhNWQyZWNmMDVhM2FlZWExNWIwNmQyYTFlYzI4NzU0YmM0OWI1NjE5NmY0MDFlNGNmM2VhNDE4NTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L137-L138",
+          "version": "repo-lines-v1:sha256:bd7dc2e921c4de0ee3f78a073eb699d3b35a03a1949074d84eded604683c6df5:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODJjOTJiNjlkN2I0MTRhYjRmZWM1YmJhODdhMWY2MWUxMGRkNDE2MmFlNzc4NDk5N2I4YmQwZWE5OGFiOWZjOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWI1MmQ2NmQyY2E2ZTc0ODZhN2E5MmI4MmIzMWUyZGYzYzkyZGYxNzA3YTJiNzQ2MjFjYTdhOWUwYTRmNjdmNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODg0MjRhNzEwMGJjMDRkM2E2MDYyNTQ5N2NkYzZiMzhkYTRhMDNkN2ZiMjYwNTc0YWU2YmU3NTJjNWZmYzRmMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTVlZTNlNGU1MjAzZmJmYWU1MDdkZjBiZDQ2OWQ0MzkzM2EwOTliMDA2Y2M4M2FlZDAwMTVhY2MzZTVhN2M4ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b1af4ef95e9f4c49bedcc8ef509ad1f3",
+      "statement": "OllamaProvider is configured at import time by OLLAMA_HOST (default http://localhost:11434) and OLLAMA_TIMEOUT (default 900 seconds), and generate() routes to /api/generate when the request has no history or tools_schema, otherwise to /api/chat.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/ollama.py#L28-L31",
+          "version": "repo-lines-v1:sha256:e50ad5efa041ef7254248281abb68ee968da5daa8f0e16e3f1994248d58f32fc:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjVjOGMxYjQ5MjdlMmQ4MTlkMGY3NDgyMjc2MmEyNGQxOGQwMDBhYTI2NzkxOWI0NmZiNjk1NGYyMmFlZmY5MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDcxMGQzZTlhMDI4M2QyMTJkMGI3MTgzZjMwYzkxMjQyNWQyZDIxOTE2ZDAzOTJjZjNiZWJhNDg4MDNlNjczYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzAzNzJjMWY2N2VmYzhlYzYwY2Y3ZDMxMWMzNzg3ZWM3MDM5ZmFkMGE0YTAzY2MyYzA1NWY1ZmQyMTNjZTY0ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2NmY2NlM2NmM2RlZjRhYTRmMjVhYjcyZWNjMmQzOGNiNjJlOWUzNTdhMjE5YTdhYjlmZDUzMDRjYWI0OTNkNyJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/providers/ollama.py#L9-L10",
+          "version": "repo-lines-v1:sha256:6a54123d4b9a5a42b35e483d40d7e98a4dfdad23c1fcd998e32b712023b4aab5:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGIxY2FlN2IxMjJlZGE2OTdjOWQ1NTdjY2JlODIwZDNhNjA4NzNmMGFiOTBiYTNjNTVjY2JkNWVjMjkyNTZiNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODg4NGRhNDNiYTYyNzhkOWNlMjYyZWZkZGI1MWFmYzEzMTExMzA0NjlmODM4OWM3ZWQ1ZTg1OThmZTllMjcyOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWExZWUwNzg5NzZjOTAzMDJjNmM5ZjZlNGI3YTE5MzljYzU1MzFhZWNiN2Q2YmE3ODQ2OWUyY2IyYWQ5OTIzNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDg1ZDUwNjFhMDIwZDJiNjI0YzJkODkzNjIzYTBiMTVhYjMyY2I0ZDZmYWRjMjg0ZTY0MjIzNzYzMjUwNzhkNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5e6ae4d53f974a83b72632c828472475",
+      "statement": "The Ollama chat payload always sends think: false to disable Qwen3 thinking mode, skips appending an empty user message (which produces empty responses on qwen3.5:9b), falls back to message.thinking when content and tool_calls are both empty, and raises OllamaResponseError with a malformed-history diagnostic if neither output text nor tool calls can be recovered.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/ollama.py#L88-L202",
+          "version": "repo-lines-v1:sha256:e85693ecdd573e509b72ce44be255662afe93e718ed059a5dd9b43ed6fab749f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjZDFmZGY1OTE2NTgyYmZkYjk2NDE4NzlmNTY5YjQzM2NjNmZlYTkxMDA1MDcyYmI0MjUzN2NmY2Y5MmM0NTE4IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1NTAzMmU5NjRkMDkzMjM1MWU1ZDE4NTI2OTI4MWIxNzFhM2EwOWIwOGIyODZlNjYxZWE0NzAzMjNjODJlYjRkIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmMjRkZThkYmM1OGJiMjJkYzQyMzY4ZTg2NzFjMjZiYTlkNTRlYWZhM2VhOTliZGMzNjdmZWZhYjkyYTMxNjkxIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0NGU3ZGY3ZGI0ZmI3NTQwY2IxOWEwMDE4MjgyYWI1NzNkNzcyZjRmOWRiOTg3YWFmOWI0MWIwM2VjMjczNzI4In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_d19c92f79ddf4de89a21f1587a806e0c",
+      "statement": "When the Ollama chat API returns no structured tool_calls, the provider extracts them from the output text with two regex patterns: name({...}) function-style calls and JSON objects carrying name/tool/tool_name plus arguments/args keys.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/ollama.py#L159-L190",
+          "version": "repo-lines-v1:sha256:2d8c935f5f050f78d580c01400ddc1885217717332d6ac4c244aeef8d0a0368e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmZGViYTk3ZTE5NTg2OGRmNWI4OThmZDRlZGRlMmFiMTA2NjZiYTM2ZDRjYWE4MDMxOWNhMjczODNlYjVlMTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwOTE1YjMzNmNlNTJlN2RmZTA4OWUyZWM2YmU1NTgwNjMyYmY1NmQzMTZjMDg3OWNkMzlmMDBkYTdhMjg1ZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRjODM1YzQ4Y2ZkMThmYmNhNzdkZWUzYjljNWEwMjVhNTY0ODc2MDg1YTNhMjY1MjNkMGE4Y2RkNGY1YmJkYzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyZmM0NmE3ZjFmMDllNDkxODU2NGMyODQwZGY1NDA5MzUzZWNkODU4OThkODVmZjQzZTM3OTNjMDFjMDNjM2IifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_47235711837e4e1792fc7677f36113d3",
+      "statement": "LlamaCppProvider talks to an OpenAI-compatible SSE endpoint at LLAMACPP_HOST (default http://localhost:8082) with a wall-clock deadline of LLAMACPP_TIMEOUT (default 900s) that starts only after the GPU broker hand-off, because acquire_gpu(max_wait_s=total_timeout) bounds queue waiting separately.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L13-L14",
+          "version": "repo-lines-v1:sha256:dfed7f09a34f38b2cc2e9955aa07031c550484c9061f934139a5e5e13fcd8305:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQyZTczNzNkOTI0YTBkZTgwNzA1MzNjOTlkZGY4Nzg3MjM3YjRjMGEzNTgzMjkwZjA3YjY4MTg2YjRlYTIwZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjRlOTM0ZjM3MWMxYjNlNDY4YTJjYjkwNGRjNGQzYjViNmIwNzMwNzA1ZmY1OGQxYjk5MWRlMjcyNGEwYzg5NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmI0OWJhN2UzMDAwYzYzZjc1NjBhZTZhMjBiMWIxOTU3YjgwYmM1MzkzNjE1MzE5NDY0ZjVhMjBmOTZjM2E2MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmRiYmVhNjAxMmY4MjkyZjg3OTViMTI2ZjI1OGQ3ZDUxMmYwNDlmODVkYjY5OGFmMTdkZmUxNmYzNWMyNmJhYyJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L182-L218",
+          "version": "repo-lines-v1:sha256:5ad0d6d9c8e6a3df59984d42a7ab676c735053d23bda7046861b8113e15a9f6e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5YWYxYTk2MWRkNDJhOGY0NTgyZTVlNGRmYzM1YzE5ZTM5ZTE3MmY1ODdiN2EwZDgxMmQ0NTg3OGQzMmYyNmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5MmQ0Nzk4OTdiNzg5ZTBiZTM2ZWVmNmE5ZDRiODM4MzdiZGNhZjM4MTNiZDdjYTQ4NTY1YTE0Y2M1YzBjMjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwZDkzNGFkNzQzM2RlMzZlZjlkNGJhZTg5NzliMmY1MTAyMmY5YTMzNWRiZjkyN2YzMGIxOTcyOTU2MmI4MjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwYzI2OTBjZDk2YWExMzY5MzQ3Nzg1MDJjMTUxMzZkYjhjZTY4MTdmMjBjMTQzYTRjMGNiYmFlMTAxZWIyZmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_478fb91affae4bd5a293b64f491005e0",
+      "statement": "LlamaCppProvider normalizes AgentForge history into OpenAI-compat format for llama.cpp: assistant tool_calls gain call_N ids, stringified arguments, and type function, and tool result messages are back-filled with matching tool_call_id in order.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L87-L142",
+          "version": "repo-lines-v1:sha256:510bbbf2faf8aa6c35067ae0d65a4041ea8a6b43133bb3292f550cc89dae9618:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliZWE0MDYzOWU1MWU1ZWZhNTgwY2RiYjA2MTJhZTRmZTZkZWVhZmFkNjhmYmY4YjgwMmQxNzRkYTY3Y2Q5MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMTFjMDU2N2QwYTVmOWU5YjEzNWY2NWNkMjUzNzJkZmQ2Mjg3NzVmN2MxZWQyNTNmOGJhZDQyZGQyZDY2NjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyMmJlMzViZjc1ZWIyYzA0ZGEyMmMzYjlhOTgwZDVjNDBhMDcwMmU3YzM0MTUxNmU4MjgwODU2YzJiZDNlNTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzMWJlNjUxMGMyY2YwMmZmMzg2ZDg3NTBhMDQ0MGZhZjY5OTIwMmZlOTkxYWRkYWZlYWUwMTU3NjU1ZjMzOGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7f365b2e4c39489b91b70c02161b42dd",
+      "statement": "LLAMACPP_THINKING_BUDGET controls thinking in the llama.cpp payload via chat_template_kwargs.enable_thinking: 0 (default) disables it with max_tokens 8192, while N>0 enables thinking and raises max_tokens to N+8192, since /no_think in user messages does not work on llama.cpp.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L162-L178",
+          "version": "repo-lines-v1:sha256:a5bffb1cc8f85b71a330c7d6f2882c82661b1662f3fc2422de50efbb8eb75e26:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZDQ4MDc0NmNmOWY2YzFlNjZjN2NmY2JlZjhjMDcxNjk4MzM3ZTFhMjE3ZjYyMTUxOWE3ZTBmOGUxYjU1ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmOGQ4NjIyNjQ4YjY5MjJjZmI1MjA4Y2E2NGQyZDU5M2Q5N2YwODdlMjQ3N2UwMmE5NTIzNmM0OGQ3OWM1YmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYxODA4NGMwNzlmZGRkNDMwOTQ4YmM4MThlMmRhZTRlZjc0ZWM1OTMwYjc0ZDYzNGJjMTk4MGJmNzUxZWU5NjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIwZDkzNGFkNzQzM2RlMzZlZjlkNGJhZTg5NzliMmY1MTAyMmY5YTMzNWRiZjkyN2YzMGIxOTcyOTU2MmI4MjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8a69f920e4144c9b98cc77e557026eb4",
+      "statement": "LlamaCppProvider aborts a stream early in two cases: a loop guard when more than LLAMACPP_LOOP_GUARD_TOKENS (default 6000) tokens have been decoded with no content and no tool_calls committed, and a repetition guard when a line of at least 20 characters repeats LLAMACPP_REPETITION_THRESHOLD (default 6) times in the accumulated content tail, covering templates that leak thinking into content.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L17-L33",
+          "version": "repo-lines-v1:sha256:5785dcc010481e5150261a3d67640f54e07d3215c01a83d142b18126005fb2cc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzZDZkZDZhY2RhM2JlM2E3NzgxMDY5ZDMxMGY0YWMwMjhiYTA1YmY0N2ZkYzMwOWFlYjAwNWI3OWE5MzliZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0M2YyN2FkYWUxMjNmYmE3OWY4NDFjZDljZTg0ZmZkNjc5MTdiYWY2NWRmYTYxZmY2YjFjZmUwYzk1MjRiMTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyZmRlZmQ0ZTFmZmE5N2Q5ZTM1MjUyNjRmMmQ4MzJhZWI5MTcyZTgzMGVjNDgxNmM1YzdmYzlhM2VlNDdkMjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzNjg3ZmI1N2M4ZTNjOGJlNDBmZTRjNDYzY2NkMmRiMzliOGYzMmQ2Mzg2M2JlZDExODlmNGJlZTM2NjcxNDcifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L271-L311",
+          "version": "repo-lines-v1:sha256:fdaf30c1f452c0bdf90d33b75c1e30ace8c23ff71bebf707cc371c5da67379ce:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmYzdjNzVkMWI3ZDkxYzBkNTE3Y2Y3Y2RiNzU2OTkzYjRhYWM1YTMzMjIwZjFmZmI4ODVhMTBhNWQ1ZTQ2M2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjMTE2MWYyNDVhNzhhNmJkZjIzYzk3YTk0YmRmMGY5OGRmZWEwYTRiOGE0NTRhMDNmZWM3OWY3YTlkODY5OTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI0M2IyMWM5ZDhmYTJkNzM0M2Y5YWM4NWQ0NDg3ZWFlNTBiZDk4ZWEwMDQxMjEwYTc2YTI4OGZhYTk2MjRjNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3OTIxYzdkNDJiMDFiYTBjOWFlZTJiOTlkMGE1MTkxNjBiODNmYWU2ZjVmN2JiZWMxNThjNWEyZmI4NDFkZTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_32989f42e3ed47c0ba2422321ad0c2ae",
+      "statement": "LlamaCppProvider drops streamed tool calls whose JSON arguments were truncated mid-stream and appends a [SYSTEM NOTE] to the output instructing the model to split content across write_file/append_file calls, instead of silently calling the tool with empty arguments.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L327-L364",
+          "version": "repo-lines-v1:sha256:57d4fde4ccdea143310510103e32e24c2c61d55a0c42d84056bbeed6ec85eb39:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyN2RhOTdmYzBmYTZkY2NhYWYzMWM0ZDJmNDRlYWE5YWQzNTNjYzZlMTg0ZGU3Yzc5NTQ4ZDlmY2I5YWE0MjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4Mzc1Y2RlODRjZWUyNGM1OTFlNWY1N2JiMWY3Zjg5NjI2NTQzNWZkYzI4YjU4YWJjOTBiZGJmYTZmZmQ0MDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0OTU3MGRkMGExODlkNDIwYjViMTk5N2QzY2ZhOWE2MDU2Y2ZmYTBhYjg2ZTZmYWMwY2MyNTVhNTc3NGNkNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NzdhNTVjMzI1MzY0YWZhMzg4NjlmODVjMTY5MTVjZTZkM2Y2ZjdlNWI3NmQxMGUyMTI4MTQ1M2ViOTU0ZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7d2c2eb2997e42a48a37fcf9de096103",
+      "statement": "When llama.cpp native parsing yields no structured tool_calls, LlamaCppProvider falls back to _parse_tag_tool_calls, which extracts <tool_call>name<arg_key>..</arg_key><arg_value>..</arg_value></tool_call> blocks (the format emitted when servers run with --skip-chat-parsing for unrecognized templates) into structured calls and strips them from the output.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L366-L375",
+          "version": "repo-lines-v1:sha256:7579d9b863c532a41f1c954d1e1764b41a54dbf67abf427f327699acaf7357f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwYjkyYjkzNWFhNzc5YmQ5ZmEwN2JiMjU2OGY2YTMwNDIxZjY1YmM3ZmE5ZDVkNTViODJlYTM5Y2M4N2ZjMDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ZTkxZjAxNTMyMGE1YmJhMDY3Y2UzNjk2MjIxMzYwNzY5MzAzMTY1MzY1NjNjNmMwZWJmZmY5MGYzMWZkZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNmZmI3ZjM1OTczZThmOTg1YTZjMTMwM2RjYmNjZjY5MmZkM2IyMGVkNWI3OTU4ZTI0ZmRmYjJlYTRjZDhmNjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzNDdiNjc4MzRmNmE2OWM2NDhjOTYwODM5NjU1ODVmMGEzODgyNjY0NDFmNmY5M2ZhZmE4MjAyZjE2YzgxZjcifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L48-L84",
+          "version": "repo-lines-v1:sha256:aa456dcd4a5eef92197a41cc4a664271b90bd71aa088a7144c6c0b78808a56bd:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhMmNmYmI3ZTYyNWU2NTdkNzI3MzRmZTNmM2I5M2EyZjVjMTVkMzEyNzU0Y2FkMzI4ZDM3YjFmNzFhYjdiYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNDM2ODYzZTg5ZmM2YTI0MTMxNWViYmM4Nzk5YTk3NzE0ODA5MjE1YzE2ZDJkZTIwY2M5NzdiODQyMWJmMjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1NDEyNzMwOWZkZTJiZWUxOWQzODY1MWRkOWU5ZmJiZmQzM2E5MGM2Yjc1ODk4NjY4MzM3N2U1YmNjNzUyOWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0N2JiNjFmOWE5YmE3OGM4ZDdhYjRiNjUzMjE1ZTlhOTVkOWFkMjM2MmZhOTdmNDRkZjdiOTVmYjA5Zjk1YjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_88e9b811bbb84232a7c6e4ae082b9615",
+      "statement": "LlamaCppProvider decodes SSE lines explicitly as UTF-8 (iter_lines(decode_unicode=False) then .decode('utf-8')) because llama.cpp does not declare a charset and requests' Latin-1 fallback mojibakes accented content.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/llamacpp.py#L223-L233",
+          "version": "repo-lines-v1:sha256:be9d2f72c9903f97153dfce3d42ccace08d40c76b4be6f7356d3a5f99ae6734a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3MzMzZTczMGNjYTdkNGM0MjIxNmZlZjc0YjY0OTA5OGY5ZjI1ODFkOTM3OTFlNzNmMzdlZDliMTY0YmI2ODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxNzU1OTg5ZmY1MWI3NzViZTYyYjcyNDhmZmE5NjQ2Yjk1ZGVjZGVlZWQ2NDkxOTg3OGFhZjJhYzQ3NDYzODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1M2U1ZjZhNmQ5YjIxZGViZWE5NzI3ZGQ1MTAzMDYzYTEzMGEwMDM0ZTRjNGVhMTQ2OTI1YWE0OTZiZDA5MTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzZGYwNDFlNDNhMDA4YTU4ZDYzNDQxMjE5NjNlMDgyZTI0Y2IyMjExNTM1YWEwMTc5YjBlNmQ1MDg1MjNlYjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6eb9a99d7a6542479c8381574da9d683",
+      "statement": "MockProvider is deterministic and makes no external calls: it returns MOCK_PROVIDER_RESPONSE [turn N]: <input> where N is len(history)//2 + 1, which is what lets the test suite run without Ollama or a GPU.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/providers/mock.py#L6-L22",
+          "version": "repo-lines-v1:sha256:ce70bfe601d07ae7bd4a7b9ff1d3327555cedfc2942566a65c61ea46a0c2c364:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiZmQ1OGU4OTNkN2I4OTdlNDg2MjU1ZmFlMzU1YWQzOWFjZmZmMTY2NTA4NzAzYTI2YTAwMmIxMTczMGU2ODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkOTQ2ZTY0YTdiNzgxYThiNTM0MDk3NDc3ZjI1OGFjZjFhMWMxOThkNThiZDEwYTgxZGFjZmE0MTkzMjRiZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_48b2cfc7c0e247de9a8bed046dbc1a24",
+      "statement": "All four channels (CLI run, HTTP /run, MCP run_agent, Telegram handler) dispatch into AgentRuntime.from_agent_dir() + runtime.run(input), so the same agent spec runs on every channel without modification.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/channels/http.py#L50-L64",
+          "version": "repo-lines-v1:sha256:40e15b6c6ee0089d686cb91c6d9da365956a820633a51fc969b526a710cda22c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiYzRjMzhjNzZlZTVhZmFlY2IyOWM1MGZhZWJjOTEwZDdmYzY3YTRhYzZkNDFjZGQ3NDhkYjQ5YmU1ZmRlNzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwZDczYTM4M2QzNWM5YTEyY2Y1MjlmNjFiOTZkZWI3M2Y2ODczNTU3YzI3YmZjNzY1MzliMDM5ZDQxNmU1OGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAzYmM2NTJlM2I0YTIxZTdjNWVkZTgyZTkwZTUzYWZiNmViZjU4NWQ2YTY1MWY2MjQ1YTc1MTU0NWMyNzViZDIifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/channels/mcp_server.py#L59-L77",
+          "version": "repo-lines-v1:sha256:3e6458cf1d28540303839031e4af9ac5de26a7d2f12babd173a3efadada14d32:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzNjYxOWQ2NzhjMmMzNjBmMDIxZjY2ZTRmZGZjN2UzMDExMzZhY2Y5YzI4MWVlYmQ2MDhmY2QyZDdhYzc4NDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlNzEwMTQxYWJjZDRmNTdiZjhmODc5N2EyOTQ5OWJlZGJlZWRiNTk1ZGRmYTcyOTQyNzE5N2RmNTQ5NWNhNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyYzAyMzdiOTIxN2ZiNjhkZDJiODNkYWRhZmNiYjgxNzg0M2VmYzc5ZTc5OTRkYzM4NTc4MWQ1Y2FkYTZmMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4ZmM0OGU5OWZhMzBmMTljMjE0MWI4NmI4YjU1MjhjNGEyMTkzOGZlNTk2N2VmODhjNWM4NDVjYjgzZmI2OTkifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/channels/telegram.py#L13-L42",
+          "version": "repo-lines-v1:sha256:97d8d42a6b89005ed809aa8d6b862549b10dfc754c881a5791764508326a2fb3:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxYTNiYTg0YzhmMWJmZmY4YzEyODJmNzI2ZTQ5YzcwNGVhNjBmODg0NzQ4M2MwYjlkMTczNzM2MzQ2NTFhN2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmODY4N2UzMDlhOTc1ZWY2MzJkYjc3MjdiOTEzNmI3Y2FhM2RhODRmYjAyMDMzNzM5NmFmMmEyYmYwNGQzM2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyMDA5N2U0YWE1MDA2OGJhMTU3ZjlhMjczOWZhZDg2OTk1ZTFlMGNkY2NkYWRjNTg5N2MyMDM0Yzc0ZDNlZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlYmMzMDk3NDUxYWI3NTM4NTg4ZjI0NDk4ODFhOGVjMzYwZTYxM2E1YzFlMTRjZmZmNzgxZTIxNjU3YzVlNjQifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L102-L137",
+          "version": "repo-lines-v1:sha256:fc0c7b022890d299341f6b795d24a8b7023a2cf71bc25f2a83643f98bc835f63:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0NDhiZGVjZGIwZmVhZDY4M2YwY2I4NjVkNmM5YThiZDcyYTMxNzZhYThjOWY5YWM2ZWU5ZWU3ODhkYjY1NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhYjQ5NTFmMjAxZDU0MDUzYTQ1OWZlMjAxYjJmYjQzNWUxYmM0YzJmOTY5ZDE4YmYwZWMzYzg5ZmI5OTAwMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiM2I2NTQyMmNiNDA0Njc2NmQzOTUxOTRhNGZjNTA0MTdjMjAxOWI0ODU1Mjc2ZGMyOWViM2RkMThjZDE5MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2MzYyOTAxZjU1N2Y4Yzg2OGJhN2IzYjgxYzUzMzc3YWQ3MWI5MTIxOWQ5MGZmZTZkYTY0OTczZjc3ZWNkZTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7affde391e904edc86dd604f35883f9b",
+      "statement": "The HTTP channel's create_app(runtime) exposes POST /run (accepting input and optional metadata, returning agent_id, output, latency_ms, provider, model, tool_calls_log, with runtime exceptions mapped to HTTP 500) and GET /health (status ok plus agent_id, agent_name, model, provider); agentforge serve runs it via uvicorn.run with host/port/reload options.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/channels/http.py#L33-L66",
+          "version": "repo-lines-v1:sha256:16512109a25e3119a3bc1448663bd45708ee9f27714c60b3b58e433d58078d29:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4OTE2MjQzNmI5YzRjNmIwNTU0NWRkMzIyZWU5OGY1MmU0YzE5NmM4MWM4Yjc2ODlmYmQ3ZjAyZjEzZGYzOGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkNjdiNDY2Mzc4NzVjM2JiN2Y5MDNiMWRiODczNGI0YTI5NjY4NWRmNGRiZTY2YTRmNmNlZjdmZGM0MTE2M2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjN2JjZWM3ZjNkMTgxZDhkNTJlODc4N2EwMDkzOGYyMzE0M2FkNzk1ZDQ1N2E2YmFiMjk0M2EzYzYxNWY2MWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L226-L255",
+          "version": "repo-lines-v1:sha256:56835b1847b6e6a1c2a8c22a5638d6824780aeb1de540e24f71ba95acf7d11e0:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0NDhiZGVjZGIwZmVhZDY4M2YwY2I4NjVkNmM5YThiZDcyYTMxNzZhYThjOWY5YWM2ZWU5ZWU3ODhkYjY1NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0MTk1ZmJiNzE3ZWUyNDc2ODI1YmFlNmYwNzFmZjhjMzEwYjY1ZmUzM2VjMzZlNjU2Mjg4YzRmYjE0Y2UzMDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRjODRjZjA1OGQ0M2I1MDFhODBiYzcxYjc0MDk0NjdkYWQzM2UwNzJkMGEyNmI2NGU3MTU4N2ZlYzFkOGQ0OGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyZDhjNDZlMGJhMDk0OTc2MTA4ZjJkYjNhMzRiNzQ1MDRiODMzY2UyNmQ3ZWU1ZjIwNTViYjc1ZDY5YmM2NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2f977a1e1210405ba29a915bbf474b20",
+      "statement": "The MCP server (FastMCP instance 'agentforge') exposes infra tools collect_system_health, read_log_tail, scan_directory that call tools directly without an LLM, plus run_agent(input, agent_dir) which constructs an AgentRuntime and returns [provider error] or [agent not found] strings instead of raising; run_stdio() serves stdio for Claude Code/Desktop and run_http(host, port=8081) serves HTTP/SSE via uvicorn.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/channels/mcp_server.py#L9-L88",
+          "version": "repo-lines-v1:sha256:d6eea0f16325daa7e82b1d152d0b2c82d337b525acafd23c65917049e30b4123:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliMjU4MzM3NDAzNTFjMTk1ZjlkMzAwM2ZhNTE5ZTE2YzY1OTA5ZTg2ZGMzNDU4OGQwMjU5MWYwZDczOTFiODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxNWM1ZjAyMzE2MzBmNDEwZjRlYjY1OGUyYTZhNTBlNjA5MTNlNGUwZGM3ZGQ4NTVlNGQzZmM5ZGE5MDY2ZDQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3OTQwYTk4NDI1NGJiOTVjZDM1YWIwM2QyYmYzYTgxY2M2YWIyMzk3OWU0ZTljYzNhNWYxYzRkOThkMjhmYjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f058cd5e5b0a472db6e151f2bbd0e7d9",
+      "statement": "The MCP client call_mcp_tool/call_mcp_tool_async connects to external MCP servers over streamable HTTP with an OAuth 2.0 authorization-code flow: a local callback listener is started on http://localhost:<MCP_OAUTH_PORT, default 9876>/callback before the authorization URL is shown, the browser redirect supplies the code, and the sync wrapper spawns a thread with its own event loop when already inside a running loop.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/channels/mcp_client.py#L96-L253",
+          "version": "repo-lines-v1:sha256:3d34a8959962e182cbeacd865e60f8028c9ac92e9b301113921280ced59a2a19:eyJzZWxlY3RlZExpbmVDb3VudCI6MTU4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmY2VkNzQ1Zjk5Y2JjZTMwYmQyYTgxM2NmMDdiYWE0ODMwMWQ2OTU5NmQzODQ1ZTA3Njk4NzhlOWU1ZWYxMWQ4IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxM2IyMjM0M2U5Yzc1NTkyMzNkYzQ2ZGNlYTU4OTk2NThmNmM4NmE3MzE0ZmE0NjIwOThmMjkyOGFmNmFkM2Y1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkMGYxZTI2YTczNzVlZTY5NGEyMTNlY2Q0ODZmMGE3YzkwMzc5MGE0ODYwMjM3N2FmZDc2MDBmZjE3MjU0MDNjIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_f492eb32e3ff4624a5983504067d7a69",
+      "statement": "FileTokenStorage persists OAuth tokens and client info to JSON files under ~/.agentforge/mcp_tokens/<server-slug>.json, so re-authorization only occurs on first use or token expiry and subsequent calls load and auto-refresh from disk.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/channels/mcp_client.py#L147-L174",
+          "version": "repo-lines-v1:sha256:d94ab55d6e81152a363e449c0bb2e3076b4e4959c3d11611929dbda1b2b64057:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyYzRkNjljMzEzODhmYzgxNTUzMjU3NjE0ZTIwM2JkNjQ2OGI4NzYzOTE5MTJmMTI3YjU1YWE1NTllMTkwZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkNDAwZjYzNTNkNjFjMWUzOGFmMzVmZDI2ZDhjYmViMjAxMDY0OWQ1Yjc0N2JlZjkyMWJiOWRlMzkwZGQ0MGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmNTA3MTM2OGI0NjQ3YzRkOGU4ODk1OTlmOWMwOTFhNzk3NjExZmRmZmFhMWVkMzdiNTM1NGNjNjNiMWEyNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYzMmNhNGNhZGNiYTlhZDU3ZDJhYTQ5MGQyYTBjM2Q4ZmU3YmI4ZjgxNDhjOWI1MGY3YWY5ZDkzMGMxYmVlMTQifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/channels/mcp_client.py#L31-L86",
+          "version": "repo-lines-v1:sha256:396ac569b4f3f4fac8a216668216d74aeb6f981aedb001b0a761d6eba3da78db:eyJzZWxlY3RlZExpbmVDb3VudCI6NTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlNjE1YmFkNDY0MTc2ZjYwZThhYjE2OTM4ZWUzZTAzMDEwMTZhNDZlZDczNWE5YTJlODMyNTcyYWQzMmE5NTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1YzFjNDYyZTJhMzlkNzQ3NTlmNWUxYjEyNmY3NjgzYTJiNzMwMTE4ZTE4ZjUxMjJiMDhjZWRlZWI2NTBlMjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc2YWNkZDY0NTAwMThkZDlhOWY3OTgwOWVlN2ZmZTg0MGU3YzU1OTQxNGEzNGY3YzQxODcyOTM1ZDFlMmZjNWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ff86ae3ef26b43f98087f127f4c75d51",
+      "statement": "The Telegram channel is a long-polling bot: per text message it sends a typing chat action, runs the agent, appends a guardrail warning when metadata.guardrail_violations is non-empty, and replies with a generic error on exceptions; the bot token comes from --token or the required TELEGRAM_BOT_TOKEN env var and agentforge telegram starts it via run_polling.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/channels/telegram.py#L13-L60",
+          "version": "repo-lines-v1:sha256:4511fafa41bc864b623255737da15f7c9508a675b7f2d6e2a1def9d5395b4b1b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxYTNiYTg0YzhmMWJmZmY4YzEyODJmNzI2ZTQ5YzcwNGVhNjBmODg0NzQ4M2MwYjlkMTczNzM2MzQ2NTFhN2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNTA1NDMxYjMzZjM0NWU5ZjIxMzgyM2M2NjkwYTY4NDk1OTAzNDMzMDRhMjUwZGY2M2Y2NDcwNDAyNzE3YTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyMDA5N2U0YWE1MDA2OGJhMTU3ZjlhMjczOWZhZDg2OTk1ZTFlMGNkY2NkYWRjNTg5N2MyMDM0Yzc0ZDNlZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L277-L309",
+          "version": "repo-lines-v1:sha256:70328d53227e365e10868a504f97af3ed435d18f30dc5348e8bfc4328d91f367:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0NDhiZGVjZGIwZmVhZDY4M2YwY2I4NjVkNmM5YThiZDcyYTMxNzZhYThjOWY5YWM2ZWU5ZWU3ODhkYjY1NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllOGFhNzgwOTE1YTY0OTg3OGJhNzRlZDljZDc2ZTQ4ZWJlZGJlYjI4MmViNjg5YjI5ZGRmM2ZjOWFiNGVlZmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiM2I2NTQyMmNiNDA0Njc2NmQzOTUxOTRhNGZjNTA0MTdjMjAxOWI0ODU1Mjc2ZGMyOWViM2RkMThjZDE5MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNDEzNDBjYzIzOWExNTljZTliNjAyMmU5ZjYzMjI4MzJlMmVhZDc2Y2FlOWU0NzU0ZDIxMGViOGZiNmQ1ZTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1e40ef7b536043b9ad381d4bc3c8b759",
+      "statement": "RuntimeConfig resolves provider as os.environ['AGENTFORGE_PROVIDER'] or the value from the runtime config, and model_default as os.environ['AGENTFORGE_MODEL'] or model.default, so both environment variables override the agent's YAML configuration at load time.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L55-L84",
+          "version": "repo-lines-v1:sha256:8b0424f4b8dbc570e56cae34434ea810f586cbf946f4fcc2238594ad900b4c47:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1NWQzZjRmNmJlNzRjOTY4MjViZmUxZTVkZGZjMTk2MjI1ZWRlZTBiM2FkZDU4YzYzMjhjMTQ4YWNiNmUyMTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI4NDNkMjQ5M2EwODgxNTQxOGQ2NDNiYTc3MGM0OWIyN2ZmMjVjZWI3ZTkzYTFjOWIyNzg3YWIxYTFlNTdjODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxNWEyNGYwMjNmZDVmY2M4ODU0YzgwMjQ1M2QyNTlkOGM3YTQ5N2JmMjViODA0MjJhZmY4YzE1NWZlODUxYWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0441b30928e44435a43339ef87a92d3f",
+      "statement": "AGENT_WORKDIR (default '.') is the filesystem root for agent file tools: write_file, read_file, run_bash, and other tools resolve their paths relative to it, so the same agent can be run against different project roots by setting the variable.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/run_bash.py#L30-L42",
+          "version": "repo-lines-v1:sha256:d86a4d169b0700cba2084e4b95853e3020953c9d6c989294a13bf7379244ed4e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlMmUzMjBkN2E4OGYzNjZlMjUzZmRiM2FmYmQ5MWI1MjZmOTFjNDVmZDdlMzk4ODYwYjYxZmE1ZGI0YjIzYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwMjNmYmIzNWFmNGJlNDVlM2E3YWY4MGMyMTc1M2VmNDZhZmFlNWQwMGU5ZjE5NTk0NjQwNjI4NzczZmEwYTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3YjE2NzM2MTEyNWU4NGZlYzkzMWFhMTFlZjYzZjZlNmE1YTZjYjBiYjY0YmYzN2ZmZTJjMmNjZTc1MmMyZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyOTg3MmJiN2NlMWNlYmJlYjNmMzFkMmUzOTM1ZjMzYzM2ODUxYzVmNmI4MDI3ZmFiNjVhZmJjZGM2NThjMDEifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/write_file.py#L8-L36",
+          "version": "repo-lines-v1:sha256:c43adc43669fe812dbad0fe7dc483e525d8b41d5cbe1fbb754db45549cbcdae1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlMmUzMjBkN2E4OGYzNjZlMjUzZmRiM2FmYmQ5MWI1MjZmOTFjNDVmZDdlMzk4ODYwYjYxZmE1ZGI0YjIzYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMzVmZGU3YWIwOGM5YmZiYTNmZTcyN2JmZmQyZjI0NWViZDA5NGI3NDg3YjM4MTFmMWQzMDNjYmZmNTljYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3YjE2NzM2MTEyNWU4NGZlYzkzMWFhMTFlZjYzZjZlNmE1YTZjYjBiYjY0YmYzN2ZmZTJjMmNjZTc1MmMyZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyZTQ2N2UxZTZkNTAwM2ZkMjZiNTY4Y2EyNTZhOTM5ZTE5NzM5YWIyNjNmMGQ1MmZkYTc4MzE4ZGIyZTc3N2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_674523d29bac447f89ac110184489a06",
+      "statement": "The Typer CLI provides info, wizard, generate, validate, validate-agent, run (with raw/pretty output modes), eval (JSONL results under eval_runs/ with optional LLM judge), serve, mcp, and telegram commands; run creates AgentRuntime.from_agent_dir(agent_dir) and calls runtime.run(input_text), with ProviderNotImplementedError/ProviderError surfaced as non-zero exits.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L25-L309",
+          "version": "repo-lines-v1:sha256:44b9b9773a6ee7be49359e25908dfb0e590c05a5bad7d4dfbf44b0a0f47ebad6:eyJzZWxlY3RlZExpbmVDb3VudCI6Mjg1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0NDQ4YmRlY2RiMGZlYWQ2ODNmMGNiODY1ZDZjOWE4YmQ3MmEzMTc2YWE4YzlmOWFjNmVlOWVlNzg4ZGI2NTU3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI5ZThhYTc4MDkxNWE2NDk4NzhiYTc0ZWQ5Y2Q3NmU0OGViZWRiZWIyODJlYjY4OWIyOWRkZjNmYzlhYjRlZWZhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwYjU2ZGU0ZWRlODExMjU4Y2NmZTA4NzFjZTQ0MGRjZTdkNDhjY2JhOWU0ZGFkMzc0MjRjODk2MmM0OTBhYzVjIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzZDQxMzQwY2MyMzlhMTU5Y2U5YjYwMjJlOWY2MzIyODMyZTJlYWQ3NmNhZTllNDc1NGQyMTBlYjhmYjZkNWU4In0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-09T12:43:13.007Z"
+  }
+}

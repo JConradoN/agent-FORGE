@@ -1,0 +1,298 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:ab596f5457a694de1721d555486d611b9ecb4f6c14ca25e7986af2a61d364c91",
+  "claims": [
+    {
+      "id": "claim_d8f5863ab050493483e0f4f76a03bff0",
+      "statement": "The `agentforge eval` Typer command (src/agentforge/cli/main.py) loads `cases` from a YAML dataset, runs each case through `AgentRuntime.run`, and writes one JSONL line per case to `agents/<id>/eval_runs/<UTC %Y%m%d-%H%M%S>.jsonl` with case, input, output, notes, latency_ms, timestamp, and ok fields; a provider error on an individual case writes ok:false and continues.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L140-L223",
+          "version": "repo-lines-v1:sha256:552c6bfc6ade7dc5990a74a4dc59e6fb1c1b2b87650b829fb1266ec4b8f9cbce:eyJzZWxlY3RlZExpbmVDb3VudCI6ODQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0NDhiZGVjZGIwZmVhZDY4M2YwY2I4NjVkNmM5YThiZDcyYTMxNzZhYThjOWY5YWM2ZWU5ZWU3ODhkYjY1NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1OWFjN2FkZjFlMWRhZmEwZmIzOGM1N2FhZjBiYzkwZTY5OWNmM2YxYmI4MmQ2ODllNTZhOWQzYmUwZTE3YjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiM2I2NTQyMmNiNDA0Njc2NmQzOTUxOTRhNGZjNTA0MTdjMjAxOWI0ODU1Mjc2ZGMyOWViM2RkMThjZDE5MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2MzYyOTAxZjU1N2Y4Yzg2OGJhN2IzYjgxYzUzMzc3YWQ3MWI5MTIxOWQ5MGZmZTZkYTY0OTczZjc3ZWNkZTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_145d56f42dec45d9bdd819e36c8c7606",
+      "statement": "Each eval dataset case has `input` and free-form `notes`; notes are echoed into the JSONL output but not enforced programmatically (see agents/lab-ops/eval_dataset.yaml, 8 diagnostic cases).",
+      "evidence": [
+        {
+          "resource": "repo://agents/lab-ops/eval_dataset.yaml#L1-L24",
+          "version": "repo-lines-v1:sha256:5e5e6ac5c0fee99a19e7ac65105e5fee354a46c6b6963362b1be13a3a77744d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3ZTM0MzU4MDI4YmE5NDU2MTJkZWRjZjNiODllYTgyN2ZjMjEwNzdkOTA4NTdkZWIxZjA0OTI1Yjg5MDI1ZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyYjFmZjY5ZGU2Yzc3OGZhODc1M2Q5NzM4MGQ1NThiZDhmZGUzNDAxZTg5YmVjY2IxNWExYTFiMjY4ZjY0ZTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L158-L195",
+          "version": "repo-lines-v1:sha256:0a1ee5c5f99320ffcd8ebf057c2959684969448c43db6819b99a1fa71dac4780:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJiYTcyMDgzNmM4YjAyNWUxZjlkMTFhZDhhYjJmMTg5MTZjNGY1NmM3YmI1YmY2MWFlZDBhM2YzNzQ5OTdmZjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3MTVjODg5MWJkZWZkNmRjYzAyZTk4NDdiYmI1ODFiODc1ZWY1MjIxNDBmZmI3ZjU2MmZlZjhhZjBlYjY2YTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmMWIyODY2OTZlMmNlYTllOTQwOGJkYmU1MGQ5MjBmZTc5MDIxOTg3ZWYzY2YwN2E4YTg0NjM0NDc0ZjY4M2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3NDliNGQ5OWQzMjc0NWRmMmRmNTNjZDNkY2I3MjMwOTk5NzA4MTE2ZDU1ZTk0Njk3ZDgyZDYwYTNkNTYzZmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b0afc07012d46f59e32a39302f82ad9",
+      "statement": "agents/<id>/eval.yaml is a separate, spec-generated schema (eval_version, agent_id, tests with expected.tool_executed/output_contains/history_length) produced by the agent-generation pipeline and is not consumed by `agentforge eval`, which only reads the `cases` list.",
+      "evidence": [
+        {
+          "resource": "repo://agents/lab-ops/eval.yaml#L1-L20",
+          "version": "repo-lines-v1:sha256:0b0d61e99b4d8befc5f8ba787c4f6a35002449db00466795a3a92d6ecb3f8ffc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiNzJmOGRhYjg0YTM4NWEzMjk1YmM1ZjUyNDRiZjZiMzQyOTVhNzcyZTkxNmMxN2JhNzU1MDRmZDg3OTNhZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwNTYwNjVhNTE1YmRjOTY5MDk3N2JkNjUwNDYyYzE1Nzg2MDVlNTUzOWQzODcyMzFlZmZhMzI0MTU4ODUwM2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f37baee671d94a539265919f6425789b",
+      "statement": "Automatic judge scoring is enabled per-agent via the `eval` block of agent.yaml; `EvaluationSpec` in src/agentforge/core/agent_models.py defines `criteria: list[str]` and `judge_model: str | None`, and the CLI activates the judge only when both are set.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L180-L187",
+          "version": "repo-lines-v1:sha256:4784563c40e718b5167945b44c31b547e5e757b2b1c9bed47d43a98d718d3497:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmMyOGRkNjQ2ZmFkODJkNmU4YTYxOTdkMDM3OTlmNTQ0YWJjY2NkMThmNzAxZDE5YzQ1MWUzNzNkZmRhMjUwMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDY1NDBlM2VjMmEyZmU3Y2IwYzQ1NDdiZTczYzMxOGMyMmU2OGMwMDk2ZDYyYjEwYzI2ZDdhNTE4ZGFkZjY4MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGFhNDdlNzMwMmE4YTZkNmFkNmQ5MDhjZTNiODFhOTkyN2Q0MWM5YzM4ZjJkNGM2OTAyZTBmMmU2NTJjZmQxMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjg3MTdhMDZkMTA4Y2M3NzNjYjNiOTc0YWY0ZDM3ZjU4MTQ4YTkxMzg5ZTUwZTE2YmRmNDc5ZDE5ZWE1YWIxNyJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/core/agent_models.py#L61-L67",
+          "version": "repo-lines-v1:sha256:34df8cde961c0007efbc4ec6cf373c50c9866ddd2ae0e86ea884491afe391b4c:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTIzMDE1MWQyNTcwMDRkMmU3ZTI1N2YyZTUxMDFiYmVmZDBjNGMzMmVkMjExYjUyNDUyYzE1NjZiNTkxYzc2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTJkNjQzZjdiYjkyOGJmOWFhY2QyZTk3MzA2NTM5NTM5MWRiNWVhNmFjMGYzZjU4ZWNiMDBlNjIzMTIzNGEzMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjUwZDZiZWU3ZGE4ZWY5N2MwMTlmYzcwZDY3OGM4Zjk1ZGU2ZTBiODc2MWMyNmFlMTc4NzQwNjlmZmY3NzlhYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGZlOTQ4ZGU0YTFkN2U5N2QzNTY4YTIzZTUyMDg1MDgzZGI1ZmM3Mzg5YWFmOWY2NTY2NjA2NDVhNjJiMTMyYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1e52ae55ecd2473ea0b426ceab85c5c4",
+      "statement": "The LLM judge (_JUDGE_PROMPT in src/agentforge/eval/judge.py) requires a JSON response `{\"scores\": {criterion: 0-3}, \"total\", \"max\", \"pct\", \"justifications\"}` where 0=absent, 1=gaps, 2=minor flaws, 3=excellent; the agent output is truncated to 3000 chars in the prompt and score() recomputes total and pct from the per-criterion scores rather than trusting the model's arithmetic.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/eval/judge.py#L44-L115",
+          "version": "repo-lines-v1:sha256:bc0bfed9b3d895d2ed63fe68059ca62c6e63d68e18b7217009e870c888091180:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkM2U4MGZmMjhhZmQwOTNlYjUwM2JhMzVjNWViZTQxYmEwMDIzMjk4YzFiYjhiODkzMzA4YWFiMzJmMzE2ZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxYmFkMmIyNjE2YmZjYTczYTlmYjAwYTZmOGU5NzBhZDIxNmZlZTk1NmQ5MjA3YTlmZjRlMTc2MWQyMTE3YzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkM2YwNjVkNDI1NDcxYzViZDhiYmI2YWNkNGQ2MDliY2ZjZjhhZDRiMWE4OTZjZjFlY2RiMmNiMzc0NDMzYjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_49437b8dc6df49a58756b6f03aaa357e",
+      "statement": "Judge routing is by judge_model slug prefix: any slug starting with `gemini-` calls the Gemini generateContent REST endpoint; everything else is POSTed to `http://localhost:11434/api/generate` (stream=false).",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/eval/judge.py#L8-L41",
+          "version": "repo-lines-v1:sha256:f8458565be118e05fbc2f603392186b48b253d21b3175902f9f14c79fabc0aee:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwNDY2NzY1NDQxYTlhMmY3YmZjOGQ0ZmJkMzEyZmI5YWVkNDhhOWY4NzNhM2U3ZWYzYjlhYzAxZDdhYWRlY2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNTY5YzI2MzBhNTU0YjQ5YzIwZDAyNDNlNzljZTMwZDIwYTg4MGUxOTQwOWNiYTAwMDViZDBiY2E1ZDQzN2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMzdhMzNkMDczYWI4ZGEyOWRjNzRjZTZhODkxMzE4MThhNTJhNWMxNjVkMTZmMzFkOTkxOTk3ZjBlNjZjZjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhYzY2Mjk4YzE0YjJjYzc0ZDVjYjRkNWI3MjM5YzMyZDgzNTNkMjZiYjQxYjNlOTFhNzAxY2VlYmE2ZjM5ZGYifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/eval/judge.py#L80-L86",
+          "version": "repo-lines-v1:sha256:21ab43a115cda603d519d4cdf35f27bec4d7b1f1f0ba6c5790189575d419b803:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWRhNWM2NmUxN2IxNDUzOTc4MzRiOGM4NTRkYzQxOTNlMjEyNTE4MGE4OTk2YTE0YzMxODgzMzI2YjJlZmJjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDk3YzY1YjVmODYxNTg4ZTY3NWZhYjI3YTU2ZmE5OWJmYjJkNDA0MmJiZDU1YTNjMjBiZWJiZDFjOTFlMTQ4NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTAyMjA2MmM2OTk0ZDM4OGMxYTc2YWJmZDU5ZjQ2ZTI4ZDZkMmU2YmIxNjNhYjBiYmQ0OGIzMGYwNmNhOTQ3MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDIzNDQwZmY2OTcyNDQyYWUxYjFkMjZlNmJlY2E4NjNhNTQ1NmY1MDk0Njc0NDdhY2NjMGFmNzg4YjVkMzdhMyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0353a8de17804a5b98b49db35089a6d4",
+      "statement": "The Gemini judge path resolves the API key from GEMINI_API_KEY, then GEMINI_API_KEY_FOXVAULT, then the first `GEMINI_API_KEY*` line in ~/.env.secrets, then raises RuntimeError(\"GEMINI_API_KEY not defined\"); a missing key surfaces as {\"error\": ...} inside the judge field of the eval JSONL without aborting the run.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L207-L212",
+          "version": "repo-lines-v1:sha256:f0400a316ca3847304b9ab7fd17a65e1f6d13c50148eafbcdb94722faeaee24e:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTVlMzY3MDhiMzdlNzY4NWU4ZmM4NTIxM2ExZjE1MDE3Y2NlZWFlNmExZGE3Y2I4OWRmZThlN2RmZjYxNTcwZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTU4ZTczMTk1NWM4OTMzMDdjMmFlYjBjYTIwY2Q4M2Q4Mjg1ZGZlZWQ2MGQyY2YyYWE1OThhZDc5OGEzNzA2ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2Y1ZDljZmEzZmIzZTNhM2U4MTIyNTY1MzQ1NzNhMzQ1ODViZDk4ZDY4NjFkYTE1YTUyNmM3MTEzZGM0OGM2NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWUwYzljZDA4YTYyM2JlMzRlZTE0ZGFhMmVlNTFjY2Y5ZGZhZjdlNWJiNDc3OTU5NGMwNTVmMmMyMzVkYWRjNSJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/eval/judge.py#L18-L41",
+          "version": "repo-lines-v1:sha256:f78eaf7b42f7f8eb3fbb3d893579fe22d18abf268cb56afa579a9c101f1b992d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiOTE0OWEwNzJjYWJlZDc2NzBjMDg0MThjNGM3MzY5NzMxNGE5ODk4OWUxMTkyZTEwMDNiZjgwMGM1NWU3NGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNTY5YzI2MzBhNTU0YjQ5YzIwZDAyNDNlNzljZTMwZDIwYTg4MGUxOTQwOWNiYTAwMDViZDBiY2E1ZDQzN2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjODY2OWM1OWEwZjExYTA1MDkxZWU4NTBkOWY0MWM3YjcyMTcyNGUxMTQ3NTg3ZjIyNDU3YWE0NjVmMzEzMDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhYzY2Mjk4YzE0YjJjYzc0ZDVjYjRkNWI3MjM5YzMyZDgzNTNkMjZiYjQxYjNlOTFhNzAxY2VlYmE2ZjM5ZGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_eb2de1fb94b14509a55a26bc39cec7a5",
+      "statement": "scripts/run_benchmark_eval.py runs a per-scenario pipeline: creates an isolated workdir benchmark_results/<SID>/<model_slug>/run_<ts>/, copies scenario fixture_dirs and prd_file (as TASK.md), picks a random port in [20000, 40000] for port_open checks, sets AGENT_WORKDIR and AGENTFORGE_MODEL env vars, imports AgentRuntime, and — if scenario max_turns exceeds the agent spec max_tool_cycles — raises it (never lowers it).",
+      "evidence": [
+        {
+          "resource": "repo://scripts/run_benchmark_eval.py#L428-L500",
+          "version": "repo-lines-v1:sha256:c0ffb27b22aec76b85bd2fde33c5e6e47bd22e2ee73a60308b2f1fea7ab3d2b2:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjNjNkNGJmMDEyYjE4OWQ4ZWNkMGNkYWY1MmUxMWQ5ODQwMDFlMTg5ODcwZmJjYWJhYjc5NGFiMGIwN2Y5OTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExZGY5OTVjNzA0ODJiZjExZGQ0ZjgyYmQwYTYxOGQxMzc5ZGYzMTNjNWM3MjBkZDIzZDQ2YzMxMGFkZWU2MzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzZTcyMjMzYzZiOGE4ODMxN2ZkNjA4YzI0NjljZThlOTMxNThmOGIyZjMxZWEzNWNjNjBjNmIwZmNjNGFmOWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllM2U1ZGFkYjAwOWViODU3NjdiNmIzNTkzMWE3Y2YwN2RkYzgwMWYyODk2Y2I0M2FlMjY3MmM2NWU4ZmRjMTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a0ac9880df60423f9e2ae1624dc892b2",
+      "statement": "run_benchmark_eval.py's SCENARIO_MAP covers FORGE F1-F5 (~/repos/estudo/forge/scenarios), REAL P1-P4 (~/repos/estudo/real/scenarios), and GAPS G1, G2, G4, G5 (repo-relative gaps/scenarios), each mapped to a dedicated agent directory in AGENT_MAP; DEFAULT_SCENARIOS is all 13 IDs.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/run_benchmark_eval.py#L27-L66",
+          "version": "repo-lines-v1:sha256:20b3d83e37202eea7fa66045d69ae5b5af56b68325d321ae54a06aaa6b0c90d0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhNDZjYmIyNGFjZGQzMzQ2NWEzMGUzMTYwYzJmNjRlNjBlYmFkYTc1YTU2M2Q3ODdkOTFiZjFjYzliNmVlNzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyOTk3ZWU0NzIxNjNiMDhjMTJhNzcwMTE3YjgwYjk0ZjAzYjYyZWZhNzJkNWI5NTU1YTBlODA5Mzc4ZmIyY2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmZjk2MmNmZWY0NjRmNzViMWExNzAwMjBkMjc0MDAyMTAyM2JmNDI1YTQ0MmRmMzcxZTMyOGU2M2NiMzY0Y2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1NjIxYWQzM2RkNGU5M2ZjOWMyMGY4MDhhY2U1YWUwMWQ0YjBlMGM3MGY3MTgyYWQwYTA0ZTgzY2QzYTFjMWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c14a83fdc6a94c17b12cb6f179262e72",
+      "statement": "score_auto_checks supports a weighted check registry — file_exists, file_not_exists, file_contains, file_contains_count, file_size_min, file_unchanged (md5 vs. reference), json_valid, json_has_keys, python_syntax, python_tests_pass (pytest with 60s timeout), skill_has_frontmatter, skill_has_sections, response_contains, response_contains_any, tool_called, tool_call_url_contains, tool_call_result_contains, run_bash_command_contains, no_error, port_open, run_command_ok — with {model_slug}/{port}/{workdir} templating on string fields.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/run_benchmark_eval.py#L333-L423",
+          "version": "repo-lines-v1:sha256:30573832741d776909277cc0fb836daa35edd224e40d039c7a9c3aa98ba216fc:eyJzZWxlY3RlZExpbmVDb3VudCI6OTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzYWQ2MzY1M2FlNjI3NjI0ZjI1YmEzMzc1ZDI3Zjc0OTBjYWU0OTVkODdkOTNkYWYzYWExMzJhN2RjOWU0OWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2MzM0YWRlMmY1MGMzNjAxY2Y3ZjliZWI3YjEwYmIwMjk3OTE5NDc3YjlmMzI5NDkwZjdkZTQ4NTVjMjFjNDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmMzgxZmM3ZDdhZDM4YmM1MzNhNmMyZjU0NGQwMjdiNWY5MjhhYWJlOTE2N2E3ZDQxMDAwMTYyNmQ1YjhmZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwNjM1MDY1MzBhMjNlYjlkMGU3ZTIxZTZmODMzNzljOWMzNmJmNGNmNjVkYTUwYjc2NzJlMjExNjk0Mzk3NTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ca4e3cd879cc46ef928ff569eca6f294",
+      "statement": "The no_error check uses word-bounded regexes ((?<![A-Za-z])Error:, (?<![A-Za-z])Exception:, \\[ERRO\\], Traceback) because a bare substring match false-positives when the model legitimately quotes an error name in a data report (documented 2026-07-20 REAL P2 incident); response_contains_any is the OR variant for scenarios with multiple acceptable behaviors.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/run_benchmark_eval.py#L198-L268",
+          "version": "repo-lines-v1:sha256:10447c1eb43be4e61b79963f67ba435d1ee0d4c7a78b7358ce611fc02f842084:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4NGY2N2RhODhkNDAxZTY5OGQyYTdlZDFhODVmMDRmNzFlZGRiMThmOWM5NDNlMzQ4OWZhODUxMjE2YWQ2MGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0YzYxNmNmZjhiZWM0YzVhOWU5NWRmMDc4MjUxMmYwNzJhMzQxZjg4ZTdiMWY2NmQxMzk5YTZiYzIyOWJjY2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmYjliNWVmM2MyOWI2NjA3ZTU2NDFiNDA2NDkxMTczZWUyMTA5YzFkZWRjNzg0NTZlOGQzNTVlNjdiM2JlZDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI4ZmJiYTAzYjhlZjc1MDgxYzFjMmEzODQyNDlmZjgwNzA0NjMxNmUzOGRjYmZiMDQyNzljZjk4NTRmMWQ5ODgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b2ac6fa8257f4185bdb04608413df932",
+      "statement": "Provider auto-management: --provider llamacpp stops the `ollama` docker container, sets AGENTFORGE_PROVIDER=llamacpp, and — unless already set — sets LLAMACPP_THINKING_BUDGET to 0 for `nothink` model slugs and 800 otherwise (the 2026-07-20 FORGE F5 regression from forced thinking is documented in the script); _wait_for_llamacpp_ready then polls LLAMACPP_HOST/health (default http://localhost:8082) up to 60s. Default provider path stops `turboquant` instead; the runner restores whichever container it stopped at the end.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/run_benchmark_eval.py#L591-L628",
+          "version": "repo-lines-v1:sha256:864ff10c29e90d667e3d60da9ce96c95c18426187ef08183eac1e01814776ccd:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YmJhZDc3YzUzYjA0NjQyY2IzMjY0ZDdiZmYyZjAxYTZjMmRmZjFkZTc5NmY2MDhlZjdhNWU3MjE5NTNiOTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiZGNmMDk1MGIzOGFhMzQ3MzU2NmU1ZThmYjgxYmIxN2NjOWY1YTJjNmYyZmE3MzYxMzI0YWFiOTBjNzY1ZWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMWQ3YjQ3ODQ0NjA2YTI0OGYzOWE1Y2EwNzg4YTIzOTcyNmJhMzQ1ZTJlMWE1ZTUxYTBhYjllNWZmYjMyNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2MWNmYTVmYmQ2Mjg3MmQ1ZDlkMjNmMTczYTAwYzlmMjJhNjRiMWNjZGMzMzAzMWE2NjQxNmI1ZGE4YjcxYTkifQ"
+        },
+        {
+          "resource": "repo://scripts/run_benchmark_eval.py#L638-L668",
+          "version": "repo-lines-v1:sha256:6149ba6c0d823b2b547531a6d3d81dc3ca17f0140c07544164f7d75bc614a3e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZTMxMjU3ZGMwYWUxZDU5MzAzN2MyODBjOWFkNTA4MTliOGE2YzhjZjcyOGJlMDcxNmQwMGEzZWVjYzA0YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5YzcxNDk3Y2ZjODJlNmZlMGZmZmYwYjA2MjM2NWVmNDk3MTUzODhhNjU0N2I5N2ExMzAwZjdlZWEyOGYwMmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4NTUwMWVlNDdiY2YzOTZjYTk0YzA2YWQ5ZWNlODg4YjY4ZmJkMzgzYTAwZDU5NGZjNGMxODcwMzM3MTlhNmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEyZGI3OGViMWQ1Yjg1ZGI4MjM0YTc0ZDRkNzkyY2EyMDU1ZTliMWFhOGEwN2JjMWNlOGEzM2M0M2UzOTU0NDYifQ"
+        },
+        {
+          "resource": "repo://scripts/run_benchmark_eval.py#L724-L728",
+          "version": "repo-lines-v1:sha256:2e120f6fd8de127aa213715253ff1b9fbf3d12061125382001bd8b26c2bb261f:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTc1YmZjNTRlMWQxNTRhNjJiZTg2ZDUxZDBkMGE4NjMyMzY5MzQzMjhmY2Q3MDRiYjRjN2FhYjJlMGVlMTMzMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjk2YmU3OGJhZWFkNzY4NDE1M2FlOWEyOGIwNTNkYzQ5MWRkMzFhN2U2OTczODdlNmY4MGI1OWYwMWU5YzA3YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDlkM2RiOTc4ZGE5NWZiOGM1NzY0ODA1NzM4NjQyNjY0MTdiZDRjOGYzZDJlZTUyYWZhYjYwZjgwYzc2M2FkNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2Q0MTM0MGNjMjM5YTE1OWNlOWI2MDIyZTlmNjMyMjgzMmUyZWFkNzZjYWU5ZTQ3NTRkMjEwZWI4ZmI2ZDVlOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_18758e31d60e40ec8796c7d2716fc7e9",
+      "statement": "Per-scenario benchmark results are written as agentforge_<SID>_<model_slug>_<ts>.json into the isolated workdir; a run-level summary_<ts>.json is written under benchmark_results/ with total_score/total_max/total_pct; unless --no-notify, each scenario result and the final build_telegram_summary (✅≥70%, ⚠️≥40%, ❌ below) are delivered through agentforge.tools.send_claudio.send_claudio.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/run_benchmark_eval.py#L579-L608",
+          "version": "repo-lines-v1:sha256:3d7413f8762863d34eb040fbe6dc942a83487fa41e5704aa7abaf3c9ea20669c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzMjg1MzE1OWMwM2RlMzlmMGU2OTUzMTBjODk5MWU1YzlhYjhhNTU5ODk0YjlkYWE5YWUxOWVhMmM5ZTgxNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjNWMxMWQ3MDEyNWNiYTYxM2M2NmQ2YjQ2ZTRjOTA2Yjc2NmE3NjYwMDQzNDZjOGNhYmUxMWE1MTViNWU5MjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMWQ3YjQ3ODQ0NjA2YTI0OGYzOWE1Y2EwNzg4YTIzOTcyNmJhMzQ1ZTJlMWE1ZTUxYTBhYjllNWZmYjMyNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA4ZDk4MTQ0MTU0MjlhNDc3MmIzMzEzMjQwYjM1YTEyMGU4OWQxMDRlNGRjMDNmODc4NzdjZTI0MTQxNTQ0ZmUifQ"
+        },
+        {
+          "resource": "repo://scripts/run_benchmark_eval.py#L676-L728",
+          "version": "repo-lines-v1:sha256:af8968b1fc7188dbe395b1251dc5c6380426e698f29ed4d9d4097170075f073d:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwYjhkOTBmOTYyZThkNzhkMzIwMWEwZWMzZmE1YjlhNDAyNTRlMWY5ZjRjYjRhY2RhZjY1MGE2YzViYmFhNzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NmJlNzhiYWVhZDc2ODQxNTNhZTlhMjhiMDUzZGM0OTFkZDMxYTdlNjk3Mzg3ZTZmODBiNTlmMDFlOWMwN2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3ODM3NTMwY2ZlNzU5NmI4ZmQyYjU2YjgwNjVlYTQzMWU3N2MzZjQwMzMzYzYxNDI4ZTNkMjYzMjc2ZjQ0MGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNDEzNDBjYzIzOWExNTljZTliNjAyMmU5ZjYzMjI4MzJlMmVhZDc2Y2FlOWU0NzU0ZDIxMGViOGZiNmQ1ZTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_357a500a339d47279eba35c38ee9827a",
+      "statement": "train_v3.py is an Unsloth QLoRA trainer on Qwen/Qwen3.5-9B (load_in_4bit=True) with LoRA r=16, alpha=32, dropout 0.05, targets q/k/v/o_proj + gate/up/down_proj, max_seq_length=6144, per-device batch 1, gradient accumulation 16 (effective 32 across 2 GPUs), 2 epochs, lr=1e-4, cosine schedule, warmup 0.10, bf16 when supported; v2 hyperparameters (r=32, 4 epochs, 2e-4, seq 4096) caused catastrophic forgetting (base 85% vs v2 67% on benchmark) and v3 is the corrected config.",
+      "evidence": [
+        {
+          "resource": "repo://finetune/scripts/train_v3.py#L1-L68",
+          "version": "repo-lines-v1:sha256:d2da03b5abd911a38b2b8d5c4ecaa6d9b61a9cf262c09961294f8fd45693983e:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ODJjYmRiNGM4YjA3NTE4YmY0ODZjNTg5OTBmYzM5MTc4M2FhMjBhOTE2YmZiMjdhZDIxMWViMWQ1YzM2NDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4Yzc0Y2EzMDNjYzMzNTRjNTBhM2E1MTM1YTgyMGQ3MmNlYmQ5NzJlYzM3NjRhZGM0NWNiZjMwY2VjNWM3NzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhNWRjOWI4MzI4ZDc1MGQwOTUwMTU1NGYyOWJhYzg0NmYzYzhjN2JlMjIwMmU2ZTQwNDgzM2M0OGUxOWE5ZTIifQ"
+        },
+        {
+          "resource": "repo://finetune/scripts/train_v3.py#L210-L292",
+          "version": "repo-lines-v1:sha256:d37053f9a6f339ba49d2d62fba0972c37eb41d08d45a00d4498764b3066ff20e:eyJzZWxlY3RlZExpbmVDb3VudCI6ODMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkMGZmZmJiM2ZiMTcxZTJjNDA5YzkxMDRlY2Y1OTJhNzVlYTE0ZTkyNmZhZWYwM2Y0NWY5ZDE0OWFiM2ZiNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwYzFmMTg4ZjE0MmVkN2E4MjQ2ODBiMjA3MTcyYzU1MTliYzYxNGE0OGZkYTdjZjE2N2VkYjhkZGY3OTk1NmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkY2JkZTEwYzdhYTE2NjIyM2ZjMDE0ZTlkY2M2MjQ1ZjY2MWY4NWY2NzQxN2JiM2QwYjRhMmU5MjRmNTVkMjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyMjRiNWE3ZjkwOGVlMWUyNGVkNmFhNDZkNGZhYTJkNjNkNzI1YzNjNzNhOTM1Y2FmMTA2ZTAzN2U4NGM5NzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b08e9c29261b4076974bc0db77500e5b",
+      "statement": "train_v3.py loads only dataset/train_v3_final.jsonl, skips examples whose tool_calls[].function.arguments is malformed JSON, parses string arguments back into dicts before apply_chat_template (Qwen template expects dicts), supports --smoke-test (20 examples / 5 steps, no save), and on non-smoke runs saves the LoRA adapter + tokenizer to output/<name>/ and exports a Q4_K_M GGUF via model.save_pretrained_gguf to output/<name>/gguf/.",
+      "evidence": [
+        {
+          "resource": "repo://finetune/scripts/train_v3.py#L236-L328",
+          "version": "repo-lines-v1:sha256:3976e92f683587f56f137fc377ab1efd3a80687e2eb446edb7cb693cb0eb8e16:eyJzZWxlY3RlZExpbmVDb3VudCI6OTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhZjMyZjgzYTEyMTQzNDVkNjZiMzk1ZTk2NDU1NmMwMzM5NmM0MmY2OTdmZWZkYjgyMjBkNGM4MmFmNGEwYmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjMGEyODNiMTk5NTJiNDE2ZTQ0NzcxYTdjMzUzMzM3ZDcyYThiOWVjZDcwNzc3YjZiYWE1Y2MwODQxYTQwNTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJlYWJiNzMyYTliYmI2ZmFmOTc2MDY0ZjQwMjFjZWUwODk2NDQwN2IzY2Y1ZDdiMzU3ODRjMzU3NjM4NzhjZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNDEzNDBjYzIzOWExNTljZTliNjAyMmU5ZjYzMjI4MzJlMmVhZDc2Y2FlOWU0NzU0ZDIxMGViOGZiNmQ1ZTgifQ"
+        },
+        {
+          "resource": "repo://finetune/scripts/train_v3.py#L96-L165",
+          "version": "repo-lines-v1:sha256:767cdfecae461767fd7ccde9e210fe75a516f10e285242f5ea667e1b1ed54587:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkOGE5ZTljMzI1MjgyMGM2NWE4MTY1MjBiOGRiNDkzMjI4MDg0OWVjOGM3ZDJlYjYyNzJhZmRmZWJlMDU5YzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhNTQ5NmIzOTZkMjMxOTI3M2ZmMzIwZGNmMTZiMmRhYzY4MTNlMDg3OTQ5ZGJmZjJiZTZmODhmZDNiNjA2NzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjYjQyZDk1NThkNDRiYjVmN2MwNmRhOWZiOWZlZjMxMDZkM2JkMzg0ZWQ0OGQxYTQ5ZmM4OGU1OGViNDgxOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYzM5ZDU1YjFjNDA5YWVlN2MzMThhZThmZWU0ZjEyOWVlODM1OWViMjczNjU3NWJlYmI4MDcxN2E1Mzk2OWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_99833323c3e349698cc86f97e1b42d8e",
+      "statement": "assemble_v3_dataset.sh concatenates a fixed mix of sources into dataset/train_v3_final.jsonl: ~1620 V2 agentforge examples (synth_agentforge_v2 + batch1 + claude_batch9), 700 sampled V1 tool-synth examples (random.seed(42), tool_calls required), 400 V1 no-tool chat/refusal examples, 100 gold human (gold_seed + gold_batch2), 300 V3 overnight, and 400 V3 27b — documented total ~4020 examples.",
+      "evidence": [
+        {
+          "resource": "repo://finetune/scripts/assemble_v3_dataset.sh#L1-L80",
+          "version": "repo-lines-v1:sha256:f6a441560e2750fa425388ddac2e17406569d7736b641aeeffc16d6d66f5a97f:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4NzVmOTI4NTQ2YWVlNzg1NWNiMWRiOWFmYzhhYjNmMWE4YTM0ZDQzZGU1YmJkNjJmNzA3NmQ3YmE5ZjM5MTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViMWU2ZjYzMDBhYmE4YzE4NDQxZTJmNDYzZGJlMDY4NmYyMTdjYTA5YjljZTk2M2FiOTU2ZmI3ZDU1Mjk0ZjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_154e2961e4f8470ab82f05f00edb3ac7",
+      "statement": "gen_v3_27b.py targets 300–500 synthetic examples in ~7 hours by calling qwen3.5:27b through the Ollama REST API at http://localhost:11434/api/chat one example per call with immediate validation and prompt-varied retry; categories are weighted with create_then_use=35, tool_discovery=30, plus general_reasoning.",
+      "evidence": [
+        {
+          "resource": "repo://finetune/scripts/gen_v3_27b.py#L1-L80",
+          "version": "repo-lines-v1:sha256:9c517e8cc7d04fc4639e8b454ee8b6b44284b028a38b5e6c8f6c3d1607a13f26:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ODJjYmRiNGM4YjA3NTE4YmY0ODZjNTg5OTBmYzM5MTc4M2FhMjBhOTE2YmZiMjdhZDIxMWViMWQ1YzM2NDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkY2Y0NDcxY2MyMWE4Yjk4NzhhODI1MmY2Yjc1ODI1OTQzM2FiMWVjOWE0YjA3MDc5ODg3MjdkNzVkOWM2MDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk1MWNhZjRjNmZhYTIwODk0MmQ5ZWJjNjQwZDEyZGM0ZjE2MTdlYmYxOGU2NDkwNDVmNDVjYjBjOTRlYTMzMjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0ab92c0bc3024e1c88c2fc7289880a07",
+      "statement": "gen_v3_overnight.sh runs 15 batches of 20 examples (300 total) via `agy --print-timeout 18m` with category-specific prompts assembled from the AGY_AGENTFORGE_V3.md spec plus per-batch EXTRA_RULES, covering write_large_file_site/report, code_review_report, quality_report, pytest_sqlite_isolation, market_analysis_signals, completion_after_reflection, general_reasoning, schema_driven_use, tool_discovery, create_then_use, error_recovery_tool; gen_v3_extension.sh extends to 500 with 25 additional batches focused on schema_driven_use and tool_discovery. Failed batches sleep 90s and continue.",
+      "evidence": [
+        {
+          "resource": "repo://finetune/scripts/gen_v3_extension.sh#L1-L60",
+          "version": "repo-lines-v1:sha256:4d72e2950e83c36edbb46733e9ea199ad662734132673d4c30806295e843a5b8:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4NzVmOTI4NTQ2YWVlNzg1NWNiMWRiOWFmYzhhYjNmMWE4YTM0ZDQzZGU1YmJkNjJmNzA3NmQ3YmE5ZjM5MTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkOTgwZDIyMTNlNzU1MzZlZWFhNTczYjUyZDYxYWY5YmYwODMwNzk1YTQ2Y2QyMzI4NDI0OTkwZmJkYTdlYzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwNTQ2MmQ1MDBkN2JiYTVlZTUyNmYzYWE2MzIyYzljYmM1OTZiYzYxMDc5ZGYyNGQxYmQ1MWU4MDNiYTFiYjcifQ"
+        },
+        {
+          "resource": "repo://finetune/scripts/gen_v3_overnight.sh#L1-L130",
+          "version": "repo-lines-v1:sha256:40dd0831fbb44382f53e3d3b49ce83d311f01289366048c890207da979fccf24:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiODc1ZjkyODU0NmFlZTc4NTVjYjFkYjlhZmM4YWIzZjFhOGEzNGQ0M2RlNWJiZDYyZjcwNzZkN2JhOWYzOTE3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkMTE3ZmEwMDZiYTkyMDg1MDBiMjkzMGNlNjljYmRlNDM2YzY0N2FmYTkxN2NiNzM5NmE5YmM5MTExYTQ2ZGQyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxYmRjMGY1YmE4MGZmNzQ4ZTcyYmMyNjAxYmRlY2Q1MjNhYzNiY2U5ZDVjNTNiYTdjMzRhOTg5YjhiZTdjY2I2In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_fc54bd1840934b3c82c478ffd23a43de",
+      "statement": "finetune/gemini_synth/ holds the Gemini/Agy synthetic generation stack: generate_dataset.py and generate_seeds_lote2.py drive batch generation, AGY_AGENTFORGE.md/V2/V3 are the canonical example-specification prompts, GEMINI.md documents the batch plan (e.g. claudio-g501..claudio-g1420) and explicitly instructs the model to author the JSONL itself (not call local models), and seeds_501_592.json is a saved seed batch.",
+      "evidence": [
+        {
+          "resource": "repo://finetune/gemini_synth/GEMINI.md#L1-L60",
+          "version": "repo-lines-v1:sha256:0c2a3b15053ddacf82eb093b755bd41d473f75b2ea0dc2f0ff25e1d0f528b173:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmNGI3MGMxNzVmMjdjZjhjZDY3MmI4NjkxYTg3OWQwY2FhNjM0YTMzMGM2MDg5MWMzNmZlZjJlMDc3ZjA1ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhOGQwYjcyZWE2ODZjNmQ5ZWU1MTBlMmJhYTg0NjUzNWFhZTI4NjA0ZGJmY2U1YmI3ODgzYWViNjUwZjFjY2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1ZDIzNTRmYThiMzk4YmY4Mjg3YWI5NzUwMzNkYzhhNjgxZjQ5MmVmMzA0YWZhZmY1OGUzYWJjYTZiYmU3YzkifQ"
+        },
+        {
+          "resource": "repo://finetune/gemini_synth/generate_dataset.py#L1-L15",
+          "version": "repo-lines-v1:sha256:6af42df8b9a51e1ffa0d77fc645a11028592107b173ce5d5b176ddf1e59e8172:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3MjdhZGZmNTI0ZTA2MTYwMjJlYWRkOGY0YWYyMWEwNzc4YjI5ZmM0Yzc3YmRmZWZkMWFmY2UyY2JmNWU0YjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExN2NlYjdhZjcwZmVmMTQyYTVjYWM5MGM5ZDY3ZDJjMjFhZmMwNGNlNTAwYzJjNWY3MzJiOTU5Yzc0YmI5MTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyYTcyNjU5OGY0YWQ0MzZhM2IzOTZlYzZlZGRkZWUzMzU5N2IwZTYzYjM5MDNhMWRjZjQ5YzNlNTdkNjc3NzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4bf17f299c364af4b317b1af94857d35",
+      "statement": "qa_dataset.py is the pre-training dataset gate: it validates every JSONL line against the canonical schema (required fields id, category, subcategory, difficulty, source, messages), category/subcategory whitelists (V1: tool_calling/chat/refusal/multi_turn/agentic/compliance; V2: agentforge/completion_signal/error_recovery/formatting_correct/structured_output/tool_chain), markdown-free assistant text, min/max assistant and tool-result length bounds, and the canonical system prompt from system_prompt.txt; --fix rewrites the system prompt in place.",
+      "evidence": [
+        {
+          "resource": "repo://finetune/scripts/qa_dataset.py#L1-L60",
+          "version": "repo-lines-v1:sha256:fce407c560b38b946df6af48014f60df080f2e2d26b5123b7916f933fe4af195:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ODJjYmRiNGM4YjA3NTE4YmY0ODZjNTg5OTBmYzM5MTc4M2FhMjBhOTE2YmZiMjdhZDIxMWViMWQ1YzM2NDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkMzg3MzNlNDdjODQ4NzYyNmZhM2UxNThlNDA1MjNhOTYxYWI5OThkNGRiODIwMWZhODY0NWZlYjI2ODMwZTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM1NDNlODcyOGNmMGU1MmYzYjYxNzI5YTcyZTNhNjdiZTQyMTk2MWE3ODlmNTYxOWE3YTU0YTcyM2E2MzljYmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_eb8c6c0fbb924268845252091369f29d",
+      "statement": "finetune/Modelfile is the Ollama manifest for the exported GGUF (FROM ./output/claudio-9b-v1/gguf/claudio-9b_gguf/Qwen3.5-9B.Q4_K_M.gguf, RENDERER/PARSER qwen3.5, temperature 0.3) and embeds the Cláudio persona as the SYSTEM block (fox-server environment, read_link/run_bash tools, plain-text no-markdown output rules, no-destructive-action rule), so the fine-tuned model registers as a distinct persona rather than a bare weight delta.",
+      "evidence": [
+        {
+          "resource": "repo://finetune/Modelfile#L1-L38",
+          "version": "repo-lines-v1:sha256:9eb9c3ea51680e2e0decf404a78f0f1a0d00760c7a859a16ee8467daccf1fb02:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1MzUxZTE1N2ZmOTJlODUwY2Y0ODNhZjExYjg4NGY5NjliMDRlMjI2MzVlYzgzYzQ4ZDk3NzBhYWU1MjdhNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0Y2I4ZDVmZTE5MDY2ZTAzOWU5NWVhNTA0YmM0Mjg5NWUxNjMwMzk0NDM2MzJmMzU2ZGU1ZTRjNzk3ZGVlY2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8b530209f2054a59affcc99f8c578d84",
+      "statement": "run_train_notify.sh wraps training for unattended runs: stops the user-level ollama-warmup.service to free VRAM, reads a Telegram bot token and chat id from ~/.aurelia/config/app.json, sends a start message, tees `scripts/train.py` output to a timestamped log under logs/, on success greps the final loss and GGUF path for the completion message, on failure ships the last 5 log lines, and restarts ollama-warmup.service regardless.",
+      "evidence": [
+        {
+          "resource": "repo://finetune/run_train_notify.sh#L1-L51",
+          "version": "repo-lines-v1:sha256:1b0e5b579c947dd6a3de11ae805dbdf0f54b98b5a41363a21cb468a8bb3269ed:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI4NzVmOTI4NTQ2YWVlNzg1NWNiMWRiOWFmYzhhYjNmMWE4YTM0ZDQzZGU1YmJkNjJmNzA3NmQ3YmE5ZjM5MTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4ZDZhYzg2ZGUwYTQzZTg1MDJlOGYxYzVjZDg2MTRjMTFkNzcxOGY3NTNiY2ZjMjY3NmM5MDE0NTkzYmI5YWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8aaedb5bee414da188d93297e02f508b",
+      "statement": "docs/FINETUNING-STRATEGY.md motivates fine-tuning as the fix for structural residual failures (tool-name incoherence between impl and test, inconsistent error-message casing, missing confirmation phrases, <tool_use> XML leakage) that guardrails and explicit prompts cannot reliably eliminate, and lays out the 4-phase plan: teacher-generated golden runs, 5–10× synthetic augmentation, LoRA training (Unsloth on 24 GB combined VRAM), and Ollama Modelfile export.",
+      "evidence": [
+        {
+          "resource": "repo://docs/FINETUNING-STRATEGY.md#L1-L120",
+          "version": "repo-lines-v1:sha256:d1f6e27e0b1858124a1520a7b83dc9472ab516967fc5db441a037cbe5b23d2b4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmYWQzZGI4ZjI4YWMzZjRjNGM5ZmNlYzc0ZGI0OWRkZTQ3MTQxZTZmYjM0OWQ4ODdiNzU4YjQ5NTg3ZGI0YjQ1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1YTNjY2U2M2VkOTQyZDBkOWJjNDQ1NmY5MGM5MTM4MzdhZGEwZjU0YmNkOGQ0Yzk3Y2QzMDhiY2M4YTQ4MWM5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI1MzU3YTA1ZTBhN2IwMzUyMTZmOTY5MTZiMzlhMmI2OTQ0ZTFhMTU4YjE3YThiYWYwYWE1Mzc5YWEzNzYxOWJkIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_6e549b2d9fd24779ad261ade95c72a92",
+      "statement": "A fine-tuned model is re-measured by the same benchmark runner: register the exported GGUF with `ollama create <name> -f <run_dir>/gguf/Modelfile`, run `scripts/run_benchmark_eval.py --model <name>`, and compare benchmark_results/summary_*.json totals across model slugs; per-check details in each scenario JSON identify which specific behaviors regressed.",
+      "evidence": [
+        {
+          "resource": "repo://finetune/scripts/train_v3.py#L320-L328",
+          "version": "repo-lines-v1:sha256:8b9c06b39642406572cccdc4e10f360511ba1294f5d0b8a7bb03a9c30a8da6c4:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWMwYTI4M2IxOTk1MmI0MTZlNDQ3NzFhN2MzNTMzMzdkNzJhOGI5ZWNkNzA3NzdiNmJhYTVjYzA4NDFhNDA1NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjhmMmQxOGEzYzkwNDlkODVhNzA3YmFmZjgxY2NkMDU1ZDQ1ZTM4YmVkZDk2NmE1M2MyNTQ1ZjY3MWFlZGQ3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2Q0MTM0MGNjMjM5YTE1OWNlOWI2MDIyZTlmNjMyMjgzMmUyZWFkNzZjYWU5ZTQ3NTRkMjEwZWI4ZmI2ZDVlOCJ9"
+        },
+        {
+          "resource": "repo://scripts/run_benchmark_eval.py#L528-L558",
+          "version": "repo-lines-v1:sha256:cd38899ed2ee60b452ae76ff873af3e02b3e21c88d6864f2d15b4b2bca7505b6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4YzU4MGQ1ZjI5MWMwNGJiNmZhNzY3OWY2YTcyZmJiYjA2MTcwMzE5Y2E0ODFmMmM0NjAwOGU4YmExMjJjMTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlYmNiODQzNGQwYTViNTU1Njg4YTQxNGVmNWRmMmVjMzk3YzM0ZWZhNWMyYzc4MjM3ODA0ZTkyYzRjMWM5MTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyOTNmZTZkNTU0NTIwM2Q5MmFkOTBhMDcyYmQ2ZDhlZDRjMWYzMmYxOWJmZTJjN2MxMjVmYzkzN2EyNWI1MTAifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-09T12:43:13.007Z"
+  }
+}

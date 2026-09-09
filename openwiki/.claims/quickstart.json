@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:edc194db8f9998dada0762b1ab098b1a6e61572c8d6a71cbc00898f8dfc7b1f2",
+  "claims": [
+    {
+      "id": "claim_d29d50c17a6847738f26ccd53ebb8151",
+      "statement": "AgentForge is a spec-first, local-first Python framework for running LLM agents on-premise; agents are defined by an agent.yaml and the runtime's central thesis is '20% is the model, 80% is the runtime'.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L5-L25",
+          "version": "repo-lines-v1:sha256:99486831d4c4a379d1919422d80de1a8509c2bbb2daee45292f444d02c4ddc6a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzNmNiYTZmZjM0Yzc3YjEzYTdiMmUyMzUwYjQyYmUzYjk2ZTgzZTg3MDFjMTIxNTBmMzBiM2JjMjQyOWQ0ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZTViNGU1YTY0YmM5OTY2ZTExN2JjYjdiOTNkZTMzMGJlMTc2NzdiZTJhMzgxZWQ5YTg5YzRjMmM2NDI0ZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkMTdhOTE1ODQ0N2NiMDIwODQwZGY1MjVlZDE2MzIyNGE4NWU5ZDc2YTk4Yjg1YjhkZWMzZmRiZWI2Y2QyODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_383c31ea91394b2a9a92d93054f81076",
+      "statement": "The framework is installed as the `agents-framework` package (requires Python 3.11+) and exposes the `agentforge` CLI as a Typer app rooted at agentforge.cli.main:app.",
+      "evidence": [
+        {
+          "resource": "repo://pyproject.toml#L5-L26",
+          "version": "repo-lines-v1:sha256:b6b5d93ee2a11fea890a5f4943a70a70d575da483626fd4ba50c1e6ca169cef4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwMmE4MWMzODM2ZWRlZjJkMGJhMTFkMjM1M2ZiNmRhYmM3NzcxNTBhN2NhODNlYTBkOWU5YTcwMzEzZmVhYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhZWI1NDljZGI0MWIwNzA0NDJiMmY5M2FkZDU0MjVmZjlhMzE1ZDBjNGUxYjQzM2M4ODMzOWQ3ZTI2ODIxYTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjYjQ2MTM0NWM2OWI2NzhkNzM5Yzc5M2UzMTdjYTM5YzNiMDY4YTVjNGI5NDExZDMyMDQ2NjllMDc2MTRmNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlYjJiNDFjMjhlODA4NjVjYWVmMWRmOGFiZWFkODMzNDIxMTYwZjVmYjkxMjAxZDc5YmE5NDJlY2I3ZGU5MjEifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L21-L22",
+          "version": "repo-lines-v1:sha256:a020f967755ea546af6b8fd587d3f1f2776c00ef629380b77208609cf9e7de35:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBjZGYwYTNiNDIwY2Y0NGE4YjA0YWI2YjI1MjU5OGE3NTM5MmQ2YTBlMjIzNDFhM2YzMGU0NTRlODlhNTMyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDkwZjJhOGUyYmFkMDM1NTllNzZkODcwNDI0MTdlOWMyYjYxNmRlZmNkMzVjMTQxOGQxOGIyMzcyYTJhM2E0NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTZiNWNmYzk2ZmVmY2UyOGMwNDMzOWZiYzA5Y2VmNTg4ZjgwMDVmMTA1NWNkMDIzYjY5NjYxZGU1ZGU4Y2UzYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDYzNjI5MDFmNTU3ZjhjODY4YmE3YjNiODFjNTMzNzdhZDcxYjkxMjE5ZDkwZmZlNmRhNjQ5NzNmNzdlY2RlOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_aa58e07063ce486792bde64ce0300574",
+      "statement": "The standard agent loop is: `agentforge wizard` writes agents/<id>/agent.yaml, `agentforge generate --path <yaml>` generates derived artifacts, and `agentforge run --agent-dir <dir> --input <text>` executes the agent.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L62-L137",
+          "version": "repo-lines-v1:sha256:4b41a4777a1b61a32be60b4c3145393a2e12ecfafa9b383e073ff4e221ed6bf1:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0NDhiZGVjZGIwZmVhZDY4M2YwY2I4NjVkNmM5YThiZDcyYTMxNzZhYThjOWY5YWM2ZWU5ZWU3ODhkYjY1NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhYjQ5NTFmMjAxZDU0MDUzYTQ1OWZlMjAxYjJmYjQzNWUxYmM0YzJmOTY5ZDE4YmYwZWMzYzg5ZmI5OTAwMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiM2I2NTQyMmNiNDA0Njc2NmQzOTUxOTRhNGZjNTA0MTdjMjAxOWI0ODU1Mjc2ZGMyOWViM2RkMThjZDE5MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2MzYyOTAxZjU1N2Y4Yzg2OGJhN2IzYjgxYzUzMzc3YWQ3MWI5MTIxOWQ5MGZmZTZkYTY0OTczZjc3ZWNkZTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4c56cd202d494a679ecd6ed7064c9972",
+      "statement": "agentforge generate validates the spec via validate_agent_spec and writes five artifacts next to it: system_prompt.md, runtime.yaml, eval.yaml, tools.yaml, and README.md.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/generators/agent_files.py#L205-L229",
+          "version": "repo-lines-v1:sha256:1e94e1f9935f03ddd1374ca7f873de8623ab45b5fd1b9ef2e511cd466d1e296c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0NzAxZmY1ODZmMTc4NGFjMzk2MmUyMGRkYWYyMmY3MDVmODdhZGIxNDcyOTM1ZjYyNDFmM2FjMTdhMjI0NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0MjQ0YTgyODA5NzBkYWQ2ZjM5NWNiZWQxZTg5ZGJmNTAyYWYyNjZlYTQwMzM4MDVmZDlkZGU3NmI4MDQxNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMWQ3YjQ3ODQ0NjA2YTI0OGYzOWE1Y2EwNzg4YTIzOTcyNmJhMzQ1ZTJlMWE1ZTUxYTBhYjllNWZmYjMyNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ff9163bc533f4bcd8ba3c0feda2e08e1",
+      "statement": "The CLI exposes four execution channels that all wrap the same AgentRuntime entrypoints: run (CLI), serve (FastAPI HTTP), mcp (FastMCP stdio or http transport), and telegram (polling bot).",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L102-L309",
+          "version": "repo-lines-v1:sha256:265243cdba2a516857bfc8015f85cf0530e7d7c6aa095fdb29c4b6b691a1f29a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjA4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0NDQ4YmRlY2RiMGZlYWQ2ODNmMGNiODY1ZDZjOWE4YmQ3MmEzMTc2YWE4YzlmOWFjNmVlOWVlNzg4ZGI2NTU3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI5ZThhYTc4MDkxNWE2NDk4NzhiYTc0ZWQ5Y2Q3NmU0OGViZWRiZWIyODJlYjY4OWIyOWRkZjNmYzlhYjRlZWZhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyYjNiNjU0MjJjYjQwNDY3NjZkMzk1MTk0YTRmYzUwNDE3YzIwMTliNDg1NTI3NmRjMjllYjNkZDE4Y2QxOTIyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzZDQxMzQwY2MyMzlhMTU5Y2U5YjYwMjJlOWY2MzIyODMyZTJlYWQ3NmNhZTllNDc1NGQyMTBlYjhmYjZkNWU4In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_866e3581854f487491cd69346a16042c",
+      "statement": "The HTTP channel is a FastAPI app exposing POST /run (input, optional metadata; returns agent_id, output, latency_ms, provider, model, tool_calls_log) and GET /health; the Telegram channel runs an async polling bot that replies with the agent output and appends a warning if guardrail_violations are present; the MCP server (FastMCP) exposes collect_system_health, read_log_tail, scan_directory, and run_agent.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/channels/http.py#L33-L65",
+          "version": "repo-lines-v1:sha256:6b8e47e56bb93b8a23a1002b946924c05461563e9a412679fdfc655717a2910c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4OTE2MjQzNmI5YzRjNmIwNTU0NWRkMzIyZWU5OGY1MmU0YzE5NmM4MWM4Yjc2ODlmYmQ3ZjAyZjEzZGYzOGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjN2JjZWM3ZjNkMTgxZDhkNTJlODc4N2EwMDkzOGYyMzE0M2FkNzk1ZDQ1N2E2YmFiMjk0M2EzYzYxNWY2MWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJkNjdiNDY2Mzc4NzVjM2JiN2Y5MDNiMWRiODczNGI0YTI5NjY4NWRmNGRiZTY2YTRmNmNlZjdmZGM0MTE2M2UifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/channels/mcp_server.py#L9-L82",
+          "version": "repo-lines-v1:sha256:c944a6bc6cc4b3dbd328a76d3832da7cbada6d78fbd53a661ffb233eaf524973:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliMjU4MzM3NDAzNTFjMTk1ZjlkMzAwM2ZhNTE5ZTE2YzY1OTA5ZTg2ZGMzNDU4OGQwMjU5MWYwZDczOTFiODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViMGQyMGI4MjJkYzAyOTJlN2M0NzZiZWY4YjQ2MDA2NmNkMDRjNDViY2FkZTNiOWIyN2ZiNWQ0ODU0ZDNkNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3OTQwYTk4NDI1NGJiOTVjZDM1YWIwM2QyYmYzYTgxY2M2YWIyMzk3OWU0ZTljYzNhNWYxYzRkOThkMjhmYjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEyZjhkNDMyZTNhMDllNGZiNjM5NjY1NTJjY2NjM2ZhZjNiZjM3NGU4YzI0MDEzM2RmMGJmYjFkNTQxMTRkNmYifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/channels/telegram.py#L13-L60",
+          "version": "repo-lines-v1:sha256:4511fafa41bc864b623255737da15f7c9508a675b7f2d6e2a1def9d5395b4b1b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxYTNiYTg0YzhmMWJmZmY4YzEyODJmNzI2ZTQ5YzcwNGVhNjBmODg0NzQ4M2MwYjlkMTczNzM2MzQ2NTFhN2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNTA1NDMxYjMzZjM0NWU5ZjIxMzgyM2M2NjkwYTY4NDk1OTAzNDMzMDRhMjUwZGY2M2Y2NDcwNDAyNzE3YTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYyMDA5N2U0YWE1MDA2OGJhMTU3ZjlhMjczOWZhZDg2OTk1ZTFlMGNkY2NkYWRjNTg5N2MyMDM0Yzc0ZDNlZmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f683842638f04c0c979fcefeb3894f56",
+      "statement": "In respond_or_tool mode, the tool-calling loop aborts when the same (tool, args, result) triple repeats in a sliding window of 5, redirects the model to use tools up to 2 times when it answers without tools while tools are available, and does a final inference when max_tool_cycles is exhausted.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L242-L331",
+          "version": "repo-lines-v1:sha256:37c01774054bf2beb9a17403512b71301b6e6036d8e427c8541845ccb68f2f66:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNzZiZWY5MTkzNTc5NjcwOTUxNDc3MzI2NDcxZmM4MjQ3MDZhYmY3ZTdhYWRjOWFlYjM3OTdjYmFkZjgwN2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0Nzg4YzRiN2JhYTJjYTg5MjM0NDQzM2NiZGJkZWI4ZDhjMTY4MTNkMjYzY2Y0YzhhYjZlZGQ1MTU5YWJjNTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMGEwODNiNGM5ZjQwY2JjMWNhNWMzMzUwMDY5Y2QyZDNkZjQ1MmFiYzdkOTFmOWFkOTAxMTI1YjA1OTRlZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4MjBkNzU4ZmY4ZWQwNzI0ZTZiMGVlZTk1MDE4YjM4MWY4YjgyMGI3NzkyYTg2N2QyYjAyMDE5NTUwMGE2NDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_32ad37724f574ba6901ee46a3e282302",
+      "statement": "Guardrails run after output: must_not violations trigger correction retries (default 2, max_retries in _apply_guardrails) and must rules trigger a separate must-compliance loop with up to 3 correction attempts, each chaining from the full accumulated tool-cycle history.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1045-L1146",
+          "version": "repo-lines-v1:sha256:f07785c910e74836c02238c53a60a75b82a991a8e50fef770510de35ceedf8e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkZTJiODMxN2YxYjE0NGUzYjdmMzA1Njg0YzdhYmFiOGIyOTJlNTcxYzI1MzcyMmU4NDJkMjZlMWQxYjhmN2E3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkMDAxMDVlMGE2ODUyMWMzZDMzMjYxNTM5MGU4NTllMzljZjI0MTI3NGE3ZDc4MWQxOTZhM2FkYTA3YjEwZmQ3IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkZmJmNDgxOTA5YTAzNDJlNzdiY2JlMTIwOWY5NzNmZDJkYjY2ODI0NGNmYjdmYjVjNmQ4MTlmZTU2NjQxNjU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0ZmVjNDE1NTUyYzQ0OWUyYWYxNzA5YzdkZTU1Y2Y0ZmY2NjRkYTg1YzFjOGNmOGVmN2EwNDMxM2NmN2RjNTIzIn0"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L709-L781",
+          "version": "repo-lines-v1:sha256:75fb85c5c541131fff5bfea5af505f36416b73d59d676af031332d37bedaf418:eyJzZWxlY3RlZExpbmVDb3VudCI6NzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZjdkN2M4MDI0MzllMmU5NGY4YWMxMWZhYTJlNWQyNjY5OTI2N2ZjZGFiMTI0M2Q3ZjEyOTJkYzg0MjkzOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxNDU1NjE2ZDNmNjQwYmI5ZjAwODRmYzNmYjZlZjZhM2JjNzNkYzUwMzhhMzQ3NWUxMTM2YTliMWJhMmIxMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM2MGM2MjM5ODMzYWVkYzY3ZjkzM2VlZjVhYWE5YjU4ZmIzNjQyYTJkMzk3NzgzNWYzZjI5YTM5NjkwMzliMjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmMTQ5NjVlOTM3NzAzNThjNzA0OTU2YWYwY2M4MjFiMTIwYWRlMGViMDI1ZjBmYzY3M2QyYjhiZDEwNTUyMzIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_140c4363b2d7450492de49f07ef7ef43",
+      "statement": "When workflow.agents is non-empty, the engine auto-injects a run_agent tool into the tool schema listing each declared worker, so the model delegates via the same tool-calling path and workers run through their own AgentRuntime lifecycle.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L179-L209",
+          "version": "repo-lines-v1:sha256:530b4774652464f9200a0eefe97252cc15c7112fa5c8ac66988a2533e70594a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMGJhZTljODgzNTA3ZTYxNzEwNmU2ZjVmNmNjZDcyYzFmODMxZjQwNDVmYTE0Mzk3OWY5Y2ExMDJiMzczZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmNjA3ODI4ZDQxZDU5YjhjM2Y0YmZmOWQ0ZWQyZDRkODYyMzRlOGZmOGE4M2U5OTQ4OGYyMjhjNWQzMzMzZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxMTkwM2NmMDM5ZjMwODc3NjIxZjUzNzhiNGVmNTY0NmIzMDJhM2EwZTdmMWRkMjk1ZDA0MjYzNmMzYjUxYTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyN2I3MjZmOTUxYjAzNTUzNGQ3YTM0MWZiNTU5MGU3OTliMzZlZTRmZDQ4MDg5MDJiZjVmOWYzZTgxM2UyOTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c2839e9a95a54359a37f71dbd504c162",
+      "statement": "Every agent run is appended to <agent_dir>/runs/runs.jsonl with agent_id, provider, model, input/output (500 chars), timestamp, and latency; multi-turn history is persisted and windowed by memory_max_turns and memory_policy when conversation.multi_turn is set.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L1148-L1158",
+          "version": "repo-lines-v1:sha256:e856b94b7c03f2f01242e4bd15605faf4e9411fed3d821f9e2a555d583a6cc5e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiYzA0MDYzNDk0ZWJkNGUwOTA4MGM1MjA0YmUxNGFiYmU5MWQ0MjlkOWM3ZDU3MzIxYmZkMGY4ZjJjOTVlZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZmJmYjlkMDZhMzkwYTIwMWI0Y2I3OTllYWJkOWY5OTE4NTAxNTllNjdhYjU1MTJhYjAwMWUwYWY5ODdkNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1OTMwZjBkMTM5OTQ3YzFmYzdhOTIwMTdhNmFhYzk3ZTc3OTVhN2I3MTQ1M2E3MDI3Y2YyZjNhNTY4Mzk5NTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3NDhlZTJjOGIwOWFlNzMwYjUzOTg2NTk0Y2ZlMzZlYTI1ZDY4NjdlMDNjYWYyNTVlYmE3NjZkZjBiMjNkZGYifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L908-L921",
+          "version": "repo-lines-v1:sha256:c98a71d7b8548f10a9d063eb73c45de3edc37fb64f8438a8e55aa7eceba64aab:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhZDc3YjY3ZTU5MTFmZGFkZWI3Mzk5NjAxZjgxZGM1ZGZiZjc4ZGRmNTk0ZjAwY2UwNmUzNjVmNDY4ZGE2MTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3YzgzMWVmZjkwY2VmNDhiYmYyNjFkYzllYmRjZTQ3M2VhMzhhNjM0NzBjMTk1Nzg5YjllMDQ0OGMwNjA1NGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5NjE0Yjk1YjQ5MjJlNjE0ZTIzNWQyNzY5NDYxMzFjYTIzNjhkNmNhNjliMDI0ZmUzM2VhODk0YmIyYTg5YjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwYTQxZDFmZmUxZjZhMGY2MWJkODFlNzI1YThkMDVkZmM4ZDU2ODlmMDI0OWJmMmYxNDQ3ZDIwMzJjNmMyMTIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-09T12:43:13.007Z"
+  }
+}

@@ -1,0 +1,348 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:a005e7aec17933d4944b39e0d80d0d7bde800586fd0cd8f17af4c04ed95b9fa8",
+  "claims": [
+    {
+      "id": "claim_f352c9fc8a5941f8916f72e6022b6a96",
+      "statement": "The tool registry is a single module-level dict `_ToolRegistry` in src/agentforge/tools/registry.py that is populated at import time by _register_builtin_tools(), which the module calls on load.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/registry.py#L1-L103",
+          "version": "repo-lines-v1:sha256:c5dcd7eb55060108325bafe25c05867aecb7fd6a14c6c584ff4c215b8940cb76:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1Mzg0YmZkYjJkZjM4MGI2NTU3Y2M3YTcxZDE2ODkxNDE1YmNjYWE4NzY5OTQwNmUyMzZmNzUyYzY0MTUzODlmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJhY2FmZGE0ZmJkNTg5YjAzMGYwMGQyZGNlNGRjM2U0MGU3M2E2YWU0MTA2NTNhYTEzYjhmMmUyOTdmODNiN2FiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd0a5b2eba8142a19895eb965014650b",
+      "statement": "register_tool wraps a callable in functools.partial when default kwargs are given, allowing builtins like read_log_tail to carry pre-bound defaults (e.g. log_path=\"/var/log/syslog\").",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/registry.py#L9-L53",
+          "version": "repo-lines-v1:sha256:c32b6161667f20629d3cf9e9df92a7540e4c9f43e1c0b60847f9bb3a80cd7bac:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY0OWYwMzIzNWQwZGQyNDdlZWE0ZGIwN2E0NWY3MDUzOWNlOGJmYjgyNzQxOWU1YTVlYmYzOTBiZDJmZjk3YzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzZDM5M2E0ZDg4Yzk2ZTliNDcwYTg5MDc0MDQ4ZjU2ZGEzYmU1YTIzZjMxMWRlZTY3ZWM2OGE5YWFmZTEzODAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhZmYxYzVlNGMzNzU0MzdiMTg4OWZiODE0YTBhMmI0NjczYzRjN2FlMTE1OTg3NTRiYTgxZGQzOTkzNGI0ODIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiM2I5NzE0YWI3NzVkYmI5MGNjZDhlMDM3NGMyZTdjZWY3ZGU4ODc0NjI2ZGFhZDBhNzI1YWE2ZGM0ZTg2NmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bf64f0c6cf1c47b78e999fde32e707a6",
+      "statement": "execute_tool merges partial-bound keywords with caller-supplied keywords for wrapped tools, swallows TypeError into a {\"error\": ...} dict, and returns None for unknown tool names.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/registry.py#L20-L33",
+          "version": "repo-lines-v1:sha256:6a47485a990902d7d2d4faa9f2cc9b8d915497a78ee422793b8d5d37b78fa791:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwNTgyZWE3YWM2MGM5NWRiY2UzNWQ3ZmVkZTAyNzgyNTZmNmZlMmY0M2RmMmUzZjYwYmYxMmRlYTQ5MjE4ZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlOGMxZDhhMzhiOTk3NTVlYjg0ODJjZjY4NGVkZDk3OGM5Nzc4MjA0YTJkNzkyMzBmNmIxNzEyM2IyN2NlNzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM2NjU0MjllNmRkN2EzZGVmZTk3MTM0MjJjMDFiYmJkOGZhMjEzMTIxY2U0ZmEzMTYwZDExZTBhYTAxZTc4MmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a411e572e560473089e1408b4eaf528c",
+      "statement": "Registration order is builtins first, then dynamic tools: _register_builtin_tools registers the builtin catalogue in a fixed order and ends by calling load_dynamic_tools() to append agent-generated tools from tool_registry/.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/registry.py#L39-L103",
+          "version": "repo-lines-v1:sha256:82ee70c24fa693a548d9c1eaa0b205cdc56c30e34b9140f223a900d9fa895dae:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMzM5ZTg5NzNkYjIzMDhjMzQ4NDY4OTkzNDVmYzhjZWUxN2IyMjgyNDc1NDBmODM4MmM3NmVlZmQ3ZDA3MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjYWZkYTRmYmQ1ODliMDMwZjAwZDJkY2U0ZGMzZTQwZTczYTZhZTQxMDY1M2FhMTNiOGYyZTI5N2Y4M2I3YWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3MjFkNjBjYTVjNzM3YTg5MGEyMDQ4YTRiMjc0OTA5NDYyMGUwYWQxMTc1ODA0OGU3YWJkOTdjMjdjOGE0MTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d831b9c9ca3c4e5dbd9b6fe45d5ee834",
+      "statement": "The builtin catalogue spans system_health, wks_health, read_log_tail, vault_scan/extract, run_agent, http_get, write/read/append_file, run_bash, send_claudio, fetch_social_url, register_tool_file, tts_omnivoice, all ten heygen_mcp tools, and heygen_wallet_report.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/registry.py#L39-L96",
+          "version": "repo-lines-v1:sha256:3de0c96074bbf304fb29d1aeac38b7f759523eaf7200826b709efb425df1bb73:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMzM5ZTg5NzNkYjIzMDhjMzQ4NDY4OTkzNDVmYzhjZWUxN2IyMjgyNDc1NDBmODM4MmM3NmVlZmQ3ZDA3MWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxMGU3YjQ1MTRkNWJlNzc3NThiNTUyMDBhZDZlN2QyMmZkOGIxODhjMzczNGYwYzRiODYzMGE3ZTc1NWUxNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3MjFkNjBjYTVjNzM3YTg5MGEyMDQ4YTRiMjc0OTA5NDYyMGUwYWQxMTc1ODA0OGU3YWJkOTdjMjdjOGE0MTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4MmFiMWUwNDgyOWJhZjU4NDhhYjczNDFlYzJmZGQ2OThjYWU2ODg4MGMwYjVhZDY5NDRjMTY1ODZmNTAxMWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_68460ba4500a419f81230315ae71139e",
+      "statement": "The registry binds read_file from src/agentforge/tools/write_file.py (which defines write_file, read_file, and append_file together); a separate src/agentforge/tools/read_file.py exists on disk with its own implementation but is not registered.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/read_file.py",
+          "version": "repo-file-v1:sha256:97d9224c672b6a62b47043565a0d86a77b6224fa76b43c24ae575f4f067d6cc7"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/registry.py#L47-L60",
+          "version": "repo-lines-v1:sha256:442fbb6ab4adadebd1411635c3810b143f7713c3a32efb4ae658b2813088a224:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzOGNjZjhiNzQzYmU0YWJmNzAxODljOGMwODFkZWU3M2UwMjQ2NDBkZTZkZWFkNDE4NTk5YjJlNjFkNWQxZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1OTMzMzU5ZDRjYjJjZWFiMjVjYjJiZDYwM2NjZjBlNDQ3NDU2NWU4YjA0M2IwZTg0YjgwNTQwM2M0MDUxODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU3NWU4YTc5YmVhYjA2NTA3NTczMjlmMjg0Y2YwYjdlMTBkMjUxNmQxMzhlNzY3NmVjOWRiMTM0NTYxYmUwOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3NDE4NzRiNWFjZWM3NmNjMWFhNDQ1M2NiMjQyYjA4NDFjNGFiZjEyYjE4MWI0NDBjMTcwNDI4NDAxMTUxYzcifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/write_file.py",
+          "version": "repo-file-v1:sha256:dcd254afcd3af123d67c537893fbb97d7a59218e5316e125f057ceb078695519"
+        }
+      ]
+    },
+    {
+      "id": "claim_d0c33856aadc4f29a939702b2225597b",
+      "statement": "load_dynamic_tools reads tool_registry/registry.yaml and for each entry imports the referenced file as a fresh module keyed _agentforge_dynamic_<name>, then registers the entry's function under its name.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/dynamic_loader.py#L14-L55",
+          "version": "repo-lines-v1:sha256:85e03e5e41e6ddeb8b15185ce36176a91fc5203fc64e1206ddf71482ee8d0767:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkOGE2MzdiMTQ4ZDAyZTQ1ZWJlZjRjYjRkODJjMWE3MDc0ODRlNjc3NmQzMzQ0ZTM1MTgyYWU0OGMxZjI2ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4M2IwY2Y2ZWRlZmQxNDdlNjg5YTFkYmQ3MTVlZDFjN2IzN2RjOTlkZDMwODExNzg2NzI5OTYzMDQ2NGJhOTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFjZGY0MzVhMDViMGJiNjRjMDE4YjNkMzY3ZDc0YmZjZjUwZGQyNzAzMTQ5MzBhYWIzYWEyYzRlNjU4ZGM5ZjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dca7004f6f66408ab559883ad1bc36a7",
+      "statement": "Dynamic loading is silent on failure: a missing registry.yaml, unparseable YAML, missing file, import error, or missing function each cause that entry (or the whole load) to be skipped without logging, so a corrupted tool_registry/*.py is invisible at startup.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/dynamic_loader.py#L18-L55",
+          "version": "repo-lines-v1:sha256:77bab82a5f27de48bea825b02b333f175d2a56dc507534bdb42b42a8e0ac5f25:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3YzAxMTllN2NmNDMzOTNhMWZlNmZmMmVjMmExYjRiNmI0N2IyNGU1ZGJlNWI3MTFjY2Q3MTQ1M2QxZDBjYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4M2IwY2Y2ZWRlZmQxNDdlNjg5YTFkYmQ3MTVlZDFjN2IzN2RjOTlkZDMwODExNzg2NzI5OTYzMDQ2NGJhOTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUzNDkwYWEyOWUyZTQzNjk1NDA2YTE3NDIzMjA0ZDliNmNlNDA3Y2I1OTlmMDE1YTM1MDZjMTEwZGVmZDEzMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4ca6d884d77348628473c3776dee8fc2",
+      "statement": "tool_registry/registry.yaml is the persistent manifest of dynamic tools; at this snapshot it holds nine entries including search_memory, four browser_* tools, buscar_precos_br, and two comfyui_* tools.",
+      "evidence": [
+        {
+          "resource": "repo://tool_registry/registry.yaml",
+          "version": "repo-file-v1:sha256:446e70194bdfb1209a08820810300b701eda3bcea5d93cde566f22aa94a6566c"
+        }
+      ]
+    },
+    {
+      "id": "claim_8289615c24ec408a93871fb688377906",
+      "statement": "register_tool_file validates a candidate tool in three steps — file exists under AGENT_WORKDIR, ast.parse succeeds, and importlib-executed module exposes the named function — before copying it into tool_registry/, upserting the registry.yaml entry, and registering the loaded function in the live _ToolRegistry so it is callable in the current process.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/register_tool_file.py#L21-L114",
+          "version": "repo-lines-v1:sha256:f96b9514f4f77235931b404ea365e34e2e1face01249937bd61ad991aa93458f:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlMzZhNWI0NGRjMmUxNTE0ZTY5MzI0YjRiNzk3NWEzNTRlMzk5ZjllYTZlOTRmODBhZWJhZDc5ZmYyZGZjMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3ZTA4ZDZlNGYwM2RlMjQ1NWQwMTVlYmE2NjFlNTc2ZDE0MmMwZjM2YzM1YzBiZWFkYTI0YTIwOTUwOGQ0MTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ad4afaf11b514364a7446e6630d1b925",
+      "statement": "Any validation failure in register_tool_file returns {\"success\": false, \"error\": ...} without touching the registry or copying the file; re-registering a name replaces the prior registry.yaml entry and file (no versioning).",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/register_tool_file.py#L51-L103",
+          "version": "repo-lines-v1:sha256:f30dcbef5ad3173a275ca41e766e56aa435fad322465832c2a11510bfc68ad8f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNTlkNzRhYjQ1Mzc0MDRiMjNmYmFjYzA4M2QxOTJiMzIzZWU1MGIzM2NmMTAyN2M4MTVmZDI4Zjg3M2VhOWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwYzFmMTg4ZjE0MmVkN2E4MjQ2ODBiMjA3MTcyYzU1MTliYzYxNGE0OGZkYTdjZjE2N2VkYjhkZGY3OTk1NmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkZDliN2NmM2Q2YTNmZWNhZDYzMjM5ZDdjZWJiNjA0NzFmNzY5YmJkZGU1NWMzMjNjZWY3NWU3NmQ4NmRmODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJkMmU5Yjc4NmFjYjZmNjdjNWY5NDVhZGNlZTk4ZjBhMzk1OGU2NWZlNWZlNDUyY2VjOWMxOWJjYjhhNTI2NTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a20bc3377a2f46fa88e31e8d289859ee",
+      "statement": "The Voyager self-registration flow has the tool-builder agent write the implementation and test files with write_file, run pytest via run_bash, and only on passing tests call register_tool_file to commit the tool into tool_registry/ and the live registry.",
+      "evidence": [
+        {
+          "resource": "repo://docs/TOOL-REGISTRY.md#L28-L56",
+          "version": "repo-lines-v1:sha256:619f7e0eafe654ae618737ad7fcac5ce91b902e5beb7abd861e289df3715548b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjZWY0MDNlNTY3ZTA3NGE3NWE0YzUzNmIwZmQzZmRkMTViZDUxZjQ5ZThiMDZhZDg1NzVkMTdhM2NlNzg1N2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjM2ZkYjQyYTc0MzJiNWM3Y2JhYjExNzU2NDVmMzVkMjY5N2Y1YWVjYmEyNjE1ZGU1MDA3ZDFhMjQ2MTQxZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/register_tool_file.py#L21-L46",
+          "version": "repo-lines-v1:sha256:d184aa4361193271c08851f8fb126733b0bce0ee3cb5f5ee0162d1c1c4aeda81:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlMzZhNWI0NGRjMmUxNTE0ZTY5MzI0YjRiNzk3NWEzNTRlMzk5ZjllYTZlOTRmODBhZWJhZDc5ZmYyZGZjMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2YTcxNTI1NzJlZTg0ZjEwOTA2Yzc0YjlmMmE5MjQzNGRkYWIwZTNjNDI4MTNiMDRlNTk3ZWZjZWM5NTFiMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY3ZTA4ZDZlNGYwM2RlMjQ1NWQwMTVlYmE2NjFlNTc2ZDE0MmMwZjM2YzM1YzBiZWFkYTI0YTIwOTUwOGQ0MTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiN2UyZmNhZTJhNGVmNTlkODhkM2Y5MWZiODA1ZDg4ZDE1YzNlNjYwMTJkZTFkZmQ3MzcwZTg4MDdhZTAzZmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a95565157cef4a35a9162124ca21416f",
+      "statement": "Agent tools are declared in agent.yaml under tools and modelled by the ToolSpec Pydantic model (name, required, description, category, status, when_to_use, when_not_to_use, input_schema, output_schema) in src/agentforge/core/agent_models.py.",
+      "evidence": [
+        {
+          "resource": "repo://docs/TOOL-REGISTRY.md#L165-L178",
+          "version": "repo-lines-v1:sha256:9c4f51ff7021e074a553d842480cc46625a20cf051bebd1aad270a0742288b1e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViMTI4NDhkOGEwOWMzYTI2NWUwYWJkZTllMzQ2YjZhN2MwMmFhYjljMzIxYTE5MTQ4MmExNWFkZTVjODYwZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxNjQ5MzUyMjE1ZWI1ZTAyMWQzYzdmY2M3ZTlkMjUxOWM1ZWFiYjhlNGU5YjM4YjkyODExMjhjYWFiMWM5ZDcifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/core/agent_models.py#L31-L42",
+          "version": "repo-lines-v1:sha256:f63593345d792647d3eef4f26b83481d2628321e1fb7aab56c52aa6406c23122:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMDY2ZmNmNDRlZmQ2YTIwZmRjNDc1MGQwYzQ4YmI5NWE2ZmQ1ZjVmMTliMjQ2ZjRkODY1NGZhN2FlOTFhZjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlOWJkMjY5MTc1NTJiNjZiMjEwNGM5NWJiZjZkZjM1M2Q2OTg5NTZlZTg2OGZmYmI2NzUzYTUxNGU0MWVhMmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmZTZlOWU0ODVhNzkyMTdhYTYxNGFkNzg2ZTFmYTZjN2MzYTMxMGFiOTc4YTUzZjU2ZjczYzczNjQ5YTVlNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwNGRmNWNhNjhlNTg3NzlhNjkzYTdhODdkNDMwNTk3NzMwNmJhZDgxMmI0ZmJlNmUzZjFmYTY2NGYwMDcwMjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7592b8509d804b7a86586c5ea922bffe",
+      "statement": "AgentRuntime._build_tools_schema converts each ToolSpec to the OpenAI function shape, appending 'Use when: …' and 'Do not use when: …' hints to the description and parsing input_schema with a fallback to an empty object schema on malformed JSON.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L147-L177",
+          "version": "repo-lines-v1:sha256:ff984387912c886d78fb3d2633e11f31baea91c95232b3b11016ad9760066cb9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4YWMyZjI0NTdkNGVjYTA2MjZmNWI4MTRjOTRjOTI1ZjAwMGQwNWM1NWU4NjAyZWQ5NDNmMzZhNWNjYWNjZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmNjA3ODI4ZDQxZDU5YjhjM2Y0YmZmOWQ0ZWQyZDRkODYyMzRlOGZmOGE4M2U5OTQ4OGYyMjhjNWQzMzMzZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwZWMyOTcwNjcyZjUxNmU2NThmNWMyNGFiZjVhMjNmYmZlNjZjMWI3YTQ5MTVkOTE0ZWE5NTg5Njk2ZGFkYzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhZjRhMWNjNmM4Y2RmZmNmNGI0Y2U0NjZkZmJmY2I3ZmY5NDgxYzViYThjN2RjN2E3NTY5NTNmMDBlN2U2OTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3d02ae398c6c4055987fd78fba1ef4c2",
+      "statement": "When agent_spec.workflow.agents is non-empty, _build_tools_schema appends a single synthetic run_agent entry whose description lists every declared worker's name, agent_dir, and description so the model can pick a worker.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L179-L209",
+          "version": "repo-lines-v1:sha256:530b4774652464f9200a0eefe97252cc15c7112fa5c8ac66988a2533e70594a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMGJhZTljODgzNTA3ZTYxNzEwNmU2ZjVmNmNjZDcyYzFmODMxZjQwNDVmYTE0Mzk3OWY5Y2ExMDJiMzczZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmNjA3ODI4ZDQxZDU5YjhjM2Y0YmZmOWQ0ZWQyZDRkODYyMzRlOGZmOGE4M2U5OTQ4OGYyMjhjNWQzMzMzZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxMTkwM2NmMDM5ZjMwODc3NjIxZjUzNzhiNGVmNTY0NmIzMDJhM2EwZTdmMWRkMjk1ZDA0MjYzNmMzYjUxYTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyN2I3MjZmOTUxYjAzNTUzNGQ3YTM0MWZiNTU5MGU3OTliMzZlZTRmZDQ4MDg5MDJiZjVmOWYzZTgxM2UyOTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_00770fb95ace4eff9adedba58268b80f",
+      "statement": "The engine executes model-issued tool calls via AgentRuntime._execute_tool which delegates to the registry's execute_tool, and a ToolSpec with required=True causes the engine to call that tool once with no args at the start of every run() and fold the result into the user input before the model sees anything.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L144-L145",
+          "version": "repo-lines-v1:sha256:a307dc084b9eca6b68376c06412383f5f30e60a18f52c4e0fee7e59961edf626:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDBhODg3MmQyZTVlMGQ2MTE2MjI1OGM2NTVlNDk1NWQ0ZTQ5NDlhZjVlYjE4MzRiNTc1Mzg2MGExZmJjMzNjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmI3MWExOTc2YTQ0YmE5NjNmNWI1NjYwMmFiZDJlYThmOGI3OWM5MDNjYmQ2NTA2Y2NjNTdmNTBmYzhhYmE5MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTQ0ZmU0YjQ4ODcyZTEwYTk0YjI1Yjg1NmMyZWViOTE2ZmEyZTgzZGNhMDFjNTQ0ZDYzNTQzNGNlNDQyNGQwNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2FhZmJmZTA2ODA0YjI0Mzc1M2YyZmYxZDY1OGI0OTE1NTcxMGMwYTIwNjc3ZTg2MmRjNmE5ZjhjMmQ0OTU3MCJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L935-L973",
+          "version": "repo-lines-v1:sha256:4811204886246894ab1f5fb25ffb158d6c0053f9a5ec70225dea4229b9cea615:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5MGM5YWEwNmI5ODdhZDE3N2NiOGFhODkwZDc2MzA0YmQxMWE3MTU2MGE0MTg2ZjkxZTQ0N2ZiMjY2MmVlZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjODNiZWQxYzc0YTlmMzU3ODY3NTJmMjA5YzljZDAxM2Q4ZWQ4NmNjYTMzNWFmN2M0NjM3MDMyZDlhMDYwNmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZDI4NTA2ZmM4ZDk1NmVjZTliZDVmNzUwNTJhODA4YWQ0NjJlYzdiY2QxZTk3ZGIzNTE4YmFlNDE3YjhjODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2ZjAyZTk1MGI1NTU0ODAxZDNmODM1NWE0YzA3ZmM0Y2Y5MTNjODY4MmY2NjJlZDNkOTc3MGIwMmIzYzcxMjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_402054735cbc4b28834fb5ac858f5bc3",
+      "statement": "run_agent lazily imports AgentRuntime to avoid a circular import between agentforge.tools.registry and agentforge.runtime.engine, constructs a fresh runtime per call via from_agent_dir, and returns only agent_id and output to the caller.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/run_agent.py",
+          "version": "repo-file-v1:sha256:501ac8be629af997426e4c908da343bec8bacfea26ffbd4f32d01439383903fb"
+        }
+      ]
+    },
+    {
+      "id": "claim_16661f62c5844450b1e03badbcf5d24a",
+      "statement": "run_bash applies a regex blocklist to the lower-cased command before execution; blocked patterns include rm -rf/-fr, the :(){ fork bomb, dd if=/dev/, mkfs, fdisk, > /dev/sd* redirection, wget|bash and curl|bash|sh, chmod 777 /, sudo rm, shutdown, and reboot, returning '[BLOCKED] Command not allowed (pattern: …).' without executing anything.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/run_bash.py#L11-L38",
+          "version": "repo-lines-v1:sha256:b62fced1c95a500cd6ed95e2ecbc95a77b50a0b91325d0488a00fd19f7351090:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MDY0ZGM1MGFkMGEwNjQ5MjZkZjNiMTEzYjgwMTNhZWNkMTVkZGNlOGFiOGY0Yjc3ZmQ4ZGM3YmZjNjk1MmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTYwMGE3M2QyZTAyZjM1MmI5MGZlZjFkOGQ2MzgxMWJhNGE4ZWUwYzFiZWFhN2FlNDY1OGYzNmFhMmUxOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIwOTgyZGQwZjEzOThhN2M4NDQ0ZDg5Mjk4Y2FiNjE4NzBiMTA2MWRhYzllY2EwZWE2NjIyZDQyNWY0ZjBiMWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmY2ZlNzlkMGE0NzY2NjU5YjE2Mjk2YzZhODBlYTcwZmQ4NDIzOTBhYjU5OGZiZTAwMjc1Mzg1NWRlNTJhMWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b0229f46b366476ab338a8ba5f4d8c9e",
+      "statement": "run_bash honors the BASH_TIMEOUT env var (default 1800s), kills the process on TimeoutExpired and returns '[ERROR] Timeout after <N>s.'; output is written to a tempfile.TemporaryFile (not a pipe) to avoid the pipe-EOF hang when a command backgrounds a longer-lived child, and is truncated to 4000 chars.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/run_bash.py#L41-L89",
+          "version": "repo-lines-v1:sha256:1a1cc07c825fc1f7506c2770ce3a07225ee41b886f971c45d7c30520d0b23c26:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZGEyMTM0M2Q5NTczZTMwODA2YzUxM2I5ZmQyYzhlNTY4ZWE1ZDg0N2U2NDViMTk1N2E5Y2JiMThmYTRmYWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYmU3Y2EwN2VjNDJkYzJiODdmYmFkM2VhYWM5MWE3Mjk2M2I0MzczZDgyZTUwZGJhMmI0N2ZhZDEwYTdhYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3MDE0OWUwNjlhZDY3ZWNjZjQ3MzY0NmZmMWM3NTAwNTBkMzI5ZDExMDAxOGRjNTc2Njg3OGVhZmExZDYwN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1a627624ebe54b9ea49acef272717208",
+      "statement": "tests/test_run_bash.py covers the empty-command error, the rm -rf / blocklist hit, nonzero-exit stderr capture, a regression test asserting a backgrounded sleep returns in well under the 1800s BASH_TIMEOUT window, and that BASH_TIMEOUT=1 still times out a genuinely slow foreground command.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_run_bash.py",
+          "version": "repo-file-v1:sha256:9aae10c3bb5e6ac51846b4682e1311c80e45f91d0612b3cb4740896681ca0cd7"
+        }
+      ]
+    },
+    {
+      "id": "claim_a8bfcbc0db594a70a0fb75f330a0421e",
+      "statement": "write_file, read_file, and append_file all resolve relative paths against AGENT_WORKDIR (falling back to '.' when unset) and create parent directories on write/append; read_file truncates to 8000 chars with a truncation marker.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/write_file.py",
+          "version": "repo-file-v1:sha256:dcd254afcd3af123d67c537893fbb97d7a59218e5316e125f057ceb078695519"
+        }
+      ]
+    },
+    {
+      "id": "claim_978a94f6a19842bdb703d539f7fc6fc3",
+      "statement": "AGENT_WORKDIR is the single scope for all filesystem-touching tools and for the engine's guardrails.must filename checks: write_file.py, run_bash.py, register_tool_file.py, heygen_mcp.py, tts_omnivoice.py, and the engine's _check_must_compliance/_missing_must_files each independently resolve Path(os.environ.get('AGENT_WORKDIR', '.')).",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L529-L554",
+          "version": "repo-lines-v1:sha256:5afdfef0e1c10405a9e77c2324430449665d74e4e99ce206af9cbad8c47d21fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhZGI3ZDJhNjdhZTgxYzg5ZTgxMGY5MDdmYTA3YjI5ODRhYzlhODY5ZDAxZDBhNjRkZGFjYzliMTEzMmE3ZGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmZjMxNGNjYzhhMTI2NjVlMzE1ODY1M2Y3MTE3NTA3NDBiODI1ZWM2OGJiYTc1NzBmMWY2OTljNmJmNDBjN2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY4Yjk1NmU3YTBkOTc0ODFjMGEzODFhODQwYTY5OTZkZGQ4OWY5ZjkyZjY3YjlkZjllMDFjMjVlYmI3OTdhYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjODM1ZDkxNDE0YmJhZTY3OWM2YjYyNWI1YmUzOWM4MDM1ZGY5YzkzZWVhOTE3N2QyNDZlMTJjMjVkZmY5N2YifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L608-L628",
+          "version": "repo-lines-v1:sha256:4bdf3a85c6fde50cb9f8e0c261f869dd8a8a0563d34d418455f51fb4b5a36861:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMmVkNjUzYWNlN2NlMDI0MThjN2ZlOTVmMTI5NTFjZWRjODdjNDRiMWY5MjEyM2I4YWFkNzY0Mzk1ZTQxZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0N2M0OGU4YTBkMmRmNmNjNGQwYmFkODBhYzcxMmQyYWFkZjM2MThhZGJiMGVlYTFiZDg2MzUyMWRmY2E3ZjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkwMWYwNGNjNGY2NjIwZTc5ZTkxZTA0YzE2NmMyZTQzYTQwYjJjMGI2YzQ1OTM4Mzc1Njc2MmI0NDhmMjhmZWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNiYmVjNWYwNTVlOGJkOTZlMmQzZjcyMzAzODgyZWVmNmY0Y2RiYjY0ZGYwNWE3NzVjN2U5YzZkNDA5NGQyNDMifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/heygen_mcp.py#L44-L45",
+          "version": "repo-lines-v1:sha256:d5e35f33029012fb9b7bda9563431e49f102889ce4f9a60b503ec2cd4dd01039:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRmMDkyMWUyNzMwMTAzY2RhMzgyZmVhNWIyM2Q1MjZkYjRmNzNkMDNlNjkxYjhiNGUzM2NkYWM0MzEzOGEzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2UyZTMyMGQ3YTg4ZjM2NmUyNTNmZGIzYWZiZDkxYjUyNmY5MWM0NWZkN2UzOTg4NjBiNjFmYTVkYjRiMjNiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTViMTY2MGE5MzczZTM3YzAxYzY3ZWU2OTMxN2Y0YjYzYmYyNmUyM2JlY2MzYzI0NmNiMTRlOWIxY2Y4MjU1MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGI3ZWIwYzZhNTk2ZTY5ZDliM2E4ZTA3MDNjYmY1YWNlNWFkYjIzMjIyN2U3ODU1MzAzZTc2NWM5NDY0MGU3MSJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/register_tool_file.py#L17-L18",
+          "version": "repo-lines-v1:sha256:d5e35f33029012fb9b7bda9563431e49f102889ce4f9a60b503ec2cd4dd01039:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRmMDkyMWUyNzMwMTAzY2RhMzgyZmVhNWIyM2Q1MjZkYjRmNzNkMDNlNjkxYjhiNGUzM2NkYWM0MzEzOGEzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2UyZTMyMGQ3YTg4ZjM2NmUyNTNmZGIzYWZiZDkxYjUyNmY5MWM0NWZkN2UzOTg4NjBiNjFmYTVkYjRiMjNiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWNkZjQzNWEwNWIwYmI2NGMwMThiM2QzNjdkNzRiZmNmNTBkZDI3MDMxNDkzMGFhYjNhYTJjNGU2NThkYzlmMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjkzYmYyYmQwNmY0ZGNiYTQ5MTI3NjUzNzg3Y2U2NDJjZTJjZWE4YjU4NzA2Njk4NDFlMjk5OGU0MmFmM2IwNyJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/run_bash.py#L29-L30",
+          "version": "repo-lines-v1:sha256:d5e35f33029012fb9b7bda9563431e49f102889ce4f9a60b503ec2cd4dd01039:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRmMDkyMWUyNzMwMTAzY2RhMzgyZmVhNWIyM2Q1MjZkYjRmNzNkMDNlNjkxYjhiNGUzM2NkYWM0MzEzOGEzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2UyZTMyMGQ3YTg4ZjM2NmUyNTNmZGIzYWZiZDkxYjUyNmY5MWM0NWZkN2UzOTg4NjBiNjFmYTVkYjRiMjNiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDNkMTcxZGU3NTQzMWEwMjFhMGQ5NGZhNzZmYWJmMGQ3MTM5Yzg5OGMxYTBiNDRiNDNjYTYwOTAzZmExYjg0NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzIyODZhMWFhYzNmOWI0MDgyOGYyNTI2YWYwZGZlMGNlM2FjYjg0YmFkNTg5MTM3MzU5ZGUxM2ZhYjcwNTVkYiJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/tts_omnivoice.py#L15-L15",
+          "version": "repo-lines-v1:sha256:7e2e320d7a88f366e253fdb3afbd91b526f91c45fd7e398860b61fa5db4b23be:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2UyZTMyMGQ3YTg4ZjM2NmUyNTNmZGIzYWZiZDkxYjUyNmY5MWM0NWZkN2UzOTg4NjBiNjFmYTVkYjRiMjNiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2UyZTMyMGQ3YTg4ZjM2NmUyNTNmZGIzYWZiZDkxYjUyNmY5MWM0NWZkN2UzOTg4NjBiNjFmYTVkYjRiMjNiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjdiMTY3MzYxMTI1ZTg0ZmVjOTMxYWExMWVmNjNmNmU2YTVhNmNiMGJiNjRiZjM3ZmZlMmMyY2NlNzUyYzJlYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDRiZjFiNGY1NWYxMDkwY2ZlNDMwNjA2OTMwM2JmNmI1MWZiNDc5MDY4YThmZTZkOGVkOWQ2NTNiODZkYmNmYyJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/write_file.py#L7-L8",
+          "version": "repo-lines-v1:sha256:d5e35f33029012fb9b7bda9563431e49f102889ce4f9a60b503ec2cd4dd01039:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRmMDkyMWUyNzMwMTAzY2RhMzgyZmVhNWIyM2Q1MjZkYjRmNzNkMDNlNjkxYjhiNGUzM2NkYWM0MzEzOGEzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2UyZTMyMGQ3YTg4ZjM2NmUyNTNmZGIzYWZiZDkxYjUyNmY5MWM0NWZkN2UzOTg4NjBiNjFmYTVkYjRiMjNiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTkxYmYzZDk2ZjFiMTE5Njg4ZGVlYTlhMDA0YjJiM2ZlYmIxODBiYjhmYjIzNDQ2MjU2MTRhZGM4NTk1NjNhYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTUzZTgyYjU4Mjc1NWFhOTE4NWRjNDUzYTg5ODQ0MGVhYTg5MjE2Njk0YzNiY2ZjYTI0YmNmODY4Yzg2NWU3YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c3feb105408149589d0438b37d51f6c4",
+      "statement": "The HeyGen tools route every API call through the shared agentforge.channels.mcp_client.call_mcp_tool against https://mcp.heygen.com/mcp/v1/ with OAuth tokens persisted to ~/.agentforge/mcp_tokens/heygen.json.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/heygen_mcp.py#L28-L56",
+          "version": "repo-lines-v1:sha256:fa8cacb9174f4bd49e67c3c93e1717751b663d8fd8b89016ddd0588c3fac13a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhMDQ4ZTU2Y2M3MzM1ZDQ2MDA3NzViZjllMjUzNDMwMzIwNThmOGU2NjVlMDk1YmFhMjczMzFhYjEzNjdjNmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0YjgzZjFkNGQ3ZjJlYjU3ODhhZWJkMjlmZmNiZmQ0MmQxY2FkOGZhOGI4YTcyMmUyYmYzYjdkOGJkY2U4N2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU1YzFjNDYyZTJhMzlkNzQ3NTlmNWUxYjEyNmY3NjgzYTJiNzMwMTE4ZTE4ZjUxMjJiMDhjZWRlZWI2NTBlMjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmMjA3NjUzYThkYTUyNmNlNzNmNjlmZDQ2NTc5MDNjOGZmMWY5ZGViMDc3MDM2OTAwYmNhODgyODYwMTVlYjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3da7151e53ec4400b095d22a2583a936",
+      "statement": "The AGENTFORGE_HEYGEN_SANDBOX env var is a code-level kill switch independent of per-agent tools.yaml that blocks or forces test_mode on paid HeyGen calls so a misconfigured agent cannot incur real charges.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/heygen_mcp.py#L32-L41",
+          "version": "repo-lines-v1:sha256:14b9bb4ea190da552725ce94c34b0d21995e9bdf5e4ab254449e6186c1d647d2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2Mjc3ZjU1MmY1NzAyOWJjMjUzOWEwYjFkMjljYzVjNTU3ZjQ0ZTUyM2VhYWI3ODk0MWQ3OTg2ZWE5MTdhYWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyMTViMDI3NTQ2ZjcxMTk1NjUxNjEwODdiY2JjZjgzNGIxNGRjY2MyOWFhNWNhMTA5ZTNjNzU0YjkwNjBmNjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ5Nzk5ZmRiMzkyYzFmNDM0NTQ3NjM0NTZmOGE3MTAxMmI1ZjZlODhhZmVmM2ZkNGQwNDU4MGZmN2E2ZTFlOTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3YjE2NzM2MTEyNWU4NGZlYzkzMWFhMTFlZjYzZjZlNmE1YTZjYjBiYjY0YmYzN2ZmZTJjMmNjZTc1MmMyZWIifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/heygen_mcp.py#L329-L334",
+          "version": "repo-lines-v1:sha256:908d61d4270471c64c213c203f59a44451dfd7d397b4145c68d6cf99170adf06:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjhlY2IwN2M0MWY5NDJjMGZhNGIwZTZlY2JkYzc1MzM4NjdmODlmMWYyODE1ZjU1YTM3MzE0MjMyZjdkMWJlMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJkNzM2YmUyNjlkNzk1YzlhM2RmNTY0MjYyNzVhY2U4OWU2Yzk0NGRlZjgxNDhkNzFjNTA1NzY1YTI3MmRhMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGI0MjU3MzIyNmZlYTQxYTQ5YjE3ZWNhNjEyYTIyYzdmY2I0ZDI4ZjM0MDk4OWI3ZjY1NmVhOGY3MDgwMTljMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmFlOTEzMWFlOTg2M2IzMzUzYzM4MmUyZmM1YTg5M2FkYTlmZmMzN2FmZjVjYzJlZWUyNjljNTQ5MDNiM2U2MiJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/heygen_mcp.py#L416-L422",
+          "version": "repo-lines-v1:sha256:9f15e2104d8ae6ef21425ff110d843a4eb50cc7666615aea553d358708fc2e86:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZmNGVhZmRkMmRlZDM0MTRlMTJkNDgzNmVlMDVhMGY0YzI0YjUzMTg5ZmI2YzdiNDdiZjE1OTExZjEzNjJmOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTkwOWE1M2E2MThkMDI4ZTFkMzAwMGMwYTdhYmNlZWNiZTVmYjM3ZjRlNTExZWZlNDY2NDNmYWQ2ZTY2ODcyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDVkNWU2YjBlNDMxOTJkYzFhZTk2Yzc3YmRkYjI3YjVmNThiODU0YTgxNTU1NWU5ZDEzMjc3YjdjZWRhM2IxZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDk2MDhjMjE2ZTJmNzY1NzAwMTMzMGYzMDYxZDIyNjIyNjkyYTgzMDQ3ODZhM2E2MWM3ZDgyN2NiMTMxZWQzYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_92072a3606a741f59357bce1e716b84b",
+      "statement": "HeyGen credit spend is tracked in a two-phase wallet in ~/.agentforge/heygen_wallet.json: heygen_video_creator and heygen_video_agent snapshot credits before creation and call wallet_record_creation, and heygen_get_video calls wallet_record_completion when status becomes completed to compute credits_spent = max(0, credits_before - credits_after); test-mode videos are also recorded.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/tools/heygen_mcp.py#L356-L382",
+          "version": "repo-lines-v1:sha256:3ce421fb7445966191f6c0d902e071965ea3faab8eb5680b8a01aed6cf1d38c3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1Y2U2NTEzMGNjNzQyZTdhY2I5YzdmNDg1NmQ5MTBiMGVjNjY4MzZjY2ZlYTExM2JkNmFkYTZhMGJmNGFlZDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhMTFjMDU2N2QwYTVmOWU5YjEzNWY2NWNkMjUzNzJkZmQ2Mjg3NzVmN2MxZWQyNTNmOGJhZDQyZGQyZDY2NjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk4MWFkN2JmZDAwODNlMzEyYWU5NzQwYzVkYTNiYTE4MjMyNDJlZWU1N2JmNDM2ZGNkMjc3NTFlMDUxMWUyNjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3OWNmYTk3NWQ3N2ViMmE1M2Q4MmMyZWYyN2NhM2Q5NjU2ZmMzMDFiMmNjMmVlNTY1NzZlY2IwYTdmNjQ4NDgifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/heygen_mcp.py#L510-L520",
+          "version": "repo-lines-v1:sha256:d9f708b17723501b1d961157093b3f59122e3d2820b7525fbac391e23168bcb5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyYjZmMmU4MmE3YjNkMGMyYTM5OGNkYTAyZWRhZDllNDc1NTlhYTMxN2U0ZDAxNGVmNzcxNWRjMzA3NjBhODYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNzQ0ZDNhMjFlZmYzMzk5NjQyYjAwMmFiZTQwZTZkYjAxZTIzM2VjMWZkOWJmODUxZWZlNjgxNmFlY2U2YzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmN2Y4MGQ5N2VlZDhhOTNkZmFhODIyNjU1YTc3ZmY2YjI0ZmE0OGZkMzgyODgwODc2MTFiYjc1MDE1NWExODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkMmIzOTFlMWQwNzIzNTVkNjllZTJiMzdhMDc1NzQxOTZiYzBkZjJlOTU5YmVhNTFjNmI1ODNlMTZkNGE1MGUifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/heygen_wallet.py#L49-L92",
+          "version": "repo-lines-v1:sha256:32dffc3629252fd4e52567d6e8b217f3c88f79d38cb45d6f8f7d2794ef51e879:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI0NmNiYWRiMmM3M2VhMzM4MWVkZjY5NDNkM2NlNGNkMDMxN2Y2MWU0ZGU0MDhjMjJjZmRkYzBlNzc1NmQ5NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTYwMGE3M2QyZTAyZjM1MmI5MGZlZjFkOGQ2MzgxMWJhNGE4ZWUwYzFiZWFhN2FlNDY1OGYzNmFhMmUxOTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA4MjY3NmM4ODhjMWE0ZDlmYTc3MmZjZGMzMDJmNzczYmM3MjkwZWViZmY5ZGEzNmEzOWY0NGMzMjExOTgzODUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYzM5ZDU1YjFjNDA5YWVlN2MzMThhZThmZWU0ZjEyOWVlODM1OWViMjczNjU3NWJlYmI4MDcxN2E1Mzk2OWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_933e311be2214e79af072df0f550ed6b",
+      "statement": "The vault_scan/extract tools are used by the vault-pilot agent, and the engine special-cases vault-pilot when folding a required tool's result into the enriched user input.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L943-L952",
+          "version": "repo-lines-v1:sha256:a84019119ddb3f1e476bb93ea41977302cb06a3c2d864e1ccf1cee07b6656e42:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3NjZiOTU2NDY3NDk3N2Q0YjE2NWExOGZkZDBjZWNiZDA0NWE1MGZiZWUwNTQ4OTk2NDk5MGJhZGQ5ZjNjZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5ZTlkNWI3MjNlZWM3NzBhMDczZDIyYWVjNjZkOGJjNjdiMjE3MTM4NTBlYjk5NWZlZDQ3ZTIzMDZlNzExZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyNmE4ZGNjNmI0MTAzYjIxNDdmZWU2YjhlZDI1YWE5YTFjM2E5NWIxYTE5NTYxMGZkOTJlZjZlNmI2M2YwZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5NGU5MmQxZTM1ZjQ4ZTQwMjAzMzNiZjNhNjFkNzU0ODRiMGYxZGM2OWMzMTUyMzI3MzRlMzU2MjMzYzlkZjcifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/vault_extract.py",
+          "version": "repo-file-v1:sha256:5674c56ff96330bcb3996f061d39fd58670407ccc248acf55288180cc298b630"
+        },
+        {
+          "resource": "repo://src/agentforge/tools/vault_scan.py",
+          "version": "repo-file-v1:sha256:df75d0849703bac86ce66b436885c2fe84837a92438cb982e75115591935b386"
+        }
+      ]
+    },
+    {
+      "id": "claim_68a56a66cf3a4c3faa0dadd64613b241",
+      "statement": "The tool-builder agent in agents/tool-builder/ is the dedicated agent for the Voyager flow, with guardrails that must re-read the implementation before writing tests, must run pytest before registering, and must not register with failing tests or claim pytest passed when it did not.",
+      "evidence": [
+        {
+          "resource": "repo://docs/TOOL-REGISTRY.md#L128-L141",
+          "version": "repo-lines-v1:sha256:53821daff869d501151f88ca1c3b317d184010730627add715ea779589a68acf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmZmY0NjQ0MTY1Zjc3OWMxNjM4MDNiZjI2YjA4NThiMzczNmM5Yzk3NDg0NTg2OTk3NTBhZjk0ZDRjODhlNjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjYThiOGU0NjY0MWMzMjkxYTI5MDdjNzQxMmUxODZiOTZmNTZjMTY3Y2Y3MDU3NzVmMTYzNzZkMTFmZTE2OTkifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-09T12:43:13.007Z"
+  }
+}

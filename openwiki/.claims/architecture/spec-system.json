@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:f12663022c046d1dd1ced4917680895c87109525cdcf06d28011ee81a849e838",
+  "claims": [
+    {
+      "id": "claim_05b1c716639a458a81797fb9bd6fa05b",
+      "statement": "Every sub-model of AgentSpec in src/agentforge/core/agent_models.py sets ConfigDict(extra=\"forbid\"), so any unknown key anywhere in agent.yaml produces a Pydantic ValidationError.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/core/agent_models.py",
+          "version": "repo-file-v1:sha256:d6d204def30bc514c2e9248f7e123565932e6fc8a6abe9afe801a0f934819936"
+        }
+      ]
+    },
+    {
+      "id": "claim_0aa76fb1e735409589e9d76f0b857235",
+      "statement": "AgentSpec declares spec_version with a mode=\"before\" field validator that coerces the value to str, so both numeric 0.1 and the string '0.1' in YAML are accepted.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/core/agent_models.py#L125-L128",
+          "version": "repo-lines-v1:sha256:839a0f5091ddb872d08899047a1f0ca3aa67cf12685656b14064d1085d0cef7c:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTZmOGViZTgxNWJhZmI2Y2JmY2E4NGIxMjY3NzZmZmUzOWFlZmJlMmZhZmRhMDI2NDhhY2QwODc0NTQ2NTZiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMThjYzhjMjJkYzI0MTE5YjAxM2UyMjQ2YzlkZjgxMTBlNWVlODQ5ZjYxNDkyNzcwZGY2OWUyNDFmZmUwZGJjYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjFhNTRjMzJjMzlmMzdiZjdhODEzYTA5ODQ1YjZjYWViNDAwNzg0OTM0MThhZmM5NGU3MTAwZGQzZjEwZjM2ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f7ea840f13c14ba880135df4122e642f",
+      "statement": "The top-level AgentSpec has 12 fields: spec_version, agent (AgentIdentity), persona (AgentPersona), channel (ChannelSpec), tools (list[ToolSpec], default []), memory (MemorySpec), output (OutputSpec), guardrails (GuardrailSpec), eval (EvaluationSpec), deployment (DeploymentSpec, default_factory), model_policy (ModelPolicySpec), and workflow (WorkflowSpec).",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/core/agent_models.py#L109-L128",
+          "version": "repo-lines-v1:sha256:b1c12458c11b56f9cf0ed3fe97b9eeea85af6c7730a610069d14abb4aec84bba:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3Y2Q5NTExYjNlZDdmM2ZjMDlhYWU0NDc5MjQ5YmYyZDIxNTAwYzVhZWVmY2Q5Mjg2ZmY3M2U4YjdiYjNkYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4Y2M4YzIyZGMyNDExOWIwMTNlMjI0NmM5ZGY4MTEwZTVlZTg0OWY2MTQ5Mjc3MGRmNjllMjQxZmZlMGRiY2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmNjUxMGFhZTMyMDI4N2JhNGUzNDkzYzgzOTc0OGUzNmY2OGRiZTM5OWM4OWIzYTRmNjEwMGMwNDBkMGEzYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c25885110b3340c38cfcf6bb1945e09f",
+      "statement": "ToolSpec.input_schema is a JSON string (not a nested object) that AgentRuntime._build_tools_schema json.loads at runtime; on parse failure it degrades to an empty object schema instead of failing.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/core/agent_models.py#L31-L42",
+          "version": "repo-lines-v1:sha256:f63593345d792647d3eef4f26b83481d2628321e1fb7aab56c52aa6406c23122:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMDY2ZmNmNDRlZmQ2YTIwZmRjNDc1MGQwYzQ4YmI5NWE2ZmQ1ZjVmMTliMjQ2ZjRkODY1NGZhN2FlOTFhZjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlOWJkMjY5MTc1NTJiNjZiMjEwNGM5NWJiZjZkZjM1M2Q2OTg5NTZlZTg2OGZmYmI2NzUzYTUxNGU0MWVhMmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmZTZlOWU0ODVhNzkyMTdhYTYxNGFkNzg2ZTFmYTZjN2MzYTMxMGFiOTc4YTUzZjU2ZjczYzczNjQ5YTVlNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgwNGRmNWNhNjhlNTg3NzlhNjkzYTdhODdkNDMwNTk3NzMwNmJhZDgxMmI0ZmJlNmUzZjFmYTY2NGYwMDcwMjkifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L161-L168",
+          "version": "repo-lines-v1:sha256:d603f2c3bd9c62ef04451accf5c1d50292f005bd8a32ee2c005140600e3ed068:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTQyMDM2OTg2ZjQ3ZTliN2ViYzllYTE0Y2RjYjgwOWYyZjRhY2U2Y2RlYmM2NDFjYjk1NjBjYTNhN2E2NjQ2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWQxMjQ1NzQzODk2ZjEzODgzZTk5NDU4NzM3MWEwMGI2ZjViNGRjZGRiYmY5MjhkZWU0NDZiNWU4YWY5ZGFiZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTkwZWQyNDlkMDk4NDBjMTFiM2E4NDg2MGViMWFmNmY1ODRiNTBhNGI0NWQ2Y2M1NDY5YjAxYjIyMmEwNzZhMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGE5MWJlZTljNmExNmE1OTA1NzdlMjQwN2UyNDc0NDJkZThlZjAxMjU4OWE1MTk2ZmJjMDY4ZjM2ZmFlNmI1YSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_93bd00e403a04a4aa2d0d6ea01cf6cd9",
+      "statement": "WorkflowSpec.agents (list[AgentRef]) is the only multi-agent surface: when non-empty, AgentRuntime._build_tools_schema appends a synthetic run_agent tool whose description lists each declared agent's agent_dir.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/core/agent_models.py#L99-L106",
+          "version": "repo-lines-v1:sha256:290432c34fef246e5c09cf7873d9c1bd98022a4743fcf8c8f906afe4d3735377:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY3ZTFhNzgzZGQ1NGEyMWM1NmQyOTI5ZjMxODY4ZjU1Y2M4ZDRkZDJjMWNkOWM3MGQ4NThlZGM0MGM0MzA2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzk5YTQ3MDdjMjEyOWEzODcwYWJhZDdjMGYwMWQ1NTJlNzU3YjAxNWMyZmRlZTU1NjcxNGZiMjA3YTljMzUxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzVhYmM4NGNhNDhlMTZiY2FhNDI5ZGNiY2U1OTQ1YTA1OTkzZTYwZmJmNjIwOTJkMjE4YWU3ZDcwNGMyMmY2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjNjNTZlN2Y3NDg2ZWFjNTY5YWU0ODY3NWM5YjM2NzQ4YjY4MTcyOWE1ZGE3YzhkYWY5ODcxODhlNzA0NDQyOSJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L179-L209",
+          "version": "repo-lines-v1:sha256:530b4774652464f9200a0eefe97252cc15c7112fa5c8ac66988a2533e70594a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMGJhZTljODgzNTA3ZTYxNzEwNmU2ZjVmNmNjZDcyYzFmODMxZjQwNDVmYTE0Mzk3OWY5Y2ExMDJiMzczZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmNjA3ODI4ZDQxZDU5YjhjM2Y0YmZmOWQ0ZWQyZDRkODYyMzRlOGZmOGE4M2U5OTQ4OGYyMjhjNWQzMzMzZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxMTkwM2NmMDM5ZjMwODc3NjIxZjUzNzhiNGVmNTY0NmIzMDJhM2EwZTdmMWRkMjk1ZDA0MjYzNmMzYjUxYTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAyN2I3MjZmOTUxYjAzNTUzNGQ3YTM0MWZiNTU5MGU3OTliMzZlZTRmZDQ4MDg5MDJiZjVmOWYzZTgxM2UyOTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6d684998bc5844efaeb55bcf8fb38c22",
+      "statement": "validation.py provides load_yaml_file (raises FileNotFoundError when missing, ValueError when top level is not a mapping), validate_agent_spec, save_agent_spec (yaml.safe_dump with allow_unicode=True, sort_keys=False, creating parent dirs), validate_framework_spec, validate_orchestrator_spec, and validate_all_specs (which returns ValidationResult per file instead of raising).",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/core/validation.py",
+          "version": "repo-file-v1:sha256:48afcbe1b3189132ddd1818d9c4da506d64c88584482987af6c32a1d73df1658"
+        }
+      ]
+    },
+    {
+      "id": "claim_9d1ec098abd04f81b76d82979cef43b9",
+      "statement": "The save_agent_spec → validate_agent_spec roundtrip is deterministic and identity, and is covered by tests/test_wizard_and_agent_spec.py::test_save_and_reload_roundtrip.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/core/validation.py#L48-L53",
+          "version": "repo-lines-v1:sha256:1643a4bb850719229fe018056e0471f09c1e5133b94b9c3f8a0e2044fa4acf29:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjkwNWUzOGQ0YWQ3MTE2NzNlZGUxNzdhNGE1ZGQ0YTY1ZDExYzRkMDYyMjZmMmRiMzVkMDQ3YzgyYjk4NWU1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjFkYmFlODJmZTI1MTEwZTcyZDA5MGU3YWQwNWQwMmJmNjM5MmJhNWE0MGE1YzczNmJkMzlkYTU2ZDhjNGJlMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmE4YjVmNWFlM2I4ZTUyYzk5NjU5NmQ2NmVkZTVkZjZlMjQwNDE1ODE3OTRlNzg5NGZiNWE1ZDUxYTAwMDVlZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTE0YzAwOTU4ZjlhN2MzZWEyYTFkZDQxYmJmZTNmNTI4YTBmZmQ1YmYwM2Q2YzU3NTM2NWYwMWRhYTY0ZDY2YyJ9"
+        },
+        {
+          "resource": "repo://tests/test_wizard_and_agent_spec.py#L85-L91",
+          "version": "repo-lines-v1:sha256:40eb759a06d2af572acccec89e4b13750caa2bd90504c36e7d15f2a61d431a4d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGMzNDFiNzQ5YTcxMTc0YWE5NDVlYmNlZGJhZWZmOGQ3N2JkMTY5YmMzYzI1NDFmMjI4NWIwY2FiMGI4NTNiZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NiMTU4Yzc3MjNmOWFlN2FiYzdlYzU5NzEzMmVhYjQ4ZWE4YzE5Y2M2YzBhZjJiY2MzZmE5ZDJlODUyODY5MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmM3OTBiZGQ2OTg1NDU5ZGU2ZDg2ZmMxYTQ5MWE4ODk0ZTAyMmQxN2ZkMGM5YmEyMTQzMTAwY2Q1OWY3MmFlMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2FjMzlkNTViMWM0MDlhZWU3YzMxOGFlOGZlZTRmMTI5ZWU4MzU5ZWIyNzM2NTc1YmViYjgwNzE3YTUzOTY5ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_cbe65de32f9c4d878529abb3b9df14c7",
+      "statement": "run_agent_wizard in src/agentforge/wizard/flow.py prompts for identity, channel/persona, model/provider, workflow, memory, output/eval, guardrails, then per-tool entries; it defaults agent_id to slugify(name) and writes to root/agents/<agent_id>/agent.yaml via save_agent_spec.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/wizard/flow.py#L62-L150",
+          "version": "repo-lines-v1:sha256:42d7050fe60d00d3035fb9a40159261516338de73b967fe577f523ccca12b028:eyJzZWxlY3RlZExpbmVDb3VudCI6ODksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhOGU5ODk0MTlkMjk1ZjFlMzE5MGFmODYxNjQ0M2QyZjVkNWM2MGIxZGI1ZTdkZTJlZjBiZDVhZmVkMTg3MTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwY2EzZDFiMzlhNGI0NjA0Nzg0OGMwOGZlODYzMjQ5MGFjYWUyZmQ3ZTk0MDk1N2FlNGE3NDVmM2I0MjcyNTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYzRhN2QxY2M3OTZhYmEzZTQ2NzIzMzI3ZjUxN2U5ZjgxMTk4MmQyNTBmMDcwMjk4NmU0YjU3NjRhZDk1ODkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI0ODBlOGQzY2UwYTZjZjI1NTFiZjU1MjBhNmZkMzU2OTY2YjBiYWZmYTI0NWE2Y2YwZGYzNzY5NDY3YmZmZmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9e474809eb4c444fa19ae210b9f2ba6e",
+      "statement": "After writing agent.yaml, run_agent_wizard immediately calls generate_agent_files so derived files exist without a second CLI invocation, and prints an agentforge run --agent-dir … --input \"Hello\" smoke-test command.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/wizard/flow.py#L152-L161",
+          "version": "repo-lines-v1:sha256:2a4bc735d847cb4bca9dd7030c7f43e38a3ce39803895ae6b9bb7152db6f2a83:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhOTdlNjJmYjFhMDAxNDBhZGFlMzE0NGMyN2Q3OWY3YjUwM2Y3YjI5OTY5YmJiOTVhZjBjZmU4MWRjNWQzYTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxZDQ0N2EzYWMwZDQxZjRhNjIzNDk3Y2FiYzNmN2E3NjQ5NGM2ZDAyNzQzZWIwYzAxNzcwYmY3YTgyNDY5ZWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3N2NmYTZiMWU4MGRjN2U0ZDA5ZDdhZTBjNjFmOTk1ZjM1YTYyYjRiOTA2ODA5NmM5NTEwMzU3YzliNDI3NTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ0YmNhZTI3NzRiYjZiZjQyNGMwZjBjMGMwN2VmYWI0NWY0YTIyMDk0Y2JmNTU5MmU2NjE1MWU0ZDcwMjZmZWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_df588bd93ebc410a8e64b98c46537540",
+      "statement": "generate_agent_files in src/agentforge/generators/agent_files.py validates the spec, then writes exactly five derived files (system_prompt.md, runtime.yaml, eval.yaml, tools.yaml, README.md) into the same directory as agent.yaml, returning the created paths.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/generators/agent_files.py#L205-L229",
+          "version": "repo-lines-v1:sha256:1e94e1f9935f03ddd1374ca7f873de8623ab45b5fd1b9ef2e511cd466d1e296c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0NzAxZmY1ODZmMTc4NGFjMzk2MmUyMGRkYWYyMmY3MDVmODdhZGIxNDcyOTM1ZjYyNDFmM2FjMTdhMjI0NzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0MjQ0YTgyODA5NzBkYWQ2ZjM5NWNiZWQxZTg5ZGJmNTAyYWYyNjZlYTQwMzM4MDVmZDlkZGU3NmI4MDQxNzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMWQ3YjQ3ODQ0NjA2YTI0OGYzOWE1Y2EwNzg4YTIzOTcyNmJhMzQ1ZTJlMWE1ZTUxYTBhYjllNWZmYjMyNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_57d2d802863c4f368cc48e97e4006dce",
+      "statement": "The module constant _GENERATED_FILES lists [agent.yaml, system_prompt.md, runtime.yaml, eval.yaml, tools.yaml, README.md] and is used only by build_agent_readme to render the 'Generated files' section.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/generators/agent_files.py#L10-L10",
+          "version": "repo-lines-v1:sha256:2e05eac603c7dec4aa3c6d4343b16b4ce3fadbd085c8979c390c8686ba2078bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmUwNWVhYzYwM2M3ZGVjNGFhM2M2ZDQzNDNiMTZiNGNlM2ZhZGJkMDg1Yzg5NzljMzkwYzg2ODZiYTIwNzhiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmUwNWVhYzYwM2M3ZGVjNGFhM2M2ZDQzNDNiMTZiNGNlM2ZhZGJkMDg1Yzg5NzljMzkwYzg2ODZiYTIwNzhiYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjNjZGY0MDA0NmQwZTM2YTgzMzJmMGYxMTBkMmQ3NmQyMTQyODEyMWUzMmI0MGM4MTIwNTBlMTNkYWU1ODJiYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTdmZTc3OTMxNGRhMTlhNGM4MjIwNmVhMzkxMDQ0OTM0OTAwZmNiMTg0ZGY2ZWY2MDg4NjQ5NGYyZjgyMjk0NCJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/generators/agent_files.py#L195-L201",
+          "version": "repo-lines-v1:sha256:1e8f044b23737d8a7c91a21d287d6e94f57075c9b016a3cffd074d3ea31a5812:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGY5NGZiY2I2NTZhZTJmNmNjMzY0ODkxZDcyNzgxMjY2MTdmMDRlZmVkYzRjMzM2ZGY1MDVhNjUxOGRiZWRiYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTE1MWNiZDAyYTU3OWY4ZTY4ZGIzY2U1ODFjNjBlOGE5YTc3ODA2ZmVkNjM4MjEwZTBkYmMwZGRhYmU5MGVhMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmRhMTE4YWI4MjllYzM2NzMxNDJiZTM3MzYyZTdmMjcyNjU2MGY5MmE1MzAyYmRjODgyMDlkMTQwODEwOGJlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzExZDdiNDc4NDQ2MDZhMjQ4ZjM5YTVjYTA3ODhhMjM5NzI2YmEzNDVlMmUxYTVlNTFhMGFiOWU1ZmZiMzI0MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ef510d75fb91433a824ece155821602a",
+      "statement": "build_system_prompt produces fixed sections Identity, Objective, Persona, Channel, Mandatory Behaviors, Forbidden Behaviors, Available Tools, Memory Policy, Output Format, Model and Workflow Policy; tool entries are annotated with **(mandatory)**, category, and non-stable status tags, and when_to_use/when_not_to_use/input_schema/output_schema are inlined.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/generators/agent_files.py#L13-L100",
+          "version": "repo-lines-v1:sha256:b3f254327d42cd45786f7eb3374931c0f6074d2bafdedbebbf6930614977e7ca:eyJzZWxlY3RlZExpbmVDb3VudCI6ODgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRiOWFhYTE3ZjNmYWNiYWI2YTJlMTM3ZGRjMTg1OTMwMzQ2YTg4MTcyYWNjOTM2MDVkYTI4N2IzZWQzM2I5MGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZTdiYjMxNTZkZjFmNzcyOGY0NTMxOTM0NDlhYTc0NmQ3MWE1NDEzYTQ0M2FjZGVkMTZkYzcwNTI2Nzg0ODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwZWMwNDk5NzNmYzkzZjQ3NDJiOWRjMDRjOGU4YzJmMjQyOGE0MzFhZTYwMDA0M2E5ZjE0NWMxMTQ5N2ExOTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMzlkNjc4MDYzZDg4NDFiMTAxMjBlNDM4ZWM3NDU5NTBmODA1ODYxNzM0NzYyNGUwNTI4NGMyMGQ5NGRmYzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_49b2adc5021d466db38593e58db17f8a",
+      "statement": "build_runtime_config emits a nested dict with runtime_version, agent_id, provider, model.{default,fallback}, workflow.{mode,max_tool_cycles,reflection_rounds}, channel.type, memory.{enabled,type,max_turns,policy}, output.{mode,format}, conversation.multi_turn.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/generators/agent_files.py#L103-L126",
+          "version": "repo-lines-v1:sha256:d4a9b69d24eb9d087081f67f59009175d4e9e079dd496cad9e62ab423afc3b17:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjMWZlODE4M2EzN2MxY2I4NDc3MGUzNWM5OTY2Yzc3OTcwN2Y2ZjZmNWEwNGI4YWZjYzFhMTQ0MmY0OGQ1MjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxMWQ3YjQ3ODQ0NjA2YTI0OGYzOWE1Y2EwNzg4YTIzOTcyNmJhMzQ1ZTJlMWE1ZTUxYTBhYjllNWZmYjMyNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjNTA4YWQ2ZDAzZGEyOWM3NTA5N2ZlMDU1N2VlNzExZWVmMTMyYWM0YjFkNWQxZGU3YjI5NTM0OGI5YjIxZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8768230fb59241369ea2a6bec1470ce3",
+      "statement": "build_eval_config emits eval_version, agent_id, a fixed metrics list [semantic_quality, tool_use_compliance, format_validity, consistency], user_feedback.{enabled, scale='0-10'}, and notes.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/generators/agent_files.py#L129-L144",
+          "version": "repo-lines-v1:sha256:ef34ff60b1985200d35360d35ab008bd14234fc7c1abc1778f507fccc0472087:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4YmNmODA4NWI2MWQ2NWQzZmZhYjZlYzFlMzg3NTU5YjQxODczZWQ2Y2RiNzdiMDM0NjBlYjdiZWEyYTM4ZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmYmQwMDkzMTRiYzI3MDg0MTY3MzRhMDJhZTVmZjM5YTFlNDhhMDUwYmU5MWY0M2IyZmFhOTIwMDJjNjJiZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmMWQzMGVhZDE3ZDNmNDMyZGQ4NTc0YjQyMzZkNDgyZTM3ZmY1NGU4YmY0Y2I3MTIzNmEwNTA4NGFkZjk4NzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_658cf4f7fd5c458299c222a5993fcd24",
+      "statement": "build_tools_config serializes the full ToolSpec list (name, required, description, category, status, when_to_use, when_not_to_use, input_schema, output_schema) into a dict with tools_version and agent_id — this is what AgentRuntime.from_agent_dir reparses at startup.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/generators/agent_files.py#L147-L165",
+          "version": "repo-lines-v1:sha256:640923a4ba2ef34d52abd9e37a6bc4c6d88314c6849d8b3f9638c8c7768bbbde:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiZTE3OGQ1NzBmNDk0NzA4MmUxZjEzNmUxMDU3ZDYyZDlmMmI2ZWM3ZTEwNWZjNGFmYTA1ZWEwMDFiYmRlNDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmYmQwMDkzMTRiYzI3MDg0MTY3MzRhMDJhZTVmZjM5YTFlNDhhMDUwYmU5MWY0M2IyZmFhOTIwMDJjNjJiZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlZjgyNjM1MGRhNmM2NDZhNzcxZmExZGYxNjI2ZDcwY2RmNDM0MTFjYzFjNWE5NDMxNWU3YWZkMjIyOWFmNzUifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L121-L125",
+          "version": "repo-lines-v1:sha256:c57953e33b469c738c5356d0f4cce65526fa834c2f5bf7cf94e4e4d38ec1c31a:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWI3Mjg3NmY1ZGRjMDlmYmQzZmQ0NThjMzZiM2Y1MGM5ZDU0NjVkYjI0ZDUwMzJlNzlkYzFkNDdhZDhhZTBkNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTY2YmIwNTcyYmMzYzJhMDVhNzhhN2ViMDE0NmNmMjAyNDM0ODk0MWZmMzEzYzk1OGE4ZWNmNzczNmVmYWNkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmMxYTdlMjlmMWU0YTdhZGMyOTlkZTA1MmUyZjBlMGYxYzA4ZjZjN2UxZGFlYzNmNTI3OWVkMWM3ODY2MzM0NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGJkN2NlY2Y0NGY2ZDhiMGJjMjg0ZTZkMzkxZWZlY2E2YmY4NTgzYmIwMWJhNGMxNWM3MmVmYjI4ZjZjNGQ4ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6346e20a4b24423693ef8cfdb93c3361",
+      "statement": "agentforge generate --path <agent.yaml> (src/agentforge/cli/main.py) calls generate_agent_files and prints each created path, exiting non-zero on FileNotFoundError/ValueError/ValidationError.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L86-L99",
+          "version": "repo-lines-v1:sha256:6c35b3efbbb6c577f5ceaf4c4c2af6323f72cb17bce1b014292e532355d80d92:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0NDhiZGVjZGIwZmVhZDY4M2YwY2I4NjVkNmM5YThiZDcyYTMxNzZhYThjOWY5YWM2ZWU5ZWU3ODhkYjY1NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhYjQ5NTFmMjAxZDU0MDUzYTQ1OWZlMjAxYjJmYjQzNWUxYmM0YzJmOTY5ZDE4YmYwZWMzYzg5ZmI5OTAwMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJiM2I2NTQyMmNiNDA0Njc2NmQzOTUxOTRhNGZjNTA0MTdjMjAxOWI0ODU1Mjc2ZGMyOWViM2RkMThjZDE5MjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2MzYyOTAxZjU1N2Y4Yzg2OGJhN2IzYjgxYzUzMzc3YWQ3MWI5MTIxOWQ5MGZmZTZkYTY0OTczZjc3ZWNkZTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4ee01932ce764a62b5346a9496125fff",
+      "statement": "AgentRuntime.from_agent_dir performs a second validation pass: it calls validate_agent_spec on agent.yaml, RuntimeConfig.model_validate on runtime.yaml, and reparses tools.yaml into list[ToolSpec] when present.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L113-L135",
+          "version": "repo-lines-v1:sha256:60361000fda4f6e362dd31357fc9afa19bbb463f9bbc81b1469e0fad7e851225:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyMGI0NTNmNWUwYzkyZDVmNmMyNTFhNWVhMTk2MGQ3MmYzYmQwNzk1NmFlODU3ZGEyMGUzMWE4OGM1NTk2OWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNkNWFiODVjYTkzZjZlZWNmNzlkNWI2YjFjMGQ2ZDYwOWZhNjk2YjRiZWIzOTgwM2JlZTYyNjM4MGY4NGYwMjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhNjkyM2MzMWY5NjRhZTMzNWU0MGIwYzhiMWQ5YmRhMGY4Njg0MTk4NWZlMjlmNzBjNGY2YmNiNWY3OGI1YmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_20549a021d9a44469617d0fffc83a218",
+      "statement": "RuntimeConfig in src/agentforge/runtime/engine.py uses a @model_validator(mode=\"before\") that flattens the nested runtime.yaml sections (model, workflow, channel, memory, output, conversation) and reads os.environ AGENTFORGE_PROVIDER / AGENTFORGE_MODEL to override the corresponding runtime.yaml values.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L34-L84",
+          "version": "repo-lines-v1:sha256:8d88be2bd515cdae9f65f6a40f164ffde8283dbfaf021b4e4c4de358d581f213:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhNjMzZmI3NmFmMjkzN2EyN2Q3ODE1OGYwODg3N2MyZGI5OGU2YzUxNTM4ZDk1YzkzYjBiMWQ1ZmRmYzZmYjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4YWU2MGEwOWE3ODRiNDdlYTA4NTMxNmJmZjkyYzY4MDExZGQ2NzBkODlmMjhkYWY1ZGE5YmI2YWU0MWJjNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxNWEyNGYwMjNmZDVmY2M4ODU0YzgwMjQ1M2QyNTlkOGM3YTQ5N2JmMjViODA0MjJhZmY4YzE1NWZlODUxYWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6977b6fc96e2429190311ba3614ac77d",
+      "statement": "memory_feed_mem0 is a flag on RuntimeConfig with default False that is not produced by build_runtime_config; agents that use Mem0 set it manually in runtime.yaml (e.g., agents/lab-ops/runtime.yaml sets memory.feed_mem0: true).",
+      "evidence": [
+        {
+          "resource": "repo://agents/lab-ops/runtime.yaml#L12-L16",
+          "version": "repo-lines-v1:sha256:30139382d7818fde248cf2852a71f49ab9078acf79ed0bb869368eacb64af5f3:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGU2NDA0YTlhMGM3NDE4M2IyOThiMWE4ZjBmZGZhYjRjNmJlNWIxZDlkNzM4MzhkNjE5MWZkMTEzMDQzMWEzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI4OGJmZTUyYzNjYWI5Mzk3YzUyMDBjZDJjNGU2YmEzMGZjNDc3MzBkYWEyNmE2MzlhN2VjNTQxMmU4ZmMwMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjBlN2ZmY2FlYTkyMDI2MDFkMzA5Yjk0YmE3NWVkNzk0NDkzN2M3YzQ5NzI0OGM2MmJkNWQ0NzNhMTM0YjQzMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODFlYjdhMGI1NjI3YjQwYTc3Y2M2Yjg3NDU3NDVkYzU3OGIyNDdkOThmZDliOWM0YTYxNTU1ZDFlNTUwMzEyNCJ9"
+        },
+        {
+          "resource": "repo://src/agentforge/runtime/engine.py#L48-L48",
+          "version": "repo-lines-v1:sha256:7fb4e5f33d19979317c6356b70d6117753c4ef61c5e09897368d600124fbff34:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ZiNGU1ZjMzZDE5OTc5MzE3YzYzNTZiNzBkNjExNzc1M2M0ZWY2MWM1ZTA5ODk3MzY4ZDYwMDEyNGZiZmYzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ZiNGU1ZjMzZDE5OTc5MzE3YzYzNTZiNzBkNjExNzc1M2M0ZWY2MWM1ZTA5ODk3MzY4ZDYwMDEyNGZiZmYzNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWMxYmRlYWY2YjQ4MDMwYmRjYzMzOGViNjNmMzU4YmZlYWUxNWYyNzdiNmU1NDIxNzVmNTc2ZWRhNjM5YjM1NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTBjMTUzODA5ZGQyMjM4NmI0MjBmMzlmZmY4MmQzMWUzYmEzZDkxYzYxMzgxYTQ0NzM1ZjEyZWI4M2FmNDRhYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f81636a8ffe44c03836ecbef95789426",
+      "statement": "agentforge validate --root . calls validate_all_specs which validates only specs/framework.spec.yaml (FrameworkSpec) and specs/orchestrator.spec.yaml (OrchestratorSpec); per-agent specs are validated separately via agentforge validate-agent --path.",
+      "evidence": [
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L35-L59",
+          "version": "repo-lines-v1:sha256:4a804a553fa96106ae4fac0709681361933de2ff062fad8ba2d18e55cb087e69:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0NDhiZGVjZGIwZmVhZDY4M2YwY2I4NjVkNmM5YThiZDcyYTMxNzZhYThjOWY5YWM2ZWU5ZWU3ODhkYjY1NTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhYjQ5NTFmMjAxZDU0MDUzYTQ1OWZlMjAxYjJmYjQzNWUxYmM0YzJmOTY5ZDE4YmYwZWMzYzg5ZmI5OTAwMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxNjkyOTRlNzkxNjk2NmI2ZDUzYzdiMzMxYjE1YTM3Nzg1NjM3ZThlMjg1MTkxMzEyNDM1OWMyMWUxOWM1ZmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2MzYyOTAxZjU1N2Y4Yzg2OGJhN2IzYjgxYzUzMzc3YWQ3MWI5MTIxOWQ5MGZmZTZkYTY0OTczZjc3ZWNkZTgifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/cli/main.py#L73-L83",
+          "version": "repo-lines-v1:sha256:0d0d4ec7eaa33777b7cf30a76cdcb97dce5032ab27d2eafd3f10be7e206792af:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkOTEyNDRmMjRkMzMyMjYyN2EyNTRjOWJhOGQ4ZDc4OTQ3YTZmNDQ5NzJjZWNhYTMyNDM4OWQwNzVkNmM1MTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhYjQ5NTFmMjAxZDU0MDUzYTQ1OWZlMjAxYjJmYjQzNWUxYmM0YzJmOTY5ZDE4YmYwZWMzYzg5ZmI5OTAwMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY3Zjk5NGRkMzMxNmUxMTI3MjM0NWYxYjIzMjM3ZGZmZDgxNzk2NGZlMDEwYTA4YzMwMmJhNWI1MTA5ZGU0NjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2MzYyOTAxZjU1N2Y4Yzg2OGJhN2IzYjgxYzUzMzc3YWQ3MWI5MTIxOWQ5MGZmZTZkYTY0OTczZjc3ZWNkZTgifQ"
+        },
+        {
+          "resource": "repo://src/agentforge/core/validation.py#L16-L19",
+          "version": "repo-lines-v1:sha256:eb7106024c503ef6d1147f097014ed85f67e3def887687c8cbfc018ee2324149:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTk1NWE0MGVmMDkyZmI4ZjZhZDhmYWVlNjBlNjczOTdhYjM4ZTRhNzA3YWIzNTgyM2VmZGM3OGVhYWEzMzUzNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGVhYzk3Nzk2NzhkMTQ3YjQ0NTQwMjgyYmUwMDBlZmQxMmM3ZTBhY2ViMzFlYTI3YTFlODFkMDAzYzFjYjQ3YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjUzNTI1OTcyY2RhMmFiMTBhMjBjOGY3OTAxY2Y1NzcyZGNhNGVhZDU5N2Q0YzA1YzdhYTg0ZDNmMTYzZTZjYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_458e876de6e6405f96329b4c24bcaef1",
+      "statement": "agents/lab-ops/agent.yaml is a real reference spec with spec_version 0.1, two tools (collect_system_health required, read_log_tail optional), session_summary memory with max_turns 6 and summarize policy, respond_or_tool workflow, ollama provider, and default_model qwen3.5:27b.",
+      "evidence": [
+        {
+          "resource": "repo://agents/lab-ops/agent.yaml",
+          "version": "repo-file-v1:sha256:06d38e203a32ef2b68b33b32a8d24f475f27351885f2243d4750e05fc10171c5"
+        }
+      ]
+    },
+    {
+      "id": "claim_71996d41f6ec4baa947a40d31a68c316",
+      "statement": "agents/lab-ops/system_prompt.md is a hand-authored bespoke prompt (identity, tool table, identity rules, don'ts) rather than the generator's output, while the same directory's runtime.yaml, tools.yaml, and eval.yaml are generator-shaped.",
+      "evidence": [
+        {
+          "resource": "repo://agents/lab-ops/runtime.yaml",
+          "version": "repo-file-v1:sha256:dfcf23ca769167ed6fd6fa0acad6d3a3ade28c2679b5de72e45ae1d6b2232aac"
+        },
+        {
+          "resource": "repo://agents/lab-ops/system_prompt.md",
+          "version": "repo-file-v1:sha256:7dbfcdbb3b437cb86ec3537b665cc0d969a56a2d102c6ab5e30d9cc59403b7ff"
+        },
+        {
+          "resource": "repo://agents/lab-ops/tools.yaml",
+          "version": "repo-file-v1:sha256:5cf337591d069513002834fab16aeef053fde539338b5ed8ab1f859c55ff6bd0"
+        }
+      ]
+    },
+    {
+      "id": "claim_4f63571f1e424aefbb4df7b731f38328",
+      "statement": "tests/test_generate_agent_files.py verifies every expected section of build_system_prompt and the field structure of the runtime/tools/eval/README builders against both a minimal and a full AgentSpec.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_generate_agent_files.py",
+          "version": "repo-file-v1:sha256:72a0359ec7a954f62df7a6ee2e73b53941b6f0707bb84cbe9f116f3541594b71"
+        }
+      ]
+    },
+    {
+      "id": "claim_e3bdc3089f934f3e860f0f7b15041edb",
+      "statement": "tests/test_wizard_and_agent_spec.py covers validate_agent_spec roundtrip, save_agent_spec nested-directory creation, wizard flow with monkeypatched typer.prompt/typer.confirm, and ID slug behavior.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_wizard_and_agent_spec.py",
+          "version": "repo-file-v1:sha256:b25a7dbcbfd9732a5d6e4c96c64ce47b05a7a4933f2c4743545bcf8cf990b068"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-09T12:43:13.007Z"
+  }
+}
